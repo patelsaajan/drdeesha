@@ -1,0 +1,21 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+/* Semantic design tokens */
+@theme {
+  --color-background: #ffffff;
+  --color-foreground: #0f1923;
+  --color-primary: #00008A;
+  --color-secondary: #7ab3c8;
+  --color-accent: #2d6a84;
+  --font-display: "Fraunces", Georgia, serif;
+  --font-serif: "Bodoni Moda", Georgia, serif;
+}
+
+@layer base {
+  html,
+  body {
+    margin: 0;
+    background-color: var(--color-background);
+  }
+}
