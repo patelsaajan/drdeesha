@@ -1,48 +1,56 @@
 <template>
-  <section ref="root" class="relative z-20 bg-background text-foreground">
-    <div class="mx-auto flex min-h-dvh max-w-6xl flex-col justify-center px-4 py-24 sm:px-6">
+  <!-- No background on this section — the fixed "Dr Deesha Dental" hero title
+       shows through the gaps between cards, the same trick the hero grid uses. -->
+  <section ref="root" class="relative z-20 overflow-x-hidden text-foreground">
+    <div class="mx-auto max-w-6xl px-4 py-24 sm:px-6 lg:py-28">
+      <header class="max-w-2xl">
+        <p class="reveal font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
+          Kind words
+        </p>
+        <h2 class="reveal mt-5 font-serif font-normal leading-heading tracking-heading" style="font-size: clamp(2rem, 4vw, 3.25rem)">
+          What patients say about me.
+        </h2>
+        <p class="reveal mt-4 font-display text-base font-light leading-relaxed text-foreground/65">
+          A few of the reviews that mean the most to me.
+        </p>
+      </header>
 
-      <p class="reveal font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
-        Kind words
-      </p>
-
-      <!-- Rotating quote -->
-      <div
-        class="reveal relative mt-10 min-h-60 sm:min-h-68 lg:min-h-80"
-        @mouseenter="pause"
-        @mouseleave="resume"
-      >
-        <Transition name="quote">
-          <figure :key="current.id" class="m-0">
-            <blockquote class="max-w-5xl font-serif font-normal leading-quote tracking-heading text-foreground" style="font-size: clamp(1.6rem, 4.4vw, 3.5rem)">
-              &ldquo;{{ current.quote }}&rdquo;
-            </blockquote>
-            <figcaption class="mt-8 flex flex-wrap items-center gap-x-3 gap-y-1">
-              <span class="font-display text-sm font-semibold tracking-wide text-foreground">{{ current.name }}</span>
-              <span class="h-1 w-1 rounded-full bg-foreground/30" />
-              <span class="font-display text-sm font-light text-foreground/55">{{ current.context }}</span>
-              <span v-if="current.source" class="font-display text-3xs uppercase tracking-label text-foreground/40">· {{ current.source }}</span>
-            </figcaption>
-          </figure>
-        </Transition>
+      <!-- Row 1 — the whole row moves together as one block, sliding in from the left -->
+      <div ref="rowOneRef" class="mt-14 grid gap-5 sm:grid-cols-3">
+        <article
+          v-for="item in rowOne"
+          :key="item.id"
+          class="testimonial-card flex flex-col gap-5 rounded-xl border border-foreground/10 bg-background p-6 transition-shadow duration-300 hover:shadow-card sm:p-7"
+        >
+          <blockquote class="m-0 font-serif text-lg leading-snug text-foreground">
+            &ldquo;{{ item.quote }}&rdquo;
+          </blockquote>
+          <div class="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1">
+            <span class="font-display text-sm font-semibold tracking-wide text-foreground">{{ item.name }}</span>
+            <span class="h-1 w-1 rounded-full bg-foreground/30" />
+            <span class="font-display text-sm font-light text-foreground/55">{{ item.context }}</span>
+            <span v-if="item.source" class="font-display text-3xs uppercase tracking-label text-foreground/40">· {{ item.source }}</span>
+          </div>
+        </article>
       </div>
 
-      <!-- Indicators -->
-      <div class="reveal mt-12 flex items-center gap-3">
-        <button
-          v-for="(item, i) in testimonials"
+      <!-- Row 2 — wider cards, the row moves together as one block from the right -->
+      <div ref="rowTwoRef" class="mt-5 grid gap-5 sm:grid-cols-2">
+        <article
+          v-for="item in rowTwo"
           :key="item.id"
-          type="button"
-          :aria-label="`Show review from ${item.name}`"
-          :aria-current="i === index"
-          class="group -m-1 p-1 outline-none"
-          @click="goTo(i)"
+          class="testimonial-card flex flex-col gap-5 rounded-xl border border-foreground/10 bg-background p-6 transition-shadow duration-300 hover:shadow-card sm:p-7"
         >
-          <span
-            class="block h-2 w-2 rounded-full transition-all duration-300 group-focus-visible:ring-2 group-focus-visible:ring-primary/40"
-            :class="i === index ? 'w-6 bg-primary' : 'bg-foreground/20 group-hover:bg-foreground/40'"
-          />
-        </button>
+          <blockquote class="m-0 font-serif text-lg leading-snug text-foreground">
+            &ldquo;{{ item.quote }}&rdquo;
+          </blockquote>
+          <div class="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1">
+            <span class="font-display text-sm font-semibold tracking-wide text-foreground">{{ item.name }}</span>
+            <span class="h-1 w-1 rounded-full bg-foreground/30" />
+            <span class="font-display text-sm font-light text-foreground/55">{{ item.context }}</span>
+            <span v-if="item.source" class="font-display text-3xs uppercase tracking-label text-foreground/40">· {{ item.source }}</span>
+          </div>
+        </article>
       </div>
     </div>
   </section>
@@ -50,90 +58,73 @@
 
 <script setup lang="ts">
 import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { testimonials } from '../data/testimonials'
 
-const INTERVAL = 7000
+const rowOne = testimonials.slice(0, 3)
+const rowTwo = testimonials.slice(3)
 
-const index = ref(0)
-const current = computed(() => testimonials[index.value]!)
-
-let timer: ReturnType<typeof setInterval> | undefined
-let hovered = false
-
-function start() {
-  stop()
-  if (hovered || testimonials.length < 2) return
-  timer = setInterval(() => {
-    index.value = (index.value + 1) % testimonials.length
-  }, INTERVAL)
-}
-function stop() {
-  if (timer) {
-    clearInterval(timer)
-    timer = undefined
-  }
-}
-function goTo(i: number) {
-  index.value = i
-  start() // reset the timer on manual selection
-}
-function pause() {
-  hovered = true
-  stop()
-}
-function resume() {
-  hovered = false
-  start()
-}
-function onVisibility() {
-  if (document.hidden) stop()
-  else start()
-}
+const rowOneRef = ref<HTMLElement | null>(null)
+const rowTwoRef = ref<HTMLElement | null>(null)
 
 const root = ref<HTMLElement | null>(null)
 let ctx: gsap.Context | undefined
-let observer: IntersectionObserver | undefined
 
 onMounted(() => {
-  start()
-  document.addEventListener('visibilitychange', onVisibility)
-
   const el = root.value
-  if (!el) return
+  const rowOneEl = rowOneRef.value
+  const rowTwoEl = rowTwoRef.value
+  if (!el || !rowOneEl || !rowTwoEl) return
 
   const reveals = gsap.utils.toArray<HTMLElement>(el.querySelectorAll('.reveal'))
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
   if (reduce) {
     gsap.set(reveals, { autoAlpha: 1, y: 0 })
+    gsap.set([rowOneEl, rowTwoEl], { x: 0 })
     return
   }
 
+  gsap.registerPlugin(ScrollTrigger)
+
   gsap.set(reveals, { autoAlpha: 0, y: 28 })
+  // Each row is a single rigid block — it moves as one item, so the gap
+  // between its cards never changes during the transition.
+  gsap.set(rowOneEl, { xPercent: -100 })
+  gsap.set(rowTwoEl, { xPercent: 100 })
 
   ctx = gsap.context(() => {
-    observer = new IntersectionObserver(
-      ([entry], obs) => {
-        if (!entry?.isIntersecting) return
-        obs.disconnect()
+    // Header: a normal one-shot fade, matching every other section on the site.
+    ScrollTrigger.create({
+      trigger: el,
+      start: 'top 75%',
+      once: true,
+      onEnter: () => gsap.to(reveals, { autoAlpha: 1, y: 0, duration: 0.9, stagger: 0.12, ease: 'expo.out' }),
+    })
 
-        gsap.timeline({ defaults: { ease: 'expo.out' } }).to(reveals, {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.85,
-          stagger: 0.12,
-        })
+    // Rows: tied directly to scroll position, not autoplayed. Doesn't start
+    // until this section has scrolled up to fill the whole screen (so the
+    // fixed "Dr Deesha Dental" backdrop is already at full height). The
+    // section is pinned for the scrub's duration, so scrolling further can't
+    // carry you into the footer until the cards have fully arrived — scroll
+    // back up and it un-pins the same way in reverse.
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: el,
+        start: 'top top',
+        end: '+=100%',
+        scrub: 0.4,
+        pin: true,
+        pinSpacing: true,
+        anticipatePin: 1,
       },
-      { threshold: 0.2 },
-    )
-    observer.observe(el)
+    })
+      .to(rowOneEl, { xPercent: 0, ease: 'none' }, 0)
+      .to(rowTwoEl, { xPercent: 0, ease: 'none' }, 0)
   }, el)
 })
 
 onUnmounted(() => {
-  stop()
-  document.removeEventListener('visibilitychange', onVisibility)
-  observer?.disconnect()
   ctx?.revert()
 })
 </script>
@@ -142,39 +133,6 @@ onUnmounted(() => {
 @media (prefers-reduced-motion: no-preference) {
   .reveal {
     opacity: 0;
-  }
-}
-
-/* Crossfade between quotes; the leaving quote is pulled out of flow so the
-   entering one sets the container height. */
-.quote-enter-active,
-.quote-leave-active {
-  transition:
-    opacity 0.6s ease,
-    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.quote-enter-from {
-  opacity: 0;
-  transform: translateY(14px);
-}
-.quote-leave-to {
-  opacity: 0;
-  transform: translateY(-14px);
-}
-.quote-leave-active {
-  position: absolute;
-  inset: 0;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .quote-enter-active,
-  .quote-leave-active {
-    transition: opacity 0.2s ease;
-    transform: none;
-  }
-  .quote-enter-from,
-  .quote-leave-to {
-    transform: none;
   }
 }
 </style>

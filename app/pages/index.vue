@@ -3,10 +3,9 @@
     <HomeHero />
     <AboutSection />
     <CaseStudies />
-    <ProcessVideo />
     <CareerTimeline />
+    <ValuesQuote />
     <TestimonialsSection />
-    <ContactSection />
     <SiteFooter />
   </div>
 </template>

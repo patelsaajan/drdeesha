@@ -38,7 +38,7 @@ export const careerSteps: CareerStep[] = [
     location: 'Newark',
     description:
       'My first year in practice, treating a whole community from anxious first-timers to lifelong regulars. I learned to slow down and listen before I ever picked up a handpiece.',
-    image: PLACEHOLDER,
+    image: '/images/dr-deesha-newark.jpeg',
   },
   {
     id: 'birmingham',
@@ -48,7 +48,7 @@ export const careerSteps: CareerStep[] = [
     location: 'Birmingham',
     description:
       'A hospital year split between children and complex restorative work. Treating nervous young patients made gentleness a habit, not an afterthought.',
-    image: PLACEHOLDER,
+    image: '/images/dr-deesha-bdh.jpeg',
   },
   {
     id: 'totally-aesthetic',

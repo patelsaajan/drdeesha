@@ -25,9 +25,9 @@ export const caseStudies: CaseStudy[] = [
     id: 'bonding-gap',
     treatment: 'Composite bonding',
     title: 'Closing a midline gap',
-    summary: 'A front-tooth gap softened in a single afternoon.',
+    summary: 'I softened a front-tooth gap in a single afternoon.',
     description:
-      'Freehand composite, layered and polished to close a central gap and even the edges. No drilling and no anaesthetic, finished in one visit.',
+      'I built up freehand composite, layered and polished, to close a central gap and even the edges. No drilling, no anaesthetic, finished in one visit.',
     meta: [
       { label: 'Visits', value: 'One' },
       { label: 'Chair time', value: '90 min' },
@@ -43,7 +43,7 @@ export const caseStudies: CaseStudy[] = [
     title: 'A full upper makeover',
     summary: 'Ten veneers, rebuilt in proportion and shade.',
     description:
-      'A staged upper smile makeover using hand-layered porcelain veneers, designed around the patient’s face before a single tooth was prepared.',
+      'I staged this upper smile makeover with hand-layered porcelain veneers, designing around my patient’s face before I prepared a single tooth.',
     meta: [
       { label: 'Visits', value: 'Three' },
       { label: 'Veneers', value: 'Ten' },
@@ -59,7 +59,7 @@ export const caseStudies: CaseStudy[] = [
     title: 'Straighten, then brighten',
     summary: 'Aligners first, a gentle whiten to finish.',
     description:
-      'Clear aligners to correct crowding over several months, followed by take-home whitening to lift the shade once everything sat right.',
+      'I corrected the crowding with clear aligners over several months, then finished with take-home whitening once everything sat right.',
     meta: [
       { label: 'Timeline', value: '7 months' },
       { label: 'Aligners', value: 'Clear' },
@@ -75,7 +75,7 @@ export const caseStudies: CaseStudy[] = [
     title: 'Whitening without the ache',
     summary: 'A brighter shade, kept comfortable.',
     description:
-      'A supervised whitening course built to reduce sensitivity, easing the shade up gradually rather than forcing it.',
+      'I built this whitening course to reduce sensitivity, easing the shade up gradually rather than forcing it.',
     meta: [
       { label: 'Timeline', value: '2 weeks' },
       { label: 'Sensitivity', value: 'Managed' },
@@ -91,7 +91,7 @@ export const caseStudies: CaseStudy[] = [
     title: 'Replacing a front tooth',
     summary: 'One missing tooth, seamlessly restored.',
     description:
-      'A single implant and crown to replace a lost front tooth, matched to its neighbours in shape and translucency so it disappears into the smile.',
+      'I replaced a lost front tooth with a single implant and crown, matching it to its neighbours in shape and translucency so it disappears into the smile.',
     meta: [
       { label: 'Approach', value: 'Staged' },
       { label: 'Restoration', value: 'Implant + crown' },
@@ -107,7 +107,7 @@ export const caseStudies: CaseStudy[] = [
     title: 'Refining worn edges',
     summary: 'Worn front teeth, quietly rebuilt.',
     description:
-      'Composite edge bonding to rebuild worn incisal edges, returning length and a soft, natural finish without touching healthy enamel.',
+      'I rebuilt worn incisal edges with composite bonding, returning length and a soft, natural finish without touching healthy enamel.',
     meta: [
       { label: 'Visits', value: 'One' },
       { label: 'Chair time', value: '60 min' },

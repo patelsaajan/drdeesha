@@ -1,20 +1,20 @@
 <template>
   <div class="relative bg-background">
 
-    <!-- Book Now button — appears when empty space is in view -->
+    <!-- Book Now button — appears once you scroll down -->
     <Transition name="fade">
       <UButton
         v-if="showBookNow"
         variant="solid"
         color="primary"
         size="lg"
-        class="fixed top-6 right-6 z-30 rounded-full px-6"
+        class="fixed top-6 right-6 z-40 rounded-full px-6"
       >
         Book Now
       </UButton>
     </Transition>
 
-    <!-- Intro title -->
+    <!-- Fixed wordmark — stays centred while smiles scroll behind it -->
     <div class="intro-title pointer-events-none fixed inset-0 z-10 flex flex-col items-center justify-center gap-2">
       <h1 class="m-0 font-serif font-normal leading-none tracking-heading text-foreground" style="font-size: clamp(3rem, 10vw, 7rem)">
         Dr Deesha
@@ -26,26 +26,26 @@
       </div>
     </div>
 
-    <!-- Masonry grid — above the title -->
-    <div class="relative z-20 columns-3 gap-4 p-4">
+    <!-- Smile scroll track — above the wordmark -->
+    <div
+      class="relative z-20 overflow-x-clip"
+      :style="{ height: `${trackHeight}dvh`, '--smile-w': 'min(clamp(12rem, 27vw, 28.5rem), 69dvh)' }"
+    >
       <div
-        v-for="(card, i) in cardDefs"
-        :key="i"
-        class="card relative mb-4 break-inside-avoid rounded-sm overflow-hidden"
-        :style="{ aspectRatio: card.ratio }"
+        v-for="smile in smiles"
+        :key="smile.id"
+        class="smile absolute -translate-x-1/2"
+        :style="{ top: `${smile.top}dvh`, left: colLeft(smile.col) }"
       >
-        <NuxtImg :src="card.src" alt="" class="absolute inset-0 w-full h-full object-cover" />
+        <div class="overflow-hidden rounded-sm bg-foreground/5" style="width: var(--smile-w); aspect-ratio: 3 / 2">
+          <NuxtImg :src="smile.src" alt="" sizes="12rem md:27vw" class="h-full w-full object-cover" />
+        </div>
       </div>
     </div>
-
-    <!-- Empty space — title scrolls into view here. Observed to trigger the button. -->
-    <div ref="sentinel" class="h-dvh" />
   </div>
 </template>
 
 <script setup lang="ts">
-import gsap from 'gsap'
-
 const images = [
   '/images/smile/smile-1.jpeg',
   '/images/smile/smile-2.jpeg',
@@ -54,63 +54,64 @@ const images = [
   '/images/smile/smile-5.png',
 ]
 
-const ratios: Record<string, string> = {
-  a: '16 / 9',
-  b: '4 / 3',
-  c: '3 / 2',
-  d: '2 / 1',
+const COLUMN_GAP = 20 // fixed px gap between adjacent smile columns, at any viewport size
+const COUNT = 6
+// dvh between consecutive smiles. Tuned so ~2-3 (avg ~2.5) are visible at once:
+// tight enough to overlap two steps sometimes, but never three (100dvh viewport +
+// 46dvh worst-case smile height = 146dvh max co-visible span; 3 * STEP = 162 > 146).
+const STEP = 54
+const OFFSET = 104 // dvh before the first smile — clears a full viewport so none show on initial load
+
+// Fixed, deliberately non-sequential column order (1-indexed: 2,4,1,3,1,4).
+// Columns 2 and 3 flank the wordmark and are never adjacent here — and since a
+// smile 3 steps away can never share the screen (see STEP above), only smiles
+// 1-2 steps apart can co-appear, and none of those pairings put col 2 next to
+// col 3.
+const colOrder = [1, 3, 0, 2, 0, 3]
+
+const smiles = Array.from({ length: COUNT }, (_, i) => ({
+  id: i,
+  col: colOrder[i % colOrder.length] ?? 0,
+  top: OFFSET + i * STEP,
+  src: images[i % images.length],
+}))
+
+const trackHeight = OFFSET + (COUNT - 1) * STEP + 96
+
+const EDGE_MARGIN = 24 // px, minimum clearance between a smile's outer edge and the viewport edge
+
+// Centre-to-centre column position: 4 equal-width columns, COLUMN_GAP apart,
+// centred on the track. `factor` is the column's offset from the middle in
+// units of column spacing: -1.5, -0.5, 0.5, 1.5 for columns 0-3.
+// The spacing is the smaller of the ideal (width + gap) and whatever keeps the
+// outermost columns (factor 1.5) from clipping past the viewport edge —
+// otherwise, on a viewport narrower than 3 * (width + gap), columns 0 and 3
+// would be pushed off-screen.
+function colLeft(col: number) {
+  const factor = col - 1.5
+  const sign = factor < 0 ? '-' : '+'
+  const idealSpacing = `(var(--smile-w) + ${COLUMN_GAP}px)`
+  const maxSpacing = `((50% - ${EDGE_MARGIN}px - (var(--smile-w) / 2)) / 1.5)`
+  const spacing = `min(${idealSpacing}, ${maxSpacing})`
+  return `calc(50% ${sign} ${Math.abs(factor)} * ${spacing})`
 }
 
-const sizes = ['a', 'b', 'c', 'd', 'b', 'd', 'a', 'c', 'c']
-const cardDefs = sizes.map((size, i) => ({ ratio: ratios[size], src: images[i % images.length] }))
-
 const showBookNow = ref(false)
-const sentinel = ref<HTMLElement | null>(null)
-let tl: gsap.core.Timeline | undefined
-let observer: IntersectionObserver | undefined
-let lastScrollY = 0
-let sentinelVisible = false
+
+let lastY = 0
 
 function onScroll() {
-  const scrollingUp = window.scrollY < lastScrollY
-  lastScrollY = window.scrollY
-  showBookNow.value = sentinelVisible && !scrollingUp
+  const y = window.scrollY
+  const up = y < lastY
+  lastY = y
+  showBookNow.value = y > window.innerHeight * 0.6 && !up
 }
 
 onMounted(() => {
-  const cardEls = gsap.utils.toArray<HTMLElement>('.card')
-
-  gsap.set(cardEls, { autoAlpha: 0, y: 20, scale: 0.95 })
-
-  const shuffled = gsap.utils.shuffle(cardEls)
-
-  tl = gsap.timeline()
-
-  tl.to({}, { duration: 0.9 })
-
-  tl.to(shuffled, {
-    autoAlpha: 1,
-    y: 0,
-    scale: 1,
-    duration: 0.8,
-    stagger: { each: 0.35 },
-    ease: 'expo.out',
-  })
-
-  observer = new IntersectionObserver(
-    ([entry]) => {
-      sentinelVisible = entry?.isIntersecting ?? false
-      if (!sentinelVisible) showBookNow.value = false
-    },
-    { threshold: 0.05 },
-  )
-  if (sentinel.value) observer.observe(sentinel.value)
   window.addEventListener('scroll', onScroll, { passive: true })
 })
 
 onUnmounted(() => {
-  tl?.kill()
-  observer?.disconnect()
   window.removeEventListener('scroll', onScroll)
 })
 </script>

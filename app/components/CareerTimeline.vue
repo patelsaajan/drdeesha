@@ -9,7 +9,7 @@
         The path here.
       </h2>
       <p class="mt-4 max-w-md font-display text-base font-light leading-relaxed text-foreground/65">
-        The short version of a long apprenticeship, from the first lecture to the chair you'll sit in.
+        The short version of my apprenticeship, from the first lecture to the chair you'll sit in.
       </p>
     </div>
 
@@ -33,15 +33,14 @@
         >
           <!-- Spine — always visible tab -->
           <div class="career-spine flex flex-row items-center justify-between gap-4 border-b border-foreground/10 p-5 lg:absolute lg:inset-y-0 lg:left-0 lg:w-42 lg:flex-col lg:items-start lg:justify-between lg:border-b-0 lg:border-r lg:p-6">
-            <span class="font-serif text-3xl leading-none text-foreground/25 lg:text-6xl">{{ pad(i) }}</span>
             <div class="text-right lg:mt-auto lg:text-left">
               <p class="font-display text-2xs font-semibold uppercase leading-snug tracking-label text-foreground">
-                {{ step.institution }}
-              </p>
-              <p class="mt-1 font-display text-3xs uppercase tracking-label text-foreground/45">
-                {{ step.year }}
+                {{ step.qualification }}
               </p>
             </div>
+            <p class="mt-1 font-display text-3xs uppercase tracking-label text-foreground/45">
+              {{ step.year }}
+            </p>
           </div>
 
           <!-- Content — revealed when active -->
@@ -50,14 +49,8 @@
             :style="{ opacity: activeIndex === i ? 1 : 0 }"
           >
             <div class="flex flex-wrap items-center gap-2">
-              <span
-                v-if="step.current"
-                class="inline-block rounded-full bg-primary/15 px-2 py-0.5 font-display text-3xs font-semibold uppercase tracking-label text-primary"
-              >
-                Now
-              </span>
               <p class="font-display text-2xs font-semibold uppercase leading-snug tracking-label text-primary">
-                {{ step.qualification }}
+                {{ step.institution }}
               </p>
             </div>
 
@@ -92,10 +85,6 @@ const REVEAL_SHIFT = 404
 const hovered = ref<number | null>(null)
 // Default to the current role being open; hover overrides it.
 const activeIndex = computed(() => hovered.value ?? careerSteps.length - 1)
-
-function pad(i: number) {
-  return String(i + 1).padStart(2, '0')
-}
 
 function cardStyle(i: number) {
   const active = activeIndex.value

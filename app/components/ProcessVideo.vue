@@ -1,6 +1,9 @@
 <template>
-  <section class="relative z-20 bg-foreground">
-    <div class="relative h-dvh w-full overflow-hidden">
+  <!-- Full-screen video overlay pinned over the section it lives in (Case Studies).
+       As you keep scrolling past the cards, the section pins and this slides across
+       from the right, then releases into whatever comes next. -->
+  <div ref="root" class="pointer-events-none absolute inset-x-0 bottom-0 z-30 h-dvh overflow-hidden">
+    <div ref="panel" class="reveal-right pointer-events-auto relative h-full w-full overflow-hidden bg-foreground">
 
       <!-- Real clip: flip `hasVideo` to true once public/videos/process.mp4 exists. -->
       <video
@@ -43,18 +46,14 @@
           A tooth, rebuilt.
         </p>
       </div>
-
-      <!-- Scroll cue -->
-      <div class="pointer-events-none absolute inset-x-0 bottom-6 flex justify-center">
-        <svg class="scroll-cue text-white/70" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-          <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-      </div>
     </div>
-  </section>
+  </div>
 </template>
 
 <script setup lang="ts">
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
 // Set to true once the real clip lives at public/videos/process.mp4.
 const hasVideo = false
 // Dynamic binding (not a static `src`) so Vite doesn't try to resolve it as an
@@ -64,18 +63,69 @@ const videoSrc = '/videos/process.mp4'
 const video = ref<HTMLVideoElement | null>(null)
 const reduce = ref(false)
 
+const root = ref<HTMLElement | null>(null)
+const panel = ref<HTMLElement | null>(null)
+let ctx: gsap.Context | undefined
+
 onMounted(() => {
   reduce.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  const el = video.value
-  if (!el) return
+  const videoEl = video.value
+  if (videoEl) {
+    // Vue can be unreliable setting `muted` as an attribute; enforce it for autoplay.
+    videoEl.muted = true
+    if (reduce.value) videoEl.pause()
+  }
 
-  // Vue can be unreliable setting `muted` as an attribute; enforce it for autoplay.
-  el.muted = true
-  if (reduce.value) el.pause()
+  const panelEl = panel.value
+  const sectionEl = root.value?.closest('section')
+  if (!panelEl || !sectionEl) return
+
+  gsap.registerPlugin(ScrollTrigger)
+  // autoAlpha:1 clears the CSS opacity:0 (anti-FOUC) once JS is in control.
+  gsap.set(panelEl, { xPercent: 100, autoAlpha: 1 })
+
+  ctx = gsap.context(() => {
+    if (reduce.value) {
+      // No scroll-jacking: just slide it in once it scrolls into view.
+      ScrollTrigger.create({
+        trigger: sectionEl,
+        start: 'bottom bottom',
+        once: true,
+        onEnter: () => gsap.to(panelEl, { xPercent: 0, duration: 0.6, ease: 'expo.out' }),
+      })
+      return
+    }
+
+    // Pin the section and scrub the video across it as you keep scrolling.
+    gsap.to(panelEl, {
+      xPercent: 0,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: sectionEl,
+        start: 'bottom bottom',
+        end: '+=100%',
+        pin: true,
+        pinSpacing: true,
+        anticipatePin: 1,
+        scrub: 0.4,
+      },
+    })
+  }, sectionEl)
+})
+
+onUnmounted(() => {
+  ctx?.revert()
 })
 </script>
 
 <style scoped>
+/* Avoid a flash before GSAP takes over on capable displays. */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal-right {
+    opacity: 0;
+  }
+}
+
 .video-placeholder {
   background-color: #e7ebf1;
 }
@@ -101,25 +151,8 @@ onMounted(() => {
   }
 }
 
-.scroll-cue {
-  animation: scroll-hint 2s ease-in-out infinite;
-}
-
-@keyframes scroll-hint {
-  0%,
-  100% {
-    transform: translateY(0);
-    opacity: 0.5;
-  }
-  50% {
-    transform: translateY(6px);
-    opacity: 1;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .video-placeholder .drift,
-  .scroll-cue {
+  .video-placeholder .drift {
     animation: none;
   }
 }

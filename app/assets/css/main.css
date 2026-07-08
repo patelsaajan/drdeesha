@@ -5,9 +5,18 @@
 @theme {
   --color-background: #ffffff;
   --color-foreground: #0f1923;
-  --color-primary: #00008A;
+  /* Deep, saturated purple — matches the old navy's depth almost exactly
+     (~15:1 contrast with white), so nothing built around "solid primary +
+     white text" needs re-checking. */
+  --color-primary: #3C0061;
+  /* Light, opaque tint of primary (~8% blended over white) for subtle-surface
+     bands. Opaque on purpose — a translucent bg-primary/8 would let the
+     fixed hero title bleed through wherever this sits. */
+  --color-primary-soft: #efebf2;
   --color-secondary: #7ab3c8;
-  --color-accent: #2d6a84;
+  /* Burnt orange — complements the amethyst primary, deep enough that white
+     text on it clears WCAG AA (~5:1) rather than a brighter, thinner-contrast orange. */
+  --color-accent: #b54f1a;
 
   --font-display: "Fraunces", Georgia, serif;
   --font-serif: "Bodoni Moda", Georgia, serif;

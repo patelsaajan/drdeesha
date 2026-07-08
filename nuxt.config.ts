@@ -2,7 +2,17 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-
+  app: {  
+    head: {
+      title: 'Dr Deesha Dental',
+      htmlAttrs: {
+        lang: 'en'
+      },
+      link: [
+        { rel: 'icon', type: 'image/png', href: '/favicon.png' }
+      ]   
+    },
+},
   modules: [
     '@nuxt/eslint',
     '@nuxt/hints',
