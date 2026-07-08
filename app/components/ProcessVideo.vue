@@ -19,15 +19,15 @@
       </video>
 
       <!-- Placeholder: animated brand wash while there's no footage yet. -->
-      <div v-else class="video-placeholder absolute inset-0 bg-[#e7ebf1]">
-        <div class="drift absolute -inset-[15%]" />
+      <div v-else class="video-placeholder absolute inset-0">
+        <div class="drift absolute" />
         <div class="absolute inset-0 grid place-items-center">
           <div class="flex flex-col items-center gap-4 text-center">
             <svg width="72" height="72" viewBox="0 0 72 72" fill="none" aria-hidden="true">
               <circle cx="36" cy="36" r="35" stroke="#aeb9c6" stroke-width="1.5" />
               <path d="M30 26 L48 36 L30 46 Z" fill="#aeb9c6" />
             </svg>
-            <span class="font-display text-[0.7rem] font-semibold uppercase tracking-[0.3em] text-foreground/40">
+            <span class="font-display text-2xs font-semibold uppercase tracking-eyebrow text-foreground/40">
               Footage to follow
             </span>
           </div>
@@ -36,10 +36,10 @@
 
       <!-- Caption over a legibility scrim -->
       <div class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 via-black/15 to-transparent p-6 sm:p-10 lg:p-14">
-        <p class="font-display text-[0.72rem] font-semibold uppercase tracking-[0.35em] text-white/80">
+        <p class="font-display text-xs font-semibold uppercase tracking-eyebrow text-white/80">
           In the chair
         </p>
-        <p class="mt-2 max-w-md font-serif text-[clamp(1.5rem,3vw,2.5rem)] font-normal leading-tight tracking-[-0.01em] text-white">
+        <p class="mt-2 max-w-md font-serif font-normal leading-tight tracking-heading text-white" style="font-size: clamp(1.5rem, 3vw, 2.5rem)">
           A tooth, rebuilt.
         </p>
       </div>
@@ -76,7 +76,11 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.video-placeholder {
+  background-color: #e7ebf1;
+}
 .video-placeholder .drift {
+  inset: -15%;
   background:
     radial-gradient(55% 55% at 22% 28%, #f2f5f9, transparent 70%),
     radial-gradient(45% 45% at 82% 72%, #d3dbe6, transparent 70%),

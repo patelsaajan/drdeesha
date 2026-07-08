@@ -3,13 +3,13 @@
     <div class="mx-auto max-w-6xl px-4 py-24 sm:px-6 lg:py-28">
 
       <header class="max-w-2xl">
-        <p class="reveal font-display text-[0.72rem] font-semibold uppercase tracking-[0.35em] text-primary">
+        <p class="reveal font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
           Selected work
         </p>
-        <h2 class="reveal mt-5 font-serif text-[clamp(2rem,4vw,3.25rem)] font-normal leading-[1.02] tracking-[-0.01em]">
+        <h2 class="reveal mt-5 font-serif font-normal leading-heading tracking-heading" style="font-size: clamp(2rem, 4vw, 3.25rem)">
           Smiles, up close.
         </h2>
-        <p class="reveal mt-4 font-display text-[1rem] font-light leading-relaxed text-foreground/65">
+        <p class="reveal mt-4 font-display text-base font-light leading-relaxed text-foreground/65">
           A few recent cases. Open one to see the before, the after, and how it was done.
         </p>
       </header>
@@ -19,20 +19,20 @@
           v-for="study in caseStudies"
           :key="study.id"
           type="button"
-          class="reveal case-card group block w-full overflow-hidden rounded-xl border border-foreground/10 bg-background text-left outline-none transition-shadow duration-500 hover:shadow-[0_24px_60px_-30px_rgba(15,25,35,0.4)] focus-visible:ring-2 focus-visible:ring-primary/40"
+          class="reveal case-card group block w-full overflow-hidden rounded-xl border border-foreground/10 bg-background text-left outline-none transition-shadow duration-500 hover:shadow-card focus-visible:ring-2 focus-visible:ring-primary/40"
           @click="openCase(study)"
         >
-          <div class="relative aspect-[4/5] overflow-hidden bg-foreground/5">
+          <div class="relative overflow-hidden bg-foreground/5" style="aspect-ratio: 4 / 5">
             <img
               :src="study.image"
               :alt="`${study.title} — ${study.treatment}`"
               loading="lazy"
-              class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+              class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
             >
           </div>
           <div class="flex items-start justify-between gap-3 p-5">
             <div>
-              <p class="font-display text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-primary">
+              <p class="font-display text-3xs font-semibold uppercase tracking-label text-primary">
                 {{ study.treatment }}
               </p>
               <p class="mt-2 font-serif text-xl leading-snug text-foreground">
@@ -57,15 +57,15 @@
       :description="selected?.summary"
     >
       <template #content>
-        <div v-if="selected" class="flex h-full w-[32rem] max-w-[calc(100vw-2rem)] flex-col bg-background text-foreground">
+        <div v-if="selected" class="flex h-full w-1/2 flex-col bg-background text-foreground">
 
           <!-- Header -->
           <div class="flex items-start justify-between gap-4 border-b border-foreground/10 px-6 pb-6 pt-8 sm:px-8">
             <div>
-              <p class="font-display text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-primary">
+              <p class="font-display text-2xs font-semibold uppercase tracking-label text-primary">
                 {{ selected.treatment }}
               </p>
-              <h3 class="mt-3 font-serif text-[clamp(1.6rem,3vw,2.1rem)] font-normal leading-[1.05] tracking-[-0.01em]">
+              <h3 class="mt-3 font-serif font-normal leading-heading tracking-heading" style="font-size: clamp(1.6rem, 3vw, 2.1rem)">
                 {{ selected.title }}
               </h3>
             </div>
@@ -84,25 +84,25 @@
             <div class="grid grid-cols-2 gap-3">
               <figure class="m-0">
                 <div class="overflow-hidden rounded-lg bg-foreground/5">
-                  <img :src="selected.before" :alt="`${selected.title}, before`" class="aspect-[3/4] w-full object-cover">
+                  <img :src="selected.before" :alt="`${selected.title}, before`" class="w-full object-cover" style="aspect-ratio: 3 / 4">
                 </div>
-                <figcaption class="mt-2 font-display text-[0.62rem] uppercase tracking-[0.2em] text-foreground/45">Before</figcaption>
+                <figcaption class="mt-2 font-display text-3xs uppercase tracking-label text-foreground/45">Before</figcaption>
               </figure>
               <figure class="m-0">
                 <div class="overflow-hidden rounded-lg bg-foreground/5">
-                  <img :src="selected.after" :alt="`${selected.title}, after`" class="aspect-[3/4] w-full object-cover">
+                  <img :src="selected.after" :alt="`${selected.title}, after`" class="w-full object-cover" style="aspect-ratio: 3 / 4">
                 </div>
-                <figcaption class="mt-2 font-display text-[0.62rem] uppercase tracking-[0.2em] text-primary">After</figcaption>
+                <figcaption class="mt-2 font-display text-3xs uppercase tracking-label text-primary">After</figcaption>
               </figure>
             </div>
 
-            <p class="mt-7 font-display text-[1rem] font-light leading-relaxed text-foreground/75">
+            <p class="mt-7 font-display text-base font-light leading-relaxed text-foreground/75">
               {{ selected.description }}
             </p>
 
             <dl class="mt-8 grid grid-cols-3 gap-4 border-t border-foreground/10 pt-6">
               <div v-for="fact in selected.meta" :key="fact.label">
-                <dt class="font-display text-[0.6rem] uppercase tracking-[0.16em] text-foreground/45">
+                <dt class="font-display text-3xs uppercase tracking-label text-foreground/45">
                   {{ fact.label }}
                 </dt>
                 <dd class="mt-1 font-serif text-lg leading-tight text-foreground">

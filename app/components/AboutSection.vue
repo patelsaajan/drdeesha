@@ -1,14 +1,15 @@
 <template>
   <section ref="root" class="relative z-20 bg-background text-foreground">
-    <div class="grid min-h-dvh lg:grid-cols-[44%_1fr]">
+    <div class="about-grid grid min-h-dvh">
 
       <!-- Portrait: full-height, dark studio frame -->
-      <figure class="relative m-0 h-[58vh] overflow-hidden bg-foreground lg:h-dvh">
+      <figure class="portrait-figure relative m-0 overflow-hidden bg-foreground">
         <NuxtImg
           src="/images/dr-deesha.jpeg"
           alt="Dr Deesha, smiling in a black roll-neck against a dark studio backdrop"
           sizes="100vw lg:44vw"
-          class="portrait-img h-full w-full origin-center object-cover object-[50%_22%]"
+          class="portrait-img h-full w-full origin-center object-cover"
+          style="object-position: 50% 22%"
         />
       </figure>
 
@@ -16,25 +17,25 @@
       <div class="flex items-center px-6 py-16 sm:px-10 lg:px-16 xl:px-24">
         <div class="w-full max-w-xl">
 
-          <p class="reveal font-display text-[0.72rem] font-semibold uppercase tracking-[0.35em] text-primary">
+          <p class="reveal font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
             About
           </p>
 
-          <h1 class="reveal m-0 mt-5 font-serif text-[clamp(2.75rem,5.5vw,4.75rem)] font-normal leading-[0.95] tracking-[-0.01em]">
+          <h1 class="reveal m-0 mt-5 font-serif font-normal leading-none tracking-heading" style="font-size: clamp(2.75rem, 5.5vw, 4.75rem)">
             Dr Deesha
           </h1>
 
           <!-- Qualifications -->
-          <h2 class="reveal mt-7 max-w-md font-serif text-[clamp(1.1rem,1.9vw,1.4rem)] font-normal leading-snug">
+          <h2 class="reveal mt-7 max-w-md font-serif font-normal leading-snug" style="font-size: clamp(1.1rem, 1.9vw, 1.4rem)">
             BDS<span class="mx-2 text-foreground/30">·</span>MJDF RCS<span class="text-foreground/60">&nbsp;(Eng)</span><span class="mx-2 text-foreground/30">·</span>PgDip Restorative &amp; Aesthetic Dentistry
           </h2>
-          <p class="reveal mt-3 flex items-center gap-3 font-display text-[0.68rem] uppercase tracking-[0.22em] text-foreground/55">
+          <p class="reveal mt-3 flex items-center gap-3 font-display text-2xs uppercase tracking-label text-foreground/55">
             <span class="h-px w-8 bg-foreground/25" />
             General Dental Council registered
           </p>
 
           <!-- First-person description -->
-          <div class="reveal mt-9 max-w-[60ch] space-y-5 font-display text-[1.0625rem] font-light leading-[1.75] text-foreground/80">
+          <div class="reveal mt-9 max-w-prose space-y-5 font-display text-base font-light leading-body text-foreground/80">
             <p>
               I became a dentist for the mix of precision and people: the quiet craft of getting
               something exactly right, and the person in the chair who walks out feeling better for
@@ -115,6 +116,22 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+/* Responsive layout values that inline styles can't express. */
+@media (min-width: 1024px) {
+  .about-grid {
+    grid-template-columns: 44% 1fr;
+  }
+}
+
+.portrait-figure {
+  height: 58vh;
+}
+@media (min-width: 1024px) {
+  .portrait-figure {
+    height: 100dvh;
+  }
+}
+
 /* Start hidden only where we'll animate; reduced-motion keeps everything visible. */
 @media (prefers-reduced-motion: no-preference) {
   .reveal {

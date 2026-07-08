@@ -3,13 +3,13 @@
     <div class="mx-auto max-w-6xl px-4 py-24 sm:px-6 lg:py-28">
 
       <div class="max-w-3xl">
-        <p class="reveal font-display text-[0.72rem] font-semibold uppercase tracking-[0.35em] text-primary">
+        <p class="reveal font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
           Get in touch
         </p>
-        <h2 class="reveal mt-5 font-serif text-[clamp(2.25rem,5vw,4rem)] font-normal leading-[1.02] tracking-[-0.01em]">
+        <h2 class="reveal mt-5 font-serif font-normal leading-heading tracking-heading" style="font-size: clamp(2.25rem, 5vw, 4rem)">
           Come in for a visit.
         </h2>
-        <p class="reveal mt-5 max-w-xl font-display text-[1.05rem] font-light leading-relaxed text-foreground/65">
+        <p class="reveal mt-4 max-w-xl font-display text-base font-light leading-relaxed text-foreground/65">
           New and returning patients across general, cosmetic, and emergency care. For anything else, just drop me a line.
         </p>
 
@@ -45,13 +45,13 @@
           v-for="enquiry in enquiries"
           :key="enquiry.id"
           :href="`mailto:${enquiry.email}`"
-          class="group flex flex-col gap-2 border-b border-foreground/10 py-7 outline-none transition-colors focus-visible:bg-primary/[0.03] sm:flex-row sm:items-center sm:justify-between sm:gap-6"
+          class="group flex flex-col gap-2 border-b border-foreground/10 py-7 outline-none transition-colors focus-visible:bg-primary/5 sm:flex-row sm:items-center sm:justify-between sm:gap-6"
         >
           <div>
             <p class="font-serif text-xl leading-snug text-foreground transition-colors group-hover:text-primary">
               {{ enquiry.label }}
             </p>
-            <p class="mt-1 font-display text-[0.95rem] font-light leading-relaxed text-foreground/60">
+            <p class="mt-1 font-display text-sm font-light leading-relaxed text-foreground/60">
               {{ enquiry.description }}
             </p>
           </div>

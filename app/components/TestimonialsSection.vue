@@ -2,26 +2,26 @@
   <section ref="root" class="relative z-20 bg-background text-foreground">
     <div class="mx-auto flex min-h-dvh max-w-6xl flex-col justify-center px-4 py-24 sm:px-6">
 
-      <p class="reveal font-display text-[0.72rem] font-semibold uppercase tracking-[0.35em] text-primary">
+      <p class="reveal font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
         Kind words
       </p>
 
       <!-- Rotating quote -->
       <div
-        class="reveal relative mt-10 min-h-[15rem] sm:min-h-[17rem] lg:min-h-[20rem]"
+        class="reveal relative mt-10 min-h-60 sm:min-h-68 lg:min-h-80"
         @mouseenter="pause"
         @mouseleave="resume"
       >
         <Transition name="quote">
           <figure :key="current.id" class="m-0">
-            <blockquote class="max-w-5xl font-serif text-[clamp(1.6rem,4.4vw,3.5rem)] font-normal leading-[1.16] tracking-[-0.01em] text-foreground">
+            <blockquote class="max-w-5xl font-serif font-normal leading-quote tracking-heading text-foreground" style="font-size: clamp(1.6rem, 4.4vw, 3.5rem)">
               &ldquo;{{ current.quote }}&rdquo;
             </blockquote>
             <figcaption class="mt-8 flex flex-wrap items-center gap-x-3 gap-y-1">
               <span class="font-display text-sm font-semibold tracking-wide text-foreground">{{ current.name }}</span>
               <span class="h-1 w-1 rounded-full bg-foreground/30" />
               <span class="font-display text-sm font-light text-foreground/55">{{ current.context }}</span>
-              <span v-if="current.source" class="font-display text-[0.62rem] uppercase tracking-[0.18em] text-foreground/40">· {{ current.source }}</span>
+              <span v-if="current.source" class="font-display text-3xs uppercase tracking-label text-foreground/40">· {{ current.source }}</span>
             </figcaption>
           </figure>
         </Transition>

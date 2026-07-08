@@ -16,12 +16,12 @@
 
     <!-- Intro title -->
     <div class="intro-title pointer-events-none fixed inset-0 z-10 flex flex-col items-center justify-center gap-2">
-      <h1 class="m-0 font-serif font-normal leading-none tracking-[-0.01em] text-[clamp(3rem,10vw,7rem)] text-foreground">
+      <h1 class="m-0 font-serif font-normal leading-none tracking-heading text-foreground" style="font-size: clamp(3rem, 10vw, 7rem)">
         Dr Deesha
       </h1>
-      <div class="flex items-center gap-3 w-[clamp(20rem,55vw,48rem)]">
+      <div class="flex items-center gap-3" style="width: clamp(20rem, 55vw, 48rem)">
         <span class="flex-1 h-px bg-foreground" />
-        <span class="font-display font-semibold tracking-[0.35em] uppercase text-foreground text-[clamp(0.7rem,1.2vw,0.9rem)]">Dental</span>
+        <span class="font-display font-semibold tracking-eyebrow uppercase text-foreground" style="font-size: clamp(0.7rem, 1.2vw, 0.9rem)">Dental</span>
         <span class="flex-1 h-px bg-foreground" />
       </div>
     </div>
@@ -31,7 +31,8 @@
       <div
         v-for="(card, i) in cardDefs"
         :key="i"
-        :class="['card relative mb-4 break-inside-avoid rounded-sm overflow-hidden', sizeClasses[card.size]]"
+        class="card relative mb-4 break-inside-avoid rounded-sm overflow-hidden"
+        :style="{ aspectRatio: card.ratio }"
       >
         <NuxtImg :src="card.src" alt="" class="absolute inset-0 w-full h-full object-cover" />
       </div>
@@ -53,15 +54,15 @@ const images = [
   '/images/smile/smile-5.png',
 ]
 
-const sizes = ['a', 'b', 'c', 'd', 'b', 'd', 'a', 'c', 'c']
-const cardDefs = sizes.map((size, i) => ({ size, src: images[i % images.length] }))
-
-const sizeClasses: Record<string, string> = {
-  a: 'aspect-[16/9]',
-  b: 'aspect-[4/3]',
-  c: 'aspect-[3/2]',
-  d: 'aspect-[2/1]',
+const ratios: Record<string, string> = {
+  a: '16 / 9',
+  b: '4 / 3',
+  c: '3 / 2',
+  d: '2 / 1',
 }
+
+const sizes = ['a', 'b', 'c', 'd', 'b', 'd', 'a', 'c', 'c']
+const cardDefs = sizes.map((size, i) => ({ ratio: ratios[size], src: images[i % images.length] }))
 
 const showBookNow = ref(false)
 const sentinel = ref<HTMLElement | null>(null)

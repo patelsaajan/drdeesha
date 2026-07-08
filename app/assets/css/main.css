@@ -8,8 +8,27 @@
   --color-primary: #00008A;
   --color-secondary: #7ab3c8;
   --color-accent: #2d6a84;
+
   --font-display: "Fraunces", Georgia, serif;
   --font-serif: "Bodoni Moda", Georgia, serif;
+
+  /* Type scale — sub-xs labels (no standard exists below text-xs) */
+  --text-3xs: 0.625rem;
+  --text-2xs: 0.6875rem;
+
+  /* Letter-spacing */
+  --tracking-eyebrow: 0.35em;
+  --tracking-label: 0.2em;
+  --tracking-heading: -0.01em;
+
+  /* Line-height */
+  --leading-heading: 1.05;
+  --leading-quote: 1.15;
+  --leading-body: 1.75;
+
+  /* Elevation */
+  --shadow-lift: 0 28px 70px -30px rgb(15 25 35 / 0.45);
+  --shadow-card: 0 24px 60px -30px rgb(15 25 35 / 0.4);
 }
 
 @layer base {

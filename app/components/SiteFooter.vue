@@ -1,19 +1,19 @@
 <template>
   <footer ref="root" class="relative z-20 overflow-hidden border-t border-foreground/10 bg-background">
     <!-- Opaque base above covers the fixed hero title; this adds the subtle brand wash on top. -->
-    <div aria-hidden="true" class="pointer-events-none absolute inset-0 bg-primary/[0.04]" />
-    <div class="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:py-28">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 bg-primary/5" />
+    <div class="relative mx-auto max-w-6xl px-4 py-24 sm:px-6 lg:py-28">
 
       <!-- Motto + CTA -->
       <div class="flex flex-col gap-12 lg:flex-row lg:items-end lg:justify-between">
         <div class="max-w-2xl">
-          <p class="reveal font-display text-[0.72rem] font-semibold uppercase tracking-[0.35em] text-primary">
+          <p class="reveal font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
             Book your visit
           </p>
-          <p class="reveal mt-6 font-serif text-[clamp(2.25rem,5vw,4rem)] font-normal leading-[1.03] tracking-[-0.01em] text-foreground">
+          <p class="reveal mt-5 font-serif font-normal leading-heading tracking-heading text-foreground" style="font-size: clamp(2.25rem, 5vw, 4rem)">
             Careful hands,<br class="hidden sm:block"> <span class="text-primary">easy smiles.</span>
           </p>
-          <p class="reveal mt-5 max-w-md font-display text-[1rem] font-light leading-relaxed text-foreground/65">
+          <p class="reveal mt-4 max-w-md font-display text-base font-light leading-relaxed text-foreground/65">
             New patients welcome across general, cosmetic, and emergency care.
           </p>
         </div>
@@ -30,9 +30,9 @@
       <!-- Wordmark + socials -->
       <div class="mt-8 flex flex-col gap-8 sm:flex-row sm:items-center sm:justify-between">
         <div class="reveal flex items-center gap-3">
-          <span class="font-serif text-xl leading-none tracking-[-0.01em] text-foreground">Dr Deesha</span>
+          <span class="font-serif text-xl leading-none tracking-heading text-foreground">Dr Deesha</span>
           <span class="h-4 w-px bg-foreground/20" />
-          <span class="font-display text-[0.62rem] font-semibold uppercase tracking-[0.3em] text-foreground/55">Dental</span>
+          <span class="font-display text-3xs font-semibold uppercase tracking-eyebrow text-foreground/55">Dental</span>
         </div>
 
         <nav aria-label="Dr Deesha on social media" class="reveal flex flex-wrap items-center gap-x-6 gap-y-2">
@@ -50,7 +50,7 @@
         </nav>
       </div>
 
-      <p class="reveal mt-8 font-display text-[0.72rem] uppercase tracking-[0.15em] text-foreground/40">
+      <p class="reveal mt-8 font-display text-xs uppercase tracking-label text-foreground/40">
         © {{ year }} Dr Deesha Dental. General Dental Council registered.
       </p>
     </div>
