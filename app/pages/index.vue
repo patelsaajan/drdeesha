@@ -2,8 +2,11 @@
   <div class="min-h-dvh bg-background">
     <HomeHero />
     <AboutSection />
-    <CareerTimeline />
+    <ProcessVideo />
     <CaseStudies />
+    <CareerTimeline />
+    <TestimonialsSection />
+    <ContactSection />
     <SiteFooter />
   </div>
 </template>
