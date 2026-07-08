@@ -1,6 +1,6 @@
 <template>
   <section ref="root" class="relative z-20 bg-background text-foreground">
-    <div class="mx-auto max-w-6xl px-4 py-24 sm:px-6 lg:py-32">
+    <div class="mx-auto flex min-h-dvh max-w-6xl flex-col justify-center px-4 py-24 sm:px-6">
 
       <p class="reveal font-display text-[0.72rem] font-semibold uppercase tracking-[0.35em] text-primary">
         Kind words

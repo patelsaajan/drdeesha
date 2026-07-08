@@ -2,8 +2,8 @@
   <div class="min-h-dvh bg-background">
     <HomeHero />
     <AboutSection />
-    <ProcessVideo />
     <CaseStudies />
+    <ProcessVideo />
     <CareerTimeline />
     <TestimonialsSection />
     <ContactSection />

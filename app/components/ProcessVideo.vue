@@ -1,6 +1,6 @@
 <template>
   <section class="relative z-20 bg-foreground">
-    <div class="relative h-[70vh] w-full overflow-hidden sm:h-[80vh] lg:h-[86vh]">
+    <div class="relative h-dvh w-full overflow-hidden">
 
       <!-- Real clip: flip `hasVideo` to true once public/videos/process.mp4 exists. -->
       <video
@@ -15,7 +15,7 @@
         :controls="reduce"
         poster="/images/process-poster.svg"
       >
-        <source src="/videos/process.mp4" type="video/mp4">
+        <source :src="videoSrc" type="video/mp4">
       </video>
 
       <!-- Placeholder: animated brand wash while there's no footage yet. -->
@@ -43,6 +43,13 @@
           A tooth, rebuilt.
         </p>
       </div>
+
+      <!-- Scroll cue -->
+      <div class="pointer-events-none absolute inset-x-0 bottom-6 flex justify-center">
+        <svg class="scroll-cue text-white/70" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
     </div>
   </section>
 </template>
@@ -50,6 +57,9 @@
 <script setup lang="ts">
 // Set to true once the real clip lives at public/videos/process.mp4.
 const hasVideo = false
+// Dynamic binding (not a static `src`) so Vite doesn't try to resolve it as an
+// import before the file exists.
+const videoSrc = '/videos/process.mp4'
 
 const video = ref<HTMLVideoElement | null>(null)
 const reduce = ref(false)
@@ -87,8 +97,25 @@ onMounted(() => {
   }
 }
 
+.scroll-cue {
+  animation: scroll-hint 2s ease-in-out infinite;
+}
+
+@keyframes scroll-hint {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(6px);
+    opacity: 1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .video-placeholder .drift {
+  .video-placeholder .drift,
+  .scroll-cue {
     animation: none;
   }
 }
