@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Portrait placeholder">
+  <rect width="800" height="600" fill="#edf0f4"/>
+  <g fill="#ccd5df">
+    <circle cx="400" cy="248" r="92"/>
+    <path d="M244 528 C244 412 328 356 400 356 C472 356 556 412 556 528 Z"/>
+  </g>
+  <text x="400" y="566" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="20" letter-spacing="7" fill="#8fa0b0">PORTRAIT TO FOLLOW</text>
+</svg>
