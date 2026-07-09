@@ -13,6 +13,10 @@
      bands. Opaque on purpose — a translucent bg-primary/8 would let the
      fixed hero title bleed through wherever this sits. */
   --color-primary-soft: #efebf2;
+  /* Primary diluted with white (not opacity) — solid, so it reads the same
+     regardless of what's underneath (a photo, another tint), rather than
+     shifting with whatever bleeds through a translucent bg-primary/NN. */
+  --color-primary-quiet: color-mix(in oklab, var(--color-primary) 70%, white);
   --color-secondary: #7ab3c8;
   /* Burnt orange — complements the amethyst primary, deep enough that white
      text on it clears WCAG AA (~5:1) rather than a brighter, thinner-contrast orange. */

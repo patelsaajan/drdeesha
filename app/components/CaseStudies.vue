@@ -23,12 +23,13 @@
           @click="openCase(study)"
         >
           <div class="relative overflow-hidden bg-foreground/5" style="aspect-ratio: 3 / 2">
-            <img
+            <NuxtImg
               :src="study.image"
               :alt="`${study.title} — ${study.treatment}`"
+              sizes="100vw sm:50vw lg:33vw"
               loading="lazy"
               class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-            >
+            />
           </div>
           <div class="flex items-start justify-between gap-3 p-5">
             <div>
@@ -48,10 +49,10 @@
       </div>
     </div>
 
-    <!-- Case detail — slides in from the right, sized/styled via app.config.ts (ui.drawer) -->
+    <!-- Case detail — slides in from the left, sized/styled via app.config.ts (ui.drawer) -->
     <UDrawer
       v-model:open="open"
-      direction="right"
+      direction="left"
       :handle="false"
       :title="selected?.title"
       :description="selected?.summary"
@@ -78,20 +79,7 @@
       </template>
 
       <template v-if="selected" #body>
-        <div class="grid grid-cols-2 gap-3">
-          <figure class="m-0">
-            <div class="overflow-hidden rounded-lg bg-foreground/5">
-              <img :src="selected.before" :alt="`${selected.title}, before`" class="w-full object-cover" style="aspect-ratio: 3 / 2">
-            </div>
-            <figcaption class="mt-2 font-display text-3xs uppercase tracking-label text-foreground/45">Before</figcaption>
-          </figure>
-          <figure class="m-0">
-            <div class="overflow-hidden rounded-lg bg-foreground/5">
-              <img :src="selected.after" :alt="`${selected.title}, after`" class="w-full object-cover" style="aspect-ratio: 3 / 2">
-            </div>
-            <figcaption class="mt-2 font-display text-3xs uppercase tracking-label text-primary">After</figcaption>
-          </figure>
-        </div>
+        <LazyBeforeAfterSlider :before="selected.before" :after="selected.after" :label="selected.title" />
 
         <p class="mt-7 font-display text-base font-light leading-relaxed text-foreground/75">
           {{ selected.description }}
@@ -110,14 +98,20 @@
       </template>
 
       <template v-if="selected" #footer>
-        <UButton color="primary" variant="subtle" size="lg" block class="rounded-full">
+        <!-- Bumped past the site's usual subtle/primary treatment (see
+             app.config.ts) to a solid fill — this is the one moment we want
+             to out-shout the quieter after-pill and slider above it. -->
+        <UButton
+          color="primary"
+          variant="subtle"
+          size="lg"
+          block
+          class="rounded-full bg-primary text-white hover:bg-primary/90 active:bg-primary/90"
+        >
           Book a consultation
         </UButton>
       </template>
     </UDrawer>
-
-    <!-- Pins this section and slides the full-screen video across it on scroll -->
-    <ProcessVideo />
   </section>
 </template>
 

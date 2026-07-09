@@ -18,7 +18,8 @@ export interface CaseStudy {
   after: string
 }
 
-const P = '/images/cases/placeholder.svg'
+const BEFORE = '/images/case-studies/case-study-1-before.jpeg'
+const AFTER = '/images/case-studies/case-study-1-after.jpeg'
 
 export const caseStudies: CaseStudy[] = [
   {
@@ -33,9 +34,9 @@ export const caseStudies: CaseStudy[] = [
       { label: 'Chair time', value: '90 min' },
       { label: 'Anaesthetic', value: 'None' },
     ],
-    image: P,
-    before: P,
-    after: P,
+    image: AFTER,
+    before: BEFORE,
+    after: AFTER,
   },
   {
     id: 'veneers-upper',
@@ -49,9 +50,9 @@ export const caseStudies: CaseStudy[] = [
       { label: 'Veneers', value: 'Ten' },
       { label: 'Timeline', value: '6 weeks' },
     ],
-    image: P,
-    before: P,
-    after: P,
+    image: AFTER,
+    before: BEFORE,
+    after: AFTER,
   },
   {
     id: 'invisalign-whitening',
@@ -65,9 +66,9 @@ export const caseStudies: CaseStudy[] = [
       { label: 'Aligners', value: 'Clear' },
       { label: 'Whitening', value: 'Take-home' },
     ],
-    image: P,
-    before: P,
-    after: P,
+    image: AFTER,
+    before: BEFORE,
+    after: AFTER,
   },
   {
     id: 'enlighten-whitening',
@@ -81,9 +82,9 @@ export const caseStudies: CaseStudy[] = [
       { label: 'Sensitivity', value: 'Managed' },
       { label: 'Result', value: 'Natural' },
     ],
-    image: P,
-    before: P,
-    after: P,
+    image: AFTER,
+    before: BEFORE,
+    after: AFTER,
   },
   {
     id: 'single-implant',
@@ -97,9 +98,9 @@ export const caseStudies: CaseStudy[] = [
       { label: 'Restoration', value: 'Implant + crown' },
       { label: 'Match', value: 'Shade-matched' },
     ],
-    image: P,
-    before: P,
-    after: P,
+    image: AFTER,
+    before: BEFORE,
+    after: AFTER,
   },
   {
     id: 'edge-bonding',
@@ -113,8 +114,8 @@ export const caseStudies: CaseStudy[] = [
       { label: 'Chair time', value: '60 min' },
       { label: 'Enamel', value: 'Preserved' },
     ],
-    image: P,
-    before: P,
-    after: P,
+    image: AFTER,
+    before: BEFORE,
+    after: AFTER,
   },
 ]

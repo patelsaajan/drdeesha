@@ -34,5 +34,34 @@ export default defineAppConfig({
         { direction: 'left' as const, class: { content: 'w-2/5' } },
       ],
     },
+    badge: {
+      // Reusable for any photo-overlay label (before/after tags, etc.):
+      // neutral/solid is a dark glass pill that reads on any image; primary/
+      // solid uses the quiet (white-diluted) primary rather than the full
+      // brand colour, so it doesn't shout over the photo underneath it.
+      compoundVariants: [
+        {
+          color: 'neutral' as const,
+          variant: 'solid' as const,
+          class: 'rounded-full bg-black/45 text-white/90',
+        },
+        {
+          color: 'primary' as const,
+          variant: 'solid' as const,
+          class: 'rounded-full bg-primary-quiet text-white',
+        },
+      ],
+    },
+    slider: {
+      slots: {
+        // Muted brand track; the filled range keeps the default primary.
+        track: 'bg-foreground/25',
+        // Larger, grabbable thumb that reads as a comparison handle.
+        thumb: 'bg-background cursor-grab active:cursor-grabbing shadow-sm',
+      },
+      defaultVariants: {
+        size: 'xl' as const,
+      },
+    },
   },
 })
