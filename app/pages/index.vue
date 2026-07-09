@@ -3,8 +3,8 @@
     <HomeHero />
     <AboutSection />
     <CaseStudies />
+    <ProcessVideo />
     <CareerTimeline />
-    <ValuesQuote />
     <TestimonialsSection />
     <SiteFooter />
   </div>
