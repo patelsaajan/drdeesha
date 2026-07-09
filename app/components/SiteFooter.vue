@@ -1,45 +1,45 @@
 <template>
-  <!-- Higher z-index + normal flow (vs. the testimonials section's `sticky`)
-       means this slides up and over it as you keep scrolling, rather than the
-       two just trading places. -->
-  <footer id="contact" ref="root" class="relative z-30 flex min-h-dvh flex-col justify-center overflow-hidden bg-primary text-white">
+  <!-- Lower z-index than the testimonials section above (z-20): while that
+       section is pinned/scroll-locked, this stays hidden behind it instead
+       of visibly sliding over it — it's only actually seen once the pin
+       releases and both are back in normal, non-overlapping flow. -->
+  <footer id="contact" ref="root" class="relative z-10 flex min-h-dvh flex-col justify-center overflow-hidden bg-primary text-white">
+    <!-- Stepped shade transition: the white testimonials section above fades
+         into this solid-purple footer through five ascending tints rather
+         than a hard cut — same device as AboutSection's own purple entry. -->
+    <div aria-hidden="true" class="absolute inset-x-0 top-0 flex flex-col">
+      <div v-for="pct in TRANSITION_STEPS" :key="pct" class="footer-transition-row" :style="{ backgroundColor: transitionTint(pct) }" />
+    </div>
+
     <div class="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
 
-      <!-- Motto + CTA (left) / map to the practice (right, opposite) -->
-      <div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+      <!-- CTA (left) / map to the practice (right, opposite). items-start,
+           not items-center: centering a short text block against the much
+           taller location cards left it looking small and adrift instead of
+           like the page's actual closing argument. -->
+      <div class="grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
         <div>
           <p class="reveal font-display text-xs font-semibold uppercase tracking-eyebrow text-white/70">
             Get in touch
           </p>
-          <p class="reveal mt-5 font-serif font-normal leading-heading tracking-heading text-white" style="font-size: clamp(1.5rem, 2.4vw, 1.875rem)">
-            Careful hands, easy smiles.
+          <p class="reveal mt-5 font-serif font-normal leading-heading tracking-heading text-white" style="font-size: clamp(2rem, 3.6vw, 3rem)">
+            Let's find you a time.
           </p>
-          <p class="reveal mt-4 max-w-md font-display text-base font-light leading-relaxed text-white/75">
-            I welcome new and returning patients across general, cosmetic, and emergency care.
+          <p class="reveal mt-5 max-w-md font-display text-base font-light leading-relaxed text-white/75">
+            Whether it's a routine check-up or the smile you've been picturing, I'll make time to see you. New and returning patients always welcome.
           </p>
           <UButton
             :href="practice.bookingHref"
             color="neutral"
             variant="solid"
             size="xl"
-            class="reveal mt-8 rounded-full px-9"
+            class="reveal mt-9 rounded-full px-10 text-base duration-250 ease-out hover:bg-accent hover:text-white"
           >
             Book an appointment
           </UButton>
-          <p class="reveal mt-5 font-display text-sm font-light text-white/60">
-            {{ practice.name }}, {{ practice.location }}
-          </p>
         </div>
 
-        <div class="reveal aspect-[4/3] w-full overflow-hidden rounded-xl border border-white/15 lg:aspect-auto lg:h-72">
-          <iframe
-            :src="mapSrc"
-            class="h-full w-full border-0"
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-            :title="`Map showing ${practice.name}, ${practice.location}`"
-          />
-        </div>
+        <LocationCards />
       </div>
 
       <div class="reveal mt-16 h-px w-full origin-left bg-white/20 lg:mt-20" />
@@ -78,16 +78,20 @@
 import gsap from 'gsap'
 import { practice } from '../data/contact'
 
+// Five even steps toward full primary — matches AboutSection's own
+// white-to-purple transition device.
+const TRANSITION_STEPS = [17, 33, 50, 67, 83]
+
+function transitionTint(primaryPct: number) {
+  return `color-mix(in oklab, var(--color-primary) ${primaryPct}%, white)`
+}
+
 // Placeholder hrefs — swap in the real handles when ready.
 const socials = [
   { label: 'Instagram', href: '#', icon: 'simple-icons:instagram' },
   { label: 'Facebook', href: '#', icon: 'simple-icons:facebook' },
   { label: 'TikTok', href: '#', icon: 'simple-icons:tiktok' },
 ]
-
-// No API key needed — Google's public "output=embed" search-based iframe.
-// Swap in the exact address once the real practice location is confirmed.
-const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(`${practice.name}, ${practice.location}`)}&output=embed`
 
 const year = new Date().getFullYear()
 
@@ -140,5 +144,9 @@ onUnmounted(() => {
   .reveal {
     opacity: 0;
   }
+}
+
+.footer-transition-row {
+  height: 1.1rem;
 }
 </style>
