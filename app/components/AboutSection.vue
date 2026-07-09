@@ -8,6 +8,8 @@
           src="/images/dr-deesha.jpeg"
           alt="Dr Deesha, smiling in a black roll-neck against a dark studio backdrop"
           sizes="100vw lg:44vw"
+          preload
+          loading="eager"
           class="portrait-img h-full w-full origin-center object-cover"
           style="object-position: 50% 22%"
         />
