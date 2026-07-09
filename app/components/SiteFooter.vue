@@ -1,5 +1,8 @@
 <template>
-  <footer id="contact" ref="root" class="relative z-20 overflow-hidden bg-primary text-white">
+  <!-- Higher z-index + normal flow (vs. the testimonials section's `sticky`)
+       means this slides up and over it as you keep scrolling, rather than the
+       two just trading places. -->
+  <footer id="contact" ref="root" class="relative z-30 flex min-h-dvh flex-col justify-center overflow-hidden bg-primary text-white">
     <div class="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
 
       <!-- Motto + CTA (left) / map to the practice (right, opposite) -->
