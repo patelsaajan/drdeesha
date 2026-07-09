@@ -35,12 +35,18 @@
         }"
         @click="jumpTo(section.id)"
       >
-        <!-- Current chip's odometer sizes to the current label (an invisible
-             sizer sets the width) rather than a fixed max, so the compact
-             state hugs the word instead of reserving space for the longest
-             one; the rolling labels sit absolutely over that sized box. -->
-        <span v-if="section.id === current.id" class="relative block h-3 overflow-hidden">
-          <span aria-hidden="true" class="invisible block leading-none">{{ current.label }}</span>
+        <!-- Current chip's odometer. Width comes from a JS measurement of the
+             incoming label (the measurer span below reports it) and is
+             transitioned, so the chip glides between word lengths in step
+             with the roll instead of snapping. Until the first measurement
+             (SSR / pre-mount) an invisible in-flow sizer holds the width. -->
+        <span
+          v-if="section.id === current.id"
+          class="site-tick relative block h-3 overflow-hidden"
+          :style="tickWidth != null ? { width: `${tickWidth}px` } : undefined"
+        >
+          <span ref="measureEl" aria-hidden="true" class="invisible absolute left-0 top-0 w-max leading-none">{{ current.label }}</span>
+          <span v-if="tickWidth == null" aria-hidden="true" class="invisible block leading-none">{{ current.label }}</span>
           <Transition :name="tickDirection === 'up' ? 'tick-up' : 'tick-down'">
             <span :key="current.id" class="absolute inset-0 flex items-center justify-start">
               {{ current.label }}
@@ -64,15 +70,7 @@
 
 <script setup lang="ts">
 import { practice } from '../data/contact'
-
-const sections = [
-  { id: 'home', label: 'Home' },
-  { id: 'about', label: 'About' },
-  { id: 'cases', label: 'Cases' },
-  { id: 'experience', label: 'Experience' },
-  { id: 'testimonials', label: 'Reviews' },
-  { id: 'contact', label: 'Contact' },
-]
+import { siteSections as sections } from '../data/sections'
 
 const currentId = ref(sections[0]!.id)
 const current = computed(() => sections.find(s => s.id === currentId.value) ?? sections[0]!)
@@ -104,6 +102,19 @@ watch(currentId, (newId, oldId) => {
   tickDirection.value = newIndex >= oldIndex ? 'up' : 'down'
 })
 
+// Measured width of the incoming label, so the odometer window can *glide*
+// between word lengths (a CSS width transition) instead of snapping the
+// moment the label swaps. `w-max` on the measurer keeps it reporting the
+// label's full width even while the window itself is still mid-transition.
+const measureEl = ref<HTMLElement | null>(null)
+const tickWidth = ref<number | null>(null)
+
+function measureTick() {
+  if (measureEl.value) tickWidth.value = measureEl.value.offsetWidth
+}
+
+watch(currentId, () => nextTick(measureTick))
+
 function jumpTo(id: string) {
   const el = document.getElementById(id)
   if (!el) return
@@ -114,6 +125,11 @@ function jumpTo(id: string) {
 let observer: IntersectionObserver | undefined
 
 onMounted(() => {
+  // First width measurement, then re-measure once webfonts land (Fraunces
+  // arriving after mount changes the label's rendered width).
+  measureTick()
+  document.fonts?.ready.then(measureTick)
+
   const els = sections
     .map(s => document.getElementById(s.id))
     .filter((el): el is HTMLElement => !!el)
@@ -150,30 +166,49 @@ onUnmounted(() => {
     border-color 0.3s ease;
 }
 
+/* Odometer window glides between label widths in step with the roll. */
+.site-tick {
+  transition: width 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* The roll itself: outgoing label leaves at once, incoming follows a beat
+   behind (60ms) so the two never overlap mid-window; both fade through the
+   move so edges dissolve instead of clipping hard against the window. */
 .tick-up-enter-active,
+.tick-down-enter-active {
+  transition:
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) 60ms,
+    opacity 0.3s ease 60ms;
+}
 .tick-up-leave-active,
-.tick-down-enter-active,
 .tick-down-leave-active {
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.25s ease;
 }
 /* Scrolling forward: new label rolls up into place, old one rolls up and out. */
 .tick-up-enter-from {
-  transform: translateY(100%);
+  transform: translateY(110%);
+  opacity: 0;
 }
 .tick-up-leave-to {
-  transform: translateY(-100%);
+  transform: translateY(-110%);
+  opacity: 0;
 }
 /* Scrolling back up the page: reversed, both roll downward. */
 .tick-down-enter-from {
-  transform: translateY(-100%);
+  transform: translateY(-110%);
+  opacity: 0;
 }
 .tick-down-leave-to {
-  transform: translateY(100%);
+  transform: translateY(110%);
+  opacity: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .site-item,
   .site-btn,
+  .site-tick,
   .tick-up-enter-active,
   .tick-up-leave-active,
   .tick-down-enter-active,

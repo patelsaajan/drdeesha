@@ -1,14 +1,14 @@
 <template>
-  <section id="experience" class="relative z-20 bg-background text-foreground">
+  <section id="experience" ref="root" class="relative z-20 bg-background text-foreground">
 
     <div class="mx-auto max-w-6xl px-4 pt-24 pb-10 sm:px-6 lg:pt-28">
-      <p class="font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
+      <p class="reveal font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
         Experience
       </p>
-      <h2 class="mt-5 font-serif font-normal leading-heading tracking-heading" style="font-size: clamp(2rem, 4vw, 3.25rem)">
+      <h2 class="reveal mt-5 font-serif font-normal leading-heading tracking-heading" style="font-size: clamp(2rem, 4vw, 3.25rem)">
         The path here.
       </h2>
-      <p class="mt-4 max-w-md font-display text-base font-light leading-relaxed text-foreground/65">
+      <p class="reveal mt-4 max-w-md font-display text-base font-light leading-relaxed text-foreground/65">
         The short version of my apprenticeship, from the first lecture to the chair you'll sit in.
       </p>
     </div>
@@ -146,6 +146,10 @@ function spinePrimaryPct(i: number) {
 function spineStyle(i: number) {
   return { backgroundColor: usePrimaryTint(spinePrimaryPct(i)) }
 }
+
+// Header entrance — same reveal treatment as every other section header.
+const root = ref<HTMLElement | null>(null)
+useSectionReveal(root)
 </script>
 
 <style scoped>
@@ -159,12 +163,18 @@ function spineStyle(i: number) {
   transition: opacity 0.5s ease;
 }
 
-/* Elevation for the open card. Primary-tinted (not the navy --shadow-lift
-   token) so it reads as a soft amethyst lift on this purple band rather than a
-   muddy grey pool. Desktop only; the mobile stack neutralises it below. */
+/* Elevation for the open card — the shared card token (now primary-tinted
+   site-wide). Desktop only; the mobile stack neutralises it below. */
 @media (min-width: 1024px) {
   .career-card.is-active {
-    box-shadow: 0 26px 52px -26px rgb(60 0 97 / 0.3);
+    box-shadow: var(--shadow-card);
+  }
+}
+
+/* Avoid a flash of un-animated header before GSAP takes over. */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    opacity: 0;
   }
 }
 

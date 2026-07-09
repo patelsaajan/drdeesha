@@ -14,36 +14,58 @@
         </p>
       </header>
 
-      <div class="mt-14 grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
+      <!-- Editorial mosaic, not a uniform card grid: the first case runs as a
+           2x2 feature, the rest fill around it. Each card is full-bleed
+           photography with the caption sat over a warm scrim — the same
+           image-forward treatment as the process film and location cards,
+           rather than a clinical white label strip under a thumbnail. -->
+      <div class="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:auto-rows-62">
         <button
-          v-for="study in caseStudies"
+          v-for="(study, i) in caseStudies"
           :key="study.id"
           type="button"
-          class="reveal case-card group block w-full overflow-hidden rounded-xl border border-foreground/10 bg-background text-left outline-none transition-shadow duration-500 hover:shadow-card focus-visible:ring-2 focus-visible:ring-primary/40"
+          :aria-label="`${study.title} — ${study.treatment}`"
+          class="reveal case-card group relative overflow-hidden rounded-xl bg-foreground text-left outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2"
+          :class="i === 0
+            ? 'aspect-3/2 sm:col-span-2 sm:aspect-video lg:col-span-2 lg:row-span-2 lg:aspect-auto'
+            : 'aspect-4/5 lg:aspect-auto lg:h-full'"
           @click="openCase(study)"
         >
-          <div class="relative overflow-hidden bg-foreground/5" style="aspect-ratio: 3 / 2">
-            <NuxtImg
-              :src="study.image"
-              :alt="`${study.title} — ${study.treatment}`"
-              sizes="100vw sm:50vw lg:33vw"
-              loading="lazy"
-              class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-            />
-          </div>
-          <div class="flex items-start justify-between gap-3 p-5">
-            <div>
-              <p class="font-display text-3xs font-semibold uppercase tracking-label text-primary">
-                {{ study.treatment }}
-              </p>
-              <p class="mt-2 font-serif text-xl leading-snug text-foreground">
-                {{ study.title }}
-              </p>
+          <NuxtImg
+            :src="study.image"
+            :alt="`${study.title} — ${study.treatment}`"
+            :sizes="i === 0 ? '100vw lg:66vw' : '100vw sm:50vw lg:33vw'"
+            loading="lazy"
+            class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+          />
+
+          <!-- Warm legibility scrim, deepening a touch on hover -->
+          <div aria-hidden="true" class="absolute inset-0 bg-linear-to-t from-black/85 via-black/30 to-black/5 transition-opacity duration-500 group-hover:from-black/90" />
+
+          <!-- Caption stays put; only the text under the eyebrow trades places
+               with the CTA on hover. Both occupy the same footprint (the CTA
+               overlays the title zone on pointer devices), so nothing climbs
+               up over the photo. -->
+          <div class="case-caption absolute inset-x-0 bottom-0 z-10 px-5 pb-5 lg:px-6 lg:pb-6">
+            <p class="font-display text-3xs font-semibold uppercase tracking-label text-accent">
+              {{ study.treatment }}
+            </p>
+
+            <div class="case-swap relative mt-1">
+              <div class="case-title">
+                <p class="font-serif leading-snug text-white" :class="i === 0 ? 'text-2xl lg:text-3xl' : 'text-xl'">
+                  {{ study.title }}
+                </p>
+                <p v-if="i === 0" class="mt-1.5 max-w-md font-display text-sm font-light leading-relaxed text-white/75">
+                  {{ study.summary }}
+                </p>
+              </div>
+
+              <span class="case-cta inline-flex items-center gap-1.5 font-display text-2xs font-semibold uppercase tracking-label text-white">
+                See the detail
+                <span class="case-arrow text-accent">↗</span>
+              </span>
             </div>
-            <span
-              aria-hidden="true"
-              class="mt-1 font-display text-sm text-foreground/40 transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-primary"
-            >↗</span>
           </div>
         </button>
       </div>
@@ -106,7 +128,7 @@
           variant="subtle"
           size="lg"
           block
-          class="rounded-full bg-primary text-white hover:bg-primary/90 active:bg-primary/90"
+          class="rounded-full bg-primary text-white duration-250 ease-out hover:bg-accent active:bg-accent"
         >
           Book a consultation
         </UButton>
@@ -116,7 +138,6 @@
 </template>
 
 <script setup lang="ts">
-import gsap from 'gsap'
 import { type CaseStudy, caseStudies } from '../data/cases'
 
 const open = ref(false)
@@ -128,46 +149,7 @@ function openCase(study: CaseStudy) {
 }
 
 const root = ref<HTMLElement | null>(null)
-let ctx: gsap.Context | undefined
-let observer: IntersectionObserver | undefined
-
-onMounted(() => {
-  const el = root.value
-  if (!el) return
-
-  const reveals = gsap.utils.toArray<HTMLElement>(el.querySelectorAll('.reveal'))
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-  if (reduce) {
-    gsap.set(reveals, { autoAlpha: 1, y: 0 })
-    return
-  }
-
-  gsap.set(reveals, { autoAlpha: 0, y: 28 })
-
-  ctx = gsap.context(() => {
-    observer = new IntersectionObserver(
-      ([entry], obs) => {
-        if (!entry?.isIntersecting) return
-        obs.disconnect()
-
-        gsap.timeline({ defaults: { ease: 'expo.out' } }).to(reveals, {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.85,
-          stagger: 0.08,
-        })
-      },
-      { threshold: 0.15 },
-    )
-    observer.observe(el)
-  }, el)
-})
-
-onUnmounted(() => {
-  observer?.disconnect()
-  ctx?.revert()
-})
+useSectionReveal(root)
 </script>
 
 <style scoped>
@@ -175,6 +157,63 @@ onUnmounted(() => {
 @media (prefers-reduced-motion: no-preference) {
   .reveal {
     opacity: 0;
+  }
+}
+
+/* Warm accent-tinted lift on hover — a friendlier echo of the career cards'
+   primary-tinted shadow. Shadow only (not transform), so it never fights the
+   inline transform GSAP leaves on the card after the entrance reveal. */
+.case-card {
+  transition: box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.case-card:hover {
+  box-shadow: 0 24px 48px -22px color-mix(in oklab, var(--color-accent) 42%, transparent);
+}
+
+.case-arrow {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.case-card:hover .case-arrow,
+.case-card:focus-visible .case-arrow {
+  transform: translateX(0.15rem);
+}
+
+/* In-place swap. The title keeps the caption's footprint (it's the sizer);
+   the CTA overlays its bottom line, hidden at rest, and on hover/focus the
+   two trade places — title drifts up and out as the CTA rises in. The
+   caption block itself never moves, so the eyebrow stays off the photo. */
+.case-title {
+  transition:
+    opacity 0.3s ease,
+    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.case-cta {
+  position: absolute;
+  left: 0;
+  bottom: 0.125rem;
+  opacity: 0;
+  transform: translateY(0.5rem);
+  transition:
+    opacity 0.3s ease,
+    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.case-card:hover .case-title,
+.case-card:focus-visible .case-title {
+  opacity: 0;
+  transform: translateY(-0.5rem);
+}
+.case-card:hover .case-cta,
+.case-card:focus-visible .case-cta {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .case-card,
+  .case-arrow,
+  .case-title,
+  .case-cta {
+    transition: none !important;
   }
 }
 </style>

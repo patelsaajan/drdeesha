@@ -35,7 +35,7 @@
 
           <!-- Caption over a legibility scrim -->
           <div class="pointer-events-none absolute inset-x-0 bottom-0 bg-linear-to-t from-black/55 via-black/15 to-transparent p-6 sm:p-10 lg:p-14">
-            <p class="font-display text-xs font-semibold uppercase tracking-eyebrow text-white/80">
+            <p class="font-display text-xs font-semibold uppercase tracking-eyebrow text-white/70">
               In the chair
             </p>
             <p class="mt-2 max-w-md font-serif font-normal leading-tight tracking-heading text-white" style="font-size: clamp(1.5rem, 3vw, 2.5rem)">

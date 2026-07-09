@@ -32,9 +32,10 @@
   --leading-quote: 1.15;
   --leading-body: 1.75;
 
-  /* Elevation */
-  --shadow-lift: 0 28px 70px -30px rgb(15 25 35 / 0.45);
-  --shadow-card: 0 24px 60px -30px rgb(15 25 35 / 0.4);
+  /* Elevation — primary-tinted, not neutral grey, so lifted surfaces read
+     as a soft amethyst glow on this palette rather than a muddy pool. */
+  --shadow-lift: 0 28px 70px -30px rgb(60 0 97 / 0.4);
+  --shadow-card: 0 24px 60px -30px rgb(60 0 97 / 0.35);
 }
 
 @layer base {
@@ -42,5 +43,13 @@
   body {
     margin: 0;
     background-color: var(--color-background);
+  }
+
+  /* In-page anchors (footer section links, #contact) glide like the nav's
+     scrollIntoView jumps rather than teleporting. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
 }

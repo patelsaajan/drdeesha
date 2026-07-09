@@ -27,7 +27,7 @@
              wide rather than a narrow spine. Purely texture: kept faint
              enough to stay behind the copy, never compete with it. -->
         <span aria-hidden="true" class="about-mark pointer-events-none absolute select-none whitespace-nowrap font-serif font-normal leading-none text-white/8">
-          Smart Smiles
+          {{ practice.name }}
         </span>
 
         <div class="relative w-full max-w-xl">
@@ -36,14 +36,16 @@
             About
           </p>
 
-          <h1 class="reveal m-0 mt-5 font-serif font-normal leading-none tracking-heading text-white" style="font-size: clamp(2.75rem, 5.5vw, 4.75rem)">
+          <!-- h2, not h1 — the hero wordmark is the page's single h1. -->
+          <h2 class="reveal m-0 mt-5 font-serif font-normal leading-none tracking-heading text-white" style="font-size: clamp(2.75rem, 5.5vw, 4.75rem)">
             Dr Deesha
-          </h1>
-
-          <!-- Qualifications -->
-          <h2 class="reveal mt-7 max-w-md font-serif font-normal leading-snug text-white" style="font-size: clamp(1.1rem, 1.9vw, 1.4rem)">
-            BDS<span class="mx-2 text-white/35">·</span>MJDF RCS<span class="text-white/70">&nbsp;(Eng)</span><span class="mx-2 text-white/35">·</span>PgDip Restorative &amp; Aesthetic Dentistry
           </h2>
+
+          <!-- Qualifications — accent middots, the same warm punctuation the
+               case cards and nav hover use elsewhere on the site. -->
+          <h3 class="reveal mt-7 max-w-md font-serif font-normal leading-snug text-white" style="font-size: clamp(1.1rem, 1.9vw, 1.4rem)">
+            BDS<span class="mx-2 text-accent">·</span>MJDF RCS<span class="text-white/70">&nbsp;(Eng)</span><span class="mx-2 text-accent">·</span>PgDip Restorative &amp; Aesthetic Dentistry
+          </h3>
           <p class="reveal mt-3 flex items-center gap-3 font-display text-2xs uppercase tracking-label text-white/60">
             <span class="h-px w-8 bg-white/30" />
             General Dental Council registered
@@ -65,6 +67,7 @@
           </div>
 
           <UButton
+            :href="practice.bookingHref"
             color="neutral"
             variant="solid"
             size="lg"
@@ -72,6 +75,14 @@
           >
             Book an appointment
           </UButton>
+
+          <!-- Where you'll find me — grounds the bio in a real place and
+               points ahead to the footer's location cards. -->
+          <p class="reveal mt-8 flex items-center gap-3 font-display text-2xs uppercase tracking-label text-white/60">
+            {{ practice.name }}
+            <span aria-hidden="true" class="h-1 w-1 rounded-full bg-accent" />
+            {{ practice.location }}
+          </p>
 
         </div>
       </div>
@@ -81,6 +92,7 @@
 
 <script setup lang="ts">
 import gsap from 'gsap'
+import { practice } from '../data/contact'
 
 const root = ref<HTMLElement | null>(null)
 let ctx: gsap.Context | undefined

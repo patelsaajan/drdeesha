@@ -17,7 +17,7 @@
             <p class="reveal font-display text-xs font-semibold uppercase tracking-eyebrow text-white/70">
               Get in touch
             </p>
-            <p class="reveal mt-5 font-serif font-normal leading-heading tracking-heading text-white" style="font-size: clamp(2rem, 3.6vw, 3rem)">
+            <p class="reveal mt-5 font-serif font-normal leading-heading tracking-heading text-white" style="font-size: clamp(2rem, 4vw, 3.25rem)">
               Let's find you a time.
             </p>
             <p class="reveal mt-5 max-w-md font-display text-base font-light leading-relaxed text-white/75">
@@ -43,13 +43,26 @@
     <div class="pb-16 lg:pb-20">
       <div class="mx-auto w-full max-w-6xl px-4 sm:px-6">
 
-        <!-- Wordmark + socials -->
-        <div class="mt-8 flex flex-col gap-8 sm:flex-row sm:items-center sm:justify-between">
+        <!-- Wordmark / section links / socials -->
+        <div class="mt-8 flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
           <div class="reveal flex items-center gap-3">
             <span class="font-serif text-xl leading-none tracking-heading text-white">Dr Deesha</span>
             <span class="h-4 w-px bg-white/25" />
             <span class="font-display text-3xs font-semibold uppercase tracking-eyebrow text-white/70">Dental</span>
           </div>
+
+          <!-- Way back into the page — same section list the top nav carries,
+               so the footer isn't a dead end after the CTA. -->
+          <nav aria-label="Sections" class="reveal flex flex-wrap items-center gap-x-6 gap-y-2">
+            <a
+              v-for="link in sectionLinks"
+              :key="link.id"
+              :href="`#${link.id}`"
+              class="font-display text-2xs font-semibold uppercase tracking-label text-white/55 transition-colors hover:text-white"
+            >
+              {{ link.label }}
+            </a>
+          </nav>
 
           <nav aria-label="Dr Deesha on social media" class="reveal flex items-center gap-2">
             <a
@@ -66,17 +79,28 @@
           </nav>
         </div>
 
-        <p class="reveal mt-8 font-display text-xs uppercase tracking-label text-white/50">
-          © {{ year }} Dr Deesha Dental. General Dental Council registered.
-        </p>
+        <!-- Baseline: legal on the left, place on the right — the same
+             name-dot-location line About signs off with. -->
+        <div class="reveal mt-8 flex flex-col gap-2 font-display text-xs uppercase tracking-label text-white/50 sm:flex-row sm:items-center sm:justify-between">
+          <p>© {{ year }} Dr Deesha Dental. General Dental Council registered.</p>
+          <p class="flex items-center gap-3">
+            {{ practice.name }}
+            <span aria-hidden="true" class="h-1 w-1 rounded-full bg-accent" />
+            {{ practice.location }}
+          </p>
+        </div>
       </div>
     </div>
   </footer>
 </template>
 
 <script setup lang="ts">
-import gsap from 'gsap'
 import { practice } from '../data/contact'
+import { siteSections } from '../data/sections'
+
+// The page's canonical section list, minus the two that don't make sense as
+// footer links (you're already at contact; home is the wordmark's job).
+const sectionLinks = siteSections.filter(s => !['home', 'contact'].includes(s.id))
 
 // Placeholder hrefs — swap in the real handles when ready.
 const socials = [
@@ -88,46 +112,7 @@ const socials = [
 const year = new Date().getFullYear()
 
 const root = ref<HTMLElement | null>(null)
-let ctx: gsap.Context | undefined
-let observer: IntersectionObserver | undefined
-
-onMounted(() => {
-  const el = root.value
-  if (!el) return
-
-  const reveals = gsap.utils.toArray<HTMLElement>(el.querySelectorAll('.reveal'))
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-  if (reduce) {
-    gsap.set(reveals, { autoAlpha: 1, y: 0 })
-    return
-  }
-
-  gsap.set(reveals, { autoAlpha: 0, y: 28 })
-
-  ctx = gsap.context(() => {
-    observer = new IntersectionObserver(
-      ([entry], obs) => {
-        if (!entry?.isIntersecting) return
-        obs.disconnect()
-
-        gsap.timeline({ defaults: { ease: 'expo.out' } }).to(reveals, {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.9,
-          stagger: 0.1,
-        })
-      },
-      { threshold: 0.15 },
-    )
-    observer.observe(el)
-  }, el)
-})
-
-onUnmounted(() => {
-  observer?.disconnect()
-  ctx?.revert()
-})
+useSectionReveal(root)
 </script>
 
 <style scoped>
