@@ -48,7 +48,7 @@ export default defineAppConfig({
         {
           color: 'primary' as const,
           variant: 'solid' as const,
-          class: 'rounded-full bg-primary-quiet text-white',
+          class: 'rounded-full bg-[color-mix(in_oklab,var(--color-primary)_70%,white)] text-white',
         },
       ],
     },

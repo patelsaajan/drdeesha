@@ -31,7 +31,7 @@
 
       <!-- Content — revealed when active -->
       <div class="location-content min-h-0 flex-1" :style="{ opacity: activeIndex === i ? 1 : 0 }">
-        <LocationMap v-if="item.id === 'map'" :active="activeIndex === i" />
+        <LocationMap v-if="item.id === 'map'" />
 
         <div v-else class="relative h-full">
           <NuxtImg
@@ -70,20 +70,16 @@ const activeIndex = computed(() => hovered.value ?? 1)
 // Fixed spine height, matches the career cards' proportions.
 const SPINE_HEIGHT = 52
 
-// A single neutral white-on-primary wash, not two different purple tints —
-// there's no relationship between "Map" and "Smart Smiles" for a career
-// timeline-style deepening gradient to express, and both panels already
-// hold fixed, non-brand-colour content (Google's map chrome, a photo), so
-// the frame around them doesn't need to carry the brand colour itself. The
-// only variation is a small brightness lift on whichever is active, purely
-// as a state cue.
+// Primary-tinted rather than a neutral white wash: darker (closer to full
+// primary) at rest so the card recedes into the footer panel behind it,
+// lighter when active as a brightness-lift state cue.
 function cardStyle(i: number) {
   const active = activeIndex.value === i
   return {
     flexGrow: active ? 1 : 0,
     flexShrink: 0,
     flexBasis: active ? 'auto' : `${SPINE_HEIGHT}px`,
-    backgroundColor: active ? 'rgb(255 255 255 / 0.09)' : 'rgb(255 255 255 / 0.04)',
+    backgroundColor: usePrimaryTint(active ? 65 : 95),
     transition: 'flex-basis 0.5s cubic-bezier(0.22, 1, 0.36, 1), flex-grow 0.5s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.4s ease',
   }
 }

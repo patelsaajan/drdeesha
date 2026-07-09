@@ -1,13 +1,6 @@
 <template>
-  <section ref="root" class="relative z-20 bg-background text-foreground">
-    <!-- Stepped shade transition: the white hero above fades into the
-         solid-purple panel below through five ascending tints rather than
-         a hard cut — flat bands, not a gradient. -->
-    <div aria-hidden="true" class="flex flex-col">
-      <div v-for="pct in TRANSITION_STEPS" :key="pct" class="about-transition-row" :style="{ backgroundColor: transitionTint(pct) }" />
-    </div>
-
-    <div class="about-grid grid min-h-dvh">
+  <section id="about" ref="root" class="relative z-20 bg-background text-foreground">
+    <div class="about-grid grid min-h-[110dvh]">
 
       <!-- Portrait: full-height, dark studio frame -->
       <figure class="portrait-figure relative m-0 overflow-hidden bg-foreground">
@@ -22,12 +15,13 @@
         />
       </figure>
 
-      <!-- Content — solid primary purple, matching the footer's own CTA
-           panel. Bookends the page: this is the first committed-purple
-           moment, the footer is the last, and everything between stays
-           light. Ties About back into the rest of the site instead of
-           leaving it as the one plain white/black holdover. -->
-      <div class="about-content relative flex items-center overflow-hidden bg-primary px-6 py-16 text-white sm:px-10 lg:px-16 xl:px-24">
+      <!-- Content — a lighter, quieter tint of primary rather than the
+           footer's solid purple, so About reads as its own moment instead
+           of a duplicate of the closing CTA panel. -->
+      <div
+        class="about-content relative flex items-center overflow-hidden px-6 py-16 text-white sm:px-10 lg:px-16 xl:px-24"
+        :style="{ backgroundColor: usePrimaryTint(65) }"
+      >
         <!-- Oversized watermark — same device as the career timeline's
              rotated spine mark, reused upright here since this column is
              wide rather than a narrow spine. Purely texture: kept faint
@@ -82,27 +76,11 @@
         </div>
       </div>
     </div>
-
-    <!-- Mirrored on the way out: purple steps back down to white before
-         the case studies section below. -->
-    <div aria-hidden="true" class="flex flex-col">
-      <div v-for="pct in TRANSITION_STEPS_REVERSE" :key="pct" class="about-transition-row" :style="{ backgroundColor: transitionTint(pct) }" />
-    </div>
   </section>
 </template>
 
 <script setup lang="ts">
 import gsap from 'gsap'
-
-// Five even steps toward full primary — flat bands rather than a smooth
-// gradient, so the white-to-purple handoff at this section's edges reads
-// as deliberate print-like steps.
-const TRANSITION_STEPS = [17, 33, 50, 67, 83]
-const TRANSITION_STEPS_REVERSE = [...TRANSITION_STEPS].reverse()
-
-function transitionTint(primaryPct: number) {
-  return `color-mix(in oklab, var(--color-primary) ${primaryPct}%, white)`
-}
 
 const root = ref<HTMLElement | null>(null)
 let ctx: gsap.Context | undefined
@@ -156,12 +134,8 @@ onUnmounted(() => {
 }
 @media (min-width: 1024px) {
   .portrait-figure {
-    height: 100dvh;
+    height: 100%;
   }
-}
-
-.about-transition-row {
-  height: 1.1rem;
 }
 
 /* Anchored bottom-right, clear of the fixed "Book Now" pill that's already

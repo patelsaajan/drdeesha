@@ -6,7 +6,7 @@
        stays hidden behind rather than visibly sliding over it — it only
        becomes visible once the pin releases and both are back in normal,
        non-overlapping flow. -->
-  <section ref="root" class="relative z-20 flex min-h-dvh flex-col overflow-x-clip bg-background text-foreground">
+  <section id="testimonials" ref="root" class="relative z-20 flex min-h-dvh flex-col overflow-x-clip bg-background text-foreground">
     <!-- Reserved band: exactly the top 1/5 of the section, eyebrow + heading
          centred within it. -->
     <div class="flex h-[20dvh] w-full items-center px-4 sm:px-6">
@@ -25,7 +25,7 @@
          elsewhere on the page. Cards are fixed-width and don't wrap, so each
          row's content runs wider than the viewport; the clip wrapper hides
          the overflow until the scrub above reveals it. -->
-    <div class="flex flex-1 flex-col justify-center gap-5 pb-8 pt-4">
+    <div class="flex flex-1 flex-col justify-center gap-5 py-4">
       <div
         v-for="(row, i) in rows"
         :key="i"

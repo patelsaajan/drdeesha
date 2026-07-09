@@ -1,18 +1,5 @@
 <template>
-  <div class="relative bg-background">
-
-    <!-- Book Now button — appears once you scroll down -->
-    <Transition name="fade">
-      <UButton
-        v-if="showBookNow"
-        variant="solid"
-        color="primary"
-        size="lg"
-        class="fixed top-6 right-6 z-40 rounded-full px-6"
-      >
-        Book Now
-      </UButton>
-    </Transition>
+  <div id="home" class="relative bg-background">
 
     <!-- Fixed wordmark — stays centred while smiles scroll behind it -->
     <div class="intro-title pointer-events-none fixed inset-0 z-10 flex flex-col items-center justify-center gap-2">
@@ -105,7 +92,6 @@ function smileLeft(factor: number) {
   return `calc(50% ${sign} ${Math.abs(factor)} * ${spacing})`
 }
 
-const showBookNow = ref(false)
 const scrollY = ref(0)
 const viewportH = ref(0)
 const prefersReducedMotion = ref(false)
@@ -125,15 +111,9 @@ function parallaxOffset(smile: { top: number, speed: number }) {
   return (scrollY.value - basePx) * (1 - smile.speed)
 }
 
-let lastY = 0
 let ticking = false
 
 function onScroll() {
-  const y = window.scrollY
-  const up = y < lastY
-  lastY = y
-  showBookNow.value = y > window.innerHeight * 0.6 && !up
-
   if (!ticking) {
     ticking = true
     requestAnimationFrame(() => {
@@ -170,14 +150,6 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s ease;
-}
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
 .smile {
   will-change: transform;
 }

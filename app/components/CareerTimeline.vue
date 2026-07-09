@@ -1,5 +1,5 @@
 <template>
-  <section class="relative z-20 bg-background text-foreground">
+  <section id="experience" class="relative z-20 bg-background text-foreground">
 
     <div class="mx-auto max-w-6xl px-4 pt-24 pb-10 sm:px-6 lg:pt-28">
       <p class="font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
@@ -36,9 +36,13 @@
           @focusin="hovered = i"
           @focusout="hovered = null"
         >
-          <!-- Spine — always visible tab -->
+          <!-- Spine — always visible tab. The border-r divider only makes sense
+               once this card is open (marking the spine/content boundary) —
+               left on unconditionally, it renders on every stacked card and
+               shows up as a faint line right at the overlap seam. -->
           <div
-            class="career-spine relative flex flex-row items-center justify-between gap-4 overflow-hidden border-b border-primary/10 p-5 lg:absolute lg:inset-y-0 lg:left-0 lg:w-42 lg:flex-col lg:items-start lg:justify-between lg:border-b-0 lg:border-r lg:p-6"
+            class="career-spine relative flex flex-row items-center justify-between gap-4 overflow-hidden border-b border-primary/10 p-5 lg:absolute lg:inset-y-0 lg:left-0 lg:w-42 lg:flex-col lg:items-start lg:justify-between lg:border-b-0 lg:p-6"
+            :class="activeIndex === i && 'lg:border-r'"
             :style="spineStyle(i)"
           >
             <!-- Oversized, faint tag running down the spine, its end pinned to the top -->
@@ -140,7 +144,7 @@ function spinePrimaryPct(i: number) {
 }
 
 function spineStyle(i: number) {
-  return { backgroundColor: `color-mix(in oklab, var(--color-primary) ${spinePrimaryPct(i)}%, white)` }
+  return { backgroundColor: usePrimaryTint(spinePrimaryPct(i)) }
 }
 </script>
 

@@ -9,18 +9,11 @@
      (~15:1 contrast with white), so nothing built around "solid primary +
      white text" needs re-checking. */
   --color-primary: #3C0061;
-  /* Light, opaque tint of primary (~8% blended over white) for subtle-surface
-     bands. Opaque on purpose — a translucent bg-primary/8 would let the
-     fixed hero title bleed through wherever this sits. */
-  --color-primary-soft: #efebf2;
-  /* Primary diluted with white (not opacity) — solid, so it reads the same
-     regardless of what's underneath (a photo, another tint), rather than
-     shifting with whatever bleeds through a translucent bg-primary/NN. */
-  --color-primary-quiet: color-mix(in oklab, var(--color-primary) 70%, white);
   --color-secondary: #7ab3c8;
-  /* Burnt orange — complements the amethyst primary, deep enough that white
-     text on it clears WCAG AA (~5:1) rather than a brighter, thinner-contrast orange. */
-  --color-accent: #b54f1a;
+  /* Friendly pumpkin orange — warmer and more vibrant than the old burnt
+     tone, while kept deep enough that white text on it still holds ~4.2:1
+     (clears AA for the bold button labels it backs on hover). */
+  --color-accent: #d1541a;
 
   --font-display: "Fraunces", Georgia, serif;
   --font-serif: "Bodoni Moda", Georgia, serif;
