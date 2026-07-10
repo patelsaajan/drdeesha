@@ -1,52 +1,99 @@
 <template>
-  <!-- Pinned (scroll locked) until the row-scrub below finishes: the top and
-       bottom rows slide right, the middle row slides left, each revealing
-       cards that start hidden off one edge. The footer sits at a lower
-       z-index than this section (see SiteFooter.vue), so during the pin it
-       stays hidden behind rather than visibly sliding over it — it only
-       becomes visible once the pin releases and both are back in normal,
-       non-overlapping flow. -->
-  <section id="testimonials" ref="root" class="relative z-20 flex min-h-dvh flex-col overflow-x-clip bg-background text-foreground">
-    <!-- Reserved band: exactly the top 1/5 of the section, eyebrow + heading
-         centred within it. -->
-    <div class="flex h-[20dvh] w-full items-center px-4 sm:px-6">
-      <div class="mx-auto w-full max-w-6xl">
-        <p class="reveal font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
-          Kind words
-        </p>
-        <h2 class="reveal mt-4 font-serif font-normal leading-heading tracking-heading" style="font-size: clamp(2rem, 4vw, 3.25rem)">
-          What patients say about me.
-        </h2>
-      </div>
+  <section id="testimonials" ref="root" class="relative z-20 bg-background text-foreground">
+    <!-- Mobile: the pinned scrub below needs a pointer and a tall viewport,
+         so under lg the same cards become a thumb-driven carousel — one card
+         mostly full-width, the next peeking in from the edge as the swipe
+         affordance, with a plain running count underneath. -->
+    <div class="px-4 pt-24 pb-20 sm:px-6 lg:hidden">
+      <p class="reveal font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
+        Kind words
+      </p>
+      <h2 class="reveal mt-4 font-serif font-normal leading-heading tracking-heading" style="font-size: clamp(2rem, 4vw, 3.25rem)">
+        What patients say about me.
+      </h2>
+
+      <!-- Full-bleed viewport (negative margins undo the section padding) so
+           the peeking card runs to the screen edge; ms-0 + per-item ps keeps
+           the first card aligned with the heading above. Quotes aren't
+           line-clamped here — the carousel is the only way these are read on
+           mobile, and items-stretch keeps every card the height of the
+           tallest. -->
+      <UCarousel
+        v-slot="{ item }"
+        :items="mobileTestimonials"
+        loop
+        align="start"
+        class="reveal testimonial-carousel mt-10 -mx-4 sm:-mx-6"
+        :ui="{ container: 'ms-0 items-stretch', item: 'basis-[82%] ps-4 sm:basis-96 sm:ps-6' }"
+        @select="(i: number) => (slide = i)"
+      >
+        <article class="flex h-full select-none flex-col justify-between gap-4 rounded-xl border border-foreground/10 bg-background p-6">
+          <blockquote class="m-0 font-serif text-lg leading-snug text-foreground">
+            &ldquo;{{ item.quote }}&rdquo;
+          </blockquote>
+          <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <span class="font-display text-sm font-semibold tracking-wide text-foreground">{{ item.name }}</span>
+            <span class="h-1 w-1 rounded-full bg-foreground/30" />
+            <span class="font-display text-sm font-light text-foreground/55">{{ item.context }}</span>
+            <span v-if="item.source" class="font-display text-3xs uppercase tracking-label text-foreground/40">· {{ item.source }}</span>
+          </div>
+        </article>
+      </UCarousel>
+
+      <p class="reveal mt-6 font-display text-2xs uppercase tracking-label tabular-nums text-foreground/45">
+        {{ slide + 1 }} / {{ mobileTestimonials.length }}
+      </p>
     </div>
 
-    <!-- Each row is its own full-viewport-width band, not capped by any
-         max-width container — matches the career timeline's row treatment
-         elsewhere on the page. Cards are fixed-width and don't wrap, so each
-         row's content runs wider than the viewport; the clip wrapper hides
-         the overflow until the scrub above reveals it. -->
-    <div class="flex flex-1 flex-col justify-center gap-5 py-4">
-      <div
-        v-for="(row, i) in rows"
-        :key="i"
-        class="testimonial-row-clip w-full overflow-hidden px-2 sm:px-3"
-      >
-        <div :ref="(el) => setRowRef(el, i)" class="flex w-max gap-5">
-          <article
-            v-for="item in row"
-            :key="item.id"
-            class="testimonial-card flex h-52 w-72 shrink-0 flex-col justify-center gap-4 overflow-hidden rounded-xl border border-foreground/10 bg-background p-6 transition-all duration-300 hover:border-primary/20 hover:bg-primary/5 hover:shadow-card sm:w-80"
-          >
-            <blockquote class="m-0 line-clamp-3 font-serif text-lg leading-snug text-foreground">
-              &ldquo;{{ item.quote }}&rdquo;
-            </blockquote>
-            <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
-              <span class="font-display text-sm font-semibold tracking-wide text-foreground">{{ item.name }}</span>
-              <span class="h-1 w-1 rounded-full bg-foreground/30" />
-              <span class="font-display text-sm font-light text-foreground/55">{{ item.context }}</span>
-              <span v-if="item.source" class="font-display text-3xs uppercase tracking-label text-foreground/40">· {{ item.source }}</span>
-            </div>
-          </article>
+    <!-- Desktop: pinned (scroll locked) until the row-scrub finishes: the top
+         and bottom rows slide right, the middle row slides left, each
+         revealing cards that start hidden off one edge. The footer sits at a
+         lower z-index than this section (see SiteFooter.vue), so during the
+         pin it stays hidden behind rather than visibly sliding over it — it
+         only becomes visible once the pin releases and both are back in
+         normal, non-overlapping flow. -->
+    <div ref="desk" class="hidden min-h-dvh flex-col overflow-x-clip lg:flex">
+      <!-- Reserved band: exactly the top 1/5 of the section, eyebrow + heading
+           centred within it. -->
+      <div class="flex h-[20dvh] w-full items-center px-4 sm:px-6">
+        <div class="mx-auto w-full max-w-6xl">
+          <p class="reveal font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
+            Kind words
+          </p>
+          <h2 class="reveal mt-4 font-serif font-normal leading-heading tracking-heading" style="font-size: clamp(2rem, 4vw, 3.25rem)">
+            What patients say about me.
+          </h2>
+        </div>
+      </div>
+
+      <!-- Each row is its own full-viewport-width band, not capped by any
+           max-width container — matches the career timeline's row treatment
+           elsewhere on the page. Cards are fixed-width and don't wrap, so each
+           row's content runs wider than the viewport; the clip wrapper hides
+           the overflow until the scrub above reveals it. -->
+      <div class="flex flex-1 flex-col justify-center gap-5 py-4">
+        <div
+          v-for="(row, i) in rows"
+          :key="i"
+          class="testimonial-row-clip w-full overflow-hidden px-2 sm:px-3"
+        >
+          <div :ref="(el) => setRowRef(el, i)" class="flex w-max gap-5">
+            <article
+              v-for="item in row"
+              :key="item.id"
+              class="testimonial-card flex h-52 w-72 shrink-0 flex-col justify-center gap-4 overflow-hidden rounded-xl border border-foreground/10 bg-background p-6 transition-all duration-300 hover:border-primary/20 hover:bg-primary/5 hover:shadow-card sm:w-80"
+            >
+              <blockquote class="m-0 line-clamp-3 font-serif text-lg leading-snug text-foreground">
+                &ldquo;{{ item.quote }}&rdquo;
+              </blockquote>
+              <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                <span class="font-display text-sm font-semibold tracking-wide text-foreground">{{ item.name }}</span>
+                <span class="h-1 w-1 rounded-full bg-foreground/30" />
+                <span class="font-display text-sm font-light text-foreground/55">{{ item.context }}</span>
+                <span v-if="item.source" class="font-display text-3xs uppercase tracking-label text-foreground/40">· {{ item.source }}</span>
+              </div>
+            </article>
+          </div>
         </div>
       </div>
     </div>
@@ -67,13 +114,22 @@ const rows = Array.from(
   (_, i) => testimonials.slice(i * perRow, i * perRow + perRow),
 )
 
+// Mobile shows a short loop, not the full set — eight swipes is plenty to
+// make the point, and the counter stays legible.
+const mobileTestimonials = testimonials.slice(0, 8)
+
+// Mobile carousel position, for the running count under it.
+const slide = ref(0)
+
 const root = ref<HTMLElement | null>(null)
+const desk = ref<HTMLElement | null>(null)
 const rowRefs: (HTMLElement | null)[] = []
 function setRowRef(el: Element | null, i: number) {
   rowRefs[i] = el as HTMLElement | null
 }
 
 let ctx: gsap.Context | undefined
+let mm: gsap.MatchMedia | undefined
 let observer: IntersectionObserver | undefined
 
 // How far a row's content runs past its clip wrapper — the distance the
@@ -86,6 +142,7 @@ function rowExtra(rowEl: HTMLElement) {
 
 onMounted(() => {
   const el = root.value
+  const deskEl = desk.value
   if (!el) return
 
   const reveals = gsap.utils.toArray<HTMLElement>(el.querySelectorAll('.reveal'))
@@ -115,14 +172,22 @@ onMounted(() => {
       { threshold: 0.15 },
     )
     observer.observe(el)
+  }, el)
 
+  // The pin + row scrub is desktop-only (the mobile layout is the carousel
+  // above, display:none'd out of lg). gsap.matchMedia builds it when the lg
+  // query matches and reverts it — inline transforms included — when it
+  // stops matching, so crossing the breakpoint by resize/rotation is safe.
+  if (!deskEl) return
+  mm = gsap.matchMedia()
+  mm.add('(min-width: 1024px)', () => {
     // Once the section fills the screen ('top top'), pin it (locking scroll)
     // and scrub each row horizontally over the extra scroll distance below.
     // Odd rows (top, bottom) start with their overflow hidden off the left
     // and slide right to reveal it; the middle row does the reverse.
     const tl = gsap.timeline({
       scrollTrigger: {
-        trigger: el,
+        trigger: deskEl,
         start: 'top top',
         end: '+=200%',
         scrub: 0.8,
@@ -144,11 +209,12 @@ onMounted(() => {
         tl.to(rowEl, { x: () => -rowExtra(rowEl), ease: 'none' }, 0)
       }
     })
-  }, el)
+  })
 })
 
 onUnmounted(() => {
   observer?.disconnect()
+  mm?.revert()
   ctx?.revert()
 })
 </script>
@@ -166,5 +232,12 @@ onUnmounted(() => {
 .testimonial-row-clip {
   -webkit-mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
   mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+}
+
+/* Same device on the mobile carousel, sized in rems so the fade stays a
+   sliver at the screen edges instead of eating into the active card. */
+.testimonial-carousel {
+  -webkit-mask-image: linear-gradient(to right, transparent, black 1.25rem, black calc(100% - 1.25rem), transparent);
+  mask-image: linear-gradient(to right, transparent, black 1.25rem, black calc(100% - 1.25rem), transparent);
 }
 </style>

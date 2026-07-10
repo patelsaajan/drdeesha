@@ -17,20 +17,25 @@
          — the row is wider than that column, so centring it (rather than
          starting it flush-left) keeps the whole group visually balanced on
          the page instead of looking pushed to one side. -->
-    <div class="career-track overflow-x-clip px-2 pt-4 pb-24 sm:px-3 lg:pb-28">
-      <div class="mx-auto flex w-full flex-col gap-5 lg:w-max lg:flex-row lg:gap-0">
+    <!-- Below lg the same deck runs vertically: every spine stays visible as
+         a stacked tab inside one rounded frame, and tapping one folds its
+         card open in place — the thumb's version of the desktop hover-peel.
+         One card is always open (the current role by default). -->
+    <div class="career-track overflow-x-clip px-4 pt-4 pb-24 sm:px-6 lg:px-3 lg:pb-28">
+      <div class="mx-auto flex w-full flex-col overflow-hidden rounded-xl border border-primary/10 lg:w-max lg:flex-row lg:overflow-visible lg:rounded-none lg:border-0">
         <article
           v-for="(step, i) in careerSteps"
           :key="step.id"
           tabindex="0"
           :aria-label="`${step.institution}, ${step.qualification}`"
-          class="career-card group relative flex flex-col overflow-hidden rounded-xl border-y border-primary/10 bg-background outline-none lg:block lg:h-160 lg:w-140 lg:shrink-0 focus-visible:ring-2 focus-visible:ring-primary/40"
+          class="career-card group relative flex flex-col overflow-hidden bg-background outline-none lg:block lg:h-160 lg:w-140 lg:shrink-0 lg:rounded-xl lg:border-y lg:border-primary/10 focus-visible:ring-2 focus-visible:ring-primary/40"
           :class="[
             i > 0 && 'lg:-ml-98',
             activeIndex === i && 'is-active',
             cardRadiusClass(i),
           ]"
           :style="cardStyle(i)"
+          @click="hovered = i"
           @mouseenter="hovered = i"
           @mouseleave="hovered = null"
           @focusin="hovered = i"
@@ -42,7 +47,10 @@
                shows up as a faint line right at the overlap seam. -->
           <div
             class="career-spine relative flex flex-row items-center justify-between gap-4 overflow-hidden border-b border-primary/10 p-5 lg:absolute lg:inset-y-0 lg:left-0 lg:w-42 lg:flex-col lg:items-start lg:justify-between lg:border-b-0 lg:p-6"
-            :class="activeIndex === i && 'lg:border-r'"
+            :class="[
+              activeIndex === i && 'lg:border-r',
+              i === careerSteps.length - 1 && 'border-b-0',
+            ]"
             :style="spineStyle(i)"
           >
             <!-- Oversized, faint tag running down the spine, its end pinned to the top -->
@@ -52,42 +60,57 @@
             >
               {{ step.mark }}
             </span>
-            <div class="relative z-10 text-right lg:mt-auto lg:text-left">
+            <div class="relative z-10 lg:mt-auto">
               <p class="font-display text-2xs font-semibold uppercase leading-snug tracking-label text-white">
                 {{ step.qualification }}
               </p>
             </div>
-            <p class="relative z-10 mt-1 font-display text-3xs uppercase tracking-label text-white/70">
-              {{ step.year }}
-            </p>
+            <div class="relative z-10 flex shrink-0 items-center gap-3 lg:mt-1">
+              <p class="font-display text-3xs uppercase tracking-label text-white/70">
+                {{ step.year }}
+              </p>
+              <!-- Mobile-only open/close cue; the fold below does the actual work -->
+              <span
+                aria-hidden="true"
+                class="career-plus font-display text-lg font-light leading-none text-white/80 lg:hidden"
+                :class="activeIndex === i && 'is-open'"
+              >+</span>
+            </div>
           </div>
 
-          <!-- Content — revealed when active -->
-          <div
-            class="career-content flex flex-1 flex-col gap-5 p-5 lg:absolute lg:inset-y-0 lg:left-42 lg:right-0 lg:p-6"
-            :style="{ opacity: activeIndex === i ? 1 : 0 }"
-          >
-            <div class="flex flex-wrap items-center gap-2">
-              <p class="font-display text-2xs font-semibold uppercase leading-snug tracking-label text-primary">
-                {{ step.institution }}
-              </p>
+          <!-- Content — revealed when active. On mobile a grid-row fold
+               (0fr -> 1fr, the animatable version of height:auto) collapses
+               it under the spine; on desktop both wrappers dissolve to
+               display:contents and the absolute positioning takes over. -->
+          <div class="career-fold" :class="activeIndex === i && 'is-open'">
+            <div class="career-fold-clip">
+              <div
+                class="career-content flex flex-1 flex-col gap-5 p-5 lg:absolute lg:inset-y-0 lg:left-42 lg:right-0 lg:p-6"
+                :style="{ opacity: activeIndex === i ? 1 : 0 }"
+              >
+                <div class="flex flex-wrap items-center gap-2">
+                  <p class="font-display text-2xs font-semibold uppercase leading-snug tracking-label text-primary">
+                    {{ step.institution }}
+                  </p>
+                </div>
+
+                <NuxtImg
+                  :src="step.image"
+                  :alt="`Dr Deesha during her time at ${step.institution}`"
+                  sizes="100vw lg:32vw"
+                  loading="lazy"
+                  class="career-img w-full rounded-lg bg-foreground/5 object-cover lg:min-h-0 lg:flex-1"
+                />
+
+                <p class="font-display text-sm font-light leading-relaxed text-foreground/75 lg:text-base">
+                  {{ step.description }}
+                </p>
+
+                <p class="mt-auto font-display text-2xs uppercase tracking-label text-primary/45">
+                  {{ step.location }}
+                </p>
+              </div>
             </div>
-
-            <NuxtImg
-              :src="step.image"
-              :alt="`Dr Deesha during her time at ${step.institution}`"
-              sizes="100vw lg:32vw"
-              loading="lazy"
-              class="career-img w-full rounded-lg bg-foreground/5 object-cover lg:min-h-0 lg:flex-1"
-            />
-
-            <p class="font-display text-sm font-light leading-relaxed text-foreground/75 lg:text-base">
-              {{ step.description }}
-            </p>
-
-            <p class="mt-auto font-display text-2xs uppercase tracking-label text-primary/45">
-              {{ step.location }}
-            </p>
           </div>
         </article>
       </div>
@@ -118,8 +141,8 @@ function cardStyle(i: number) {
 // showing through. Only the true outer edges of the row should be rounded:
 // the first card's left side, and whichever card's right side is actually
 // exposed (the last card, since nothing overlaps it, or the active one,
-// since the cards after it have slid clear). Desktop-only — the mobile
-// stack doesn't overlap, so every corner stays rounded there.
+// since the cards after it have slid clear). Desktop-only — on mobile the
+// cards sit square inside the deck's own rounded, clipped frame.
 function cardRadiusClass(i: number) {
   const isFirst = i === 0
   const isLast = i === careerSteps.length - 1
@@ -163,6 +186,38 @@ useSectionReveal(root)
   transition: opacity 0.5s ease;
 }
 
+/* Mobile fold: a grid row is the animatable stand-in for height:auto, so
+   each card's content collapses to nothing under its spine and unfolds in
+   place when tapped. On desktop both wrappers get out of the way entirely
+   (display:contents) and the content's absolute positioning takes over. */
+@media (max-width: 1023px) {
+  .career-fold {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .career-fold.is-open {
+    grid-template-rows: 1fr;
+  }
+  .career-fold-clip {
+    overflow: hidden;
+    min-height: 0;
+  }
+}
+@media (min-width: 1024px) {
+  .career-fold,
+  .career-fold-clip {
+    display: contents;
+  }
+}
+
+.career-plus {
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.career-plus.is-open {
+  transform: rotate(45deg);
+}
+
 /* Elevation for the open card — the shared card token (now primary-tinted
    site-wide). Desktop only; the mobile stack neutralises it below. */
 @media (min-width: 1024px) {
@@ -201,20 +256,20 @@ useSectionReveal(root)
   }
 }
 
-/* Stacked layout below lg: neutralise the interactive transforms. */
+/* Stacked layout below lg: neutralise the desktop slide transforms — the
+   fold above carries the open/close motion instead. */
 @media (max-width: 1023px) {
   .career-card {
     transform: none !important;
     box-shadow: none !important;
   }
-  .career-content {
-    opacity: 1 !important;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .career-card,
-  .career-content {
+  .career-content,
+  .career-fold,
+  .career-plus {
     transition: none !important;
   }
 }

@@ -39,8 +39,10 @@
       </div>
     </div>
 
-    <!-- Bottom panel: solid primary (inherited from the footer itself), everything from the shade change down. -->
-    <div class="pb-16 lg:pb-20">
+    <!-- Bottom panel: solid primary (inherited from the footer itself), everything
+         from the shade change down. Extra bottom room under lg so the docked
+         mobile nav bar doesn't sit over the baseline links. -->
+    <div class="pb-36 lg:pb-20">
       <div class="mx-auto w-full max-w-6xl px-4 sm:px-6">
 
         <!-- Wordmark / section links / socials -->

@@ -7,9 +7,11 @@
          current item's highlight fade in as a closing beat.
        Sections keep their true page order; each is its own grid column that
        collapses to a real `0fr` (not a flex-basis trick that leaves a width
-       sliver behind and shoves Book Now off the true edge). -->
+       sliver behind and shoves Book Now off the true edge).
+       Desktop only — hover has no meaning on touch, so under lg the bottom
+       bar further down takes over. -->
   <nav
-    class="site-nav fixed top-6 right-6 z-40 flex h-11 w-fit items-stretch overflow-hidden rounded-lg border border-black/8 bg-white/55 text-foreground shadow-lift backdrop-blur-md"
+    class="site-nav fixed top-6 right-6 z-40 hidden h-11 w-fit items-stretch overflow-hidden rounded-lg border border-black/8 bg-white/55 text-foreground shadow-lift backdrop-blur-md lg:flex"
     @mouseenter="expanded = true"
     @mouseleave="expanded = false"
   >
@@ -66,6 +68,64 @@
       Book Now
     </UButton>
   </nav>
+
+  <!-- Mobile: the same frosted pill, docked along the bottom edge where the
+       thumb actually is. Book Now keeps its permanent right-edge anchor;
+       tapping Menu unfolds the section list upward out of the bar, items
+       cascading in bottom-first — the vertical cousin of the desktop unfurl. -->
+  <div
+    v-if="menuOpen"
+    class="fixed inset-0 z-30 lg:hidden"
+    aria-hidden="true"
+    @click="menuOpen = false"
+  />
+
+  <nav
+    aria-label="Sections"
+    class="fixed inset-x-4 z-40 lg:hidden"
+    style="bottom: calc(1rem + env(safe-area-inset-bottom, 0px))"
+  >
+    <div class="menu-fold grid" :class="menuOpen && 'is-open'">
+      <div class="min-h-0 overflow-hidden">
+        <ul id="mobile-menu" class="m-0 mb-2 list-none rounded-lg border border-black/8 bg-white/85 p-1.5 shadow-lift backdrop-blur-md">
+          <li v-for="(section, i) in sections" :key="section.id">
+            <button
+              type="button"
+              class="menu-item flex min-h-11 w-full cursor-pointer items-center justify-between rounded-md px-4 font-display text-2xs font-semibold uppercase tracking-label"
+              :class="section.id === current.id ? 'bg-primary/12 text-primary' : 'text-foreground/60'"
+              :style="{ transitionDelay: menuStagger(i) }"
+              @click="jumpTo(section.id)"
+            >
+              {{ section.label }}
+              <span v-if="section.id === current.id" aria-hidden="true" class="h-1 w-1 rounded-full bg-accent" />
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="flex h-12 items-stretch overflow-hidden rounded-lg border border-black/8 bg-white/55 text-foreground shadow-lift backdrop-blur-md">
+      <button
+        type="button"
+        class="flex min-w-0 flex-1 cursor-pointer items-center gap-3 px-5 font-display text-2xs font-semibold uppercase tracking-label text-foreground"
+        :aria-expanded="menuOpen"
+        aria-controls="mobile-menu"
+        @click="menuOpen = !menuOpen"
+      >
+        <span class="menu-glyph relative block h-2.5 w-3.5 shrink-0" :class="menuOpen && 'is-open'" aria-hidden="true" />
+        Menu
+      </button>
+
+      <UButton
+        :href="practice.bookingHref"
+        variant="solid"
+        color="primary"
+        class="site-nav-book h-full shrink-0 cursor-pointer rounded-l-none rounded-r-lg border-l border-black/8 bg-primary! px-6 text-white! transition-colors duration-200 hover:bg-accent!"
+      >
+        Book Now
+      </UButton>
+    </div>
+  </nav>
 </template>
 
 <script setup lang="ts">
@@ -80,7 +140,11 @@ const current = computed(() => sections.find(s => s.id === currentId.value) ?? s
 // deferred-highlight state to track.
 const expanded = ref(false)
 
+// Mobile bottom bar's unfolded section list.
+const menuOpen = ref(false)
+
 const STAGGER_MS = 55
+const MENU_STAGGER_MS = 40
 
 function reduceMotion() {
   return import.meta.client && window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -91,6 +155,13 @@ function reduceMotion() {
 function staggerDelay(i: number) {
   if (!expanded.value || reduceMotion()) return '0ms'
   return `${(sections.length - 1 - i) * STAGGER_MS}ms`
+}
+
+// The mobile list grows out of the bar beneath it, so the cascade runs
+// bottom-first — the item nearest the bar lands first.
+function menuStagger(i: number) {
+  if (!menuOpen.value || reduceMotion()) return '0ms'
+  return `${(sections.length - 1 - i) * MENU_STAGGER_MS}ms`
 }
 
 // Direction mirrors scroll direction: moving further down the page ticks
@@ -120,15 +191,23 @@ function jumpTo(id: string) {
   if (!el) return
   el.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' })
   expanded.value = false
+  menuOpen.value = false
+}
+
+function onKeydown(e: KeyboardEvent) {
+  if (e.key === 'Escape') menuOpen.value = false
 }
 
 let observer: IntersectionObserver | undefined
 
 onMounted(() => {
   // First width measurement, then re-measure once webfonts land (Fraunces
-  // arriving after mount changes the label's rendered width).
+  // arriving after mount changes the label's rendered width). Also on resize:
+  // the desktop pill is display:none under lg, where the measurer reports 0.
   measureTick()
   document.fonts?.ready.then(measureTick)
+  window.addEventListener('resize', measureTick)
+  window.addEventListener('keydown', onKeydown)
 
   const els = sections
     .map(s => document.getElementById(s.id))
@@ -151,6 +230,8 @@ onMounted(() => {
 
 onUnmounted(() => {
   observer?.disconnect()
+  window.removeEventListener('resize', measureTick)
+  window.removeEventListener('keydown', onKeydown)
 })
 </script>
 
@@ -205,6 +286,58 @@ onUnmounted(() => {
   opacity: 0;
 }
 
+/* Mobile menu: the sheet's row folds open (0fr -> 1fr) while the bar stays
+   bottom-anchored, so growth reads as unfolding upward. Items ride a small
+   fade/lift on a per-item delay for the cascade. */
+.menu-fold {
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.menu-fold.is-open {
+  grid-template-rows: 1fr;
+}
+.menu-item {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.25s ease,
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+.menu-fold.is-open .menu-item {
+  opacity: 1;
+  transform: none;
+}
+
+/* Two bars folding into a close cross. */
+.menu-glyph::before,
+.menu-glyph::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  background: currentColor;
+  transition:
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    top 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.menu-glyph::before {
+  top: 1px;
+}
+.menu-glyph::after {
+  top: 7px;
+}
+.menu-glyph.is-open::before {
+  top: 4px;
+  transform: rotate(45deg);
+}
+.menu-glyph.is-open::after {
+  top: 4px;
+  transform: rotate(-45deg);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .site-item,
   .site-btn,
@@ -212,7 +345,11 @@ onUnmounted(() => {
   .tick-up-enter-active,
   .tick-up-leave-active,
   .tick-down-enter-active,
-  .tick-down-leave-active {
+  .tick-down-leave-active,
+  .menu-fold,
+  .menu-item,
+  .menu-glyph::before,
+  .menu-glyph::after {
     transition: none !important;
   }
 }

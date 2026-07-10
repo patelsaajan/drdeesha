@@ -71,11 +71,13 @@
       </div>
     </div>
 
-    <!-- Case detail — slides in from the left, sized/styled via app.config.ts (ui.drawer) -->
+    <!-- Case detail — a left side-panel on desktop, a draggable bottom sheet
+         on mobile (thumb-dismissable, so it keeps its handle there).
+         Sized/styled via app.config.ts (ui.drawer). -->
     <UDrawer
       v-model:open="open"
-      direction="left"
-      :handle="false"
+      :direction="isDesktop ? 'left' : 'bottom'"
+      :handle="!isDesktop"
       :title="selected?.title"
       :description="selected?.summary"
     >
@@ -142,6 +144,7 @@ import { type CaseStudy, caseStudies } from '../data/cases'
 
 const open = ref(false)
 const selected = ref<CaseStudy | null>(null)
+const isDesktop = useIsDesktop()
 
 function openCase(study: CaseStudy) {
   selected.value = study

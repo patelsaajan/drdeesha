@@ -28,10 +28,13 @@ export default defineAppConfig({
         body: 'overflow-y-auto px-6 py-6 sm:px-8',
         footer: 'border-t border-foreground/10 px-6 py-5 sm:px-8',
       },
-      // Side drawers (case detail, etc.) default width.
+      // Side drawers (case detail, etc.) default width; the bottom sheet the
+      // same drawer becomes on mobile caps its height instead so the page
+      // behind stays visible above it.
       compoundVariants: [
         { direction: 'right' as const, class: { content: 'w-2/5' } },
         { direction: 'left' as const, class: { content: 'w-2/5' } },
+        { direction: 'bottom' as const, class: { content: 'max-h-[92dvh] rounded-t-xl' } },
       ],
     },
     badge: {
