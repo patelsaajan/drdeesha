@@ -27,8 +27,8 @@
           :aria-label="`${study.title} — ${study.treatment}`"
           class="reveal case-card group relative overflow-hidden rounded-xl bg-foreground text-left outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2"
           :class="i === 0
-            ? 'aspect-3/2 sm:col-span-2 sm:aspect-video lg:col-span-2 lg:row-span-2 lg:aspect-auto'
-            : 'aspect-4/5 lg:aspect-auto lg:h-full'"
+            ? 'aspect-4/3 sm:col-span-2 sm:aspect-video lg:col-span-2 lg:row-span-2 lg:aspect-auto'
+            : 'aspect-4/3 lg:aspect-auto lg:h-full'"
           @click="openCase(study)"
         >
           <NuxtImg
