@@ -3,8 +3,8 @@
     <SiteNav />
     <HomeHero />
     <AboutSection />
-    <CaseStudies />
     <ProcessVideo />
+    <CaseStudies />
     <CareerTimeline />
     <TestimonialsSection />
     <SiteFooter />

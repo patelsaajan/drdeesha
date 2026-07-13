@@ -1,10 +1,12 @@
 <template>
   <!-- Light frosted pill, anchored to the right edge. Two-part rhythm:
-       - Rest: a single section chip (the current one) sits directly left of
-         a fixed Book Now button. Book Now is the anchor — it never moves.
-       - Hover: the section list unfurls leftward from that anchor, each item
-         cascading in on a stagger, and only once they've all landed does the
-         current item's highlight fade in as a closing beat.
+       - Rest: one stationary chip sits directly left of a fixed Book Now
+         button. Neither ever moves or restyles as you scroll — a section
+         change is told entirely by the odometer inside the chip (the old
+         label ticks out, the new one ticks in) over an unchanging tint.
+       - Hover: the chip folds away while the section list unfurls leftward
+         from the Book Now anchor, each item cascading in on a stagger,
+         the current one carrying the highlight.
        Sections keep their true page order; each is its own grid column that
        collapses to a real `0fr` (not a flex-basis trick that leaves a width
        sliver behind and shoves Book Now off the true edge).
@@ -20,7 +22,7 @@
       :key="section.id"
       class="site-item grid h-full min-w-0 overflow-hidden"
       :style="{
-        gridTemplateColumns: expanded || section.id === current.id ? 'minmax(0, 1fr)' : 'minmax(0, 0fr)',
+        gridTemplateColumns: expanded ? 'minmax(0, 1fr)' : 'minmax(0, 0fr)',
         transitionDelay: staggerDelay(i),
       }"
     >
@@ -32,18 +34,34 @@
           expanded && i > 0 && 'border-l border-black/8',
         ]"
         :style="{
-          opacity: expanded || section.id === current.id ? 1 : 0,
+          opacity: expanded ? 1 : 0,
           transitionDelay: staggerDelay(i),
         }"
         @click="jumpTo(section.id)"
       >
-        <!-- Current chip's odometer. Width comes from a JS measurement of the
-             incoming label (the measurer span below reports it) and is
-             transitioned, so the chip glides between word lengths in step
-             with the roll instead of snapping. Until the first measurement
-             (SSR / pre-mount) an invisible in-flow sizer holds the width. -->
+        {{ section.label }}
+      </button>
+    </div>
+
+    <!-- Rest-state chip: a stationary window that never moves or changes
+         tint — section changes read purely as the odometer roll inside it.
+         Its width comes from a JS measurement of the incoming label (the
+         measurer span below reports it) and is transitioned, so the chip
+         glides between word lengths in step with the roll instead of
+         snapping. Until the first measurement (SSR / pre-mount) an
+         invisible in-flow sizer holds the width. Folds away while the
+         hover list above has the floor. -->
+    <div
+      class="site-item grid h-full min-w-0 overflow-hidden"
+      :style="{ gridTemplateColumns: expanded ? 'minmax(0, 0fr)' : 'minmax(0, 1fr)' }"
+    >
+      <button
+        type="button"
+        class="site-btn flex h-full min-w-0 cursor-pointer items-center justify-start overflow-hidden whitespace-nowrap bg-primary/12 px-4 font-display text-2xs font-semibold uppercase tracking-label text-primary"
+        :style="{ opacity: expanded ? 0 : 1 }"
+        @click="jumpTo(current.id)"
+      >
         <span
-          v-if="section.id === current.id"
           class="site-tick relative block h-3 overflow-hidden"
           :style="tickWidth != null ? { width: `${tickWidth}px` } : undefined"
         >
@@ -55,7 +73,6 @@
             </span>
           </Transition>
         </span>
-        <span v-else>{{ section.label }}</span>
       </button>
     </div>
 

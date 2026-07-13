@@ -44,9 +44,14 @@
           <!-- Spine — always visible tab. The border-r divider only makes sense
                once this card is open (marking the spine/content boundary) —
                left on unconditionally, it renders on every stacked card and
-               shows up as a faint line right at the overlap seam. -->
+               shows up as a faint line right at the overlap seam.
+               Width overdraws the 10.5rem visible strip by 1px: the next
+               card's left edge lands exactly on this spine's right edge, and
+               subpixel rem->px rounding can leave a hairline gap there — the
+               overdraw makes any such gap show spine tint instead of the
+               card's white body peeking through as a white seam. -->
           <div
-            class="career-spine relative flex flex-row items-center justify-between gap-4 overflow-hidden border-b border-primary/10 p-5 lg:absolute lg:inset-y-0 lg:left-0 lg:w-42 lg:flex-col lg:items-start lg:justify-between lg:border-b-0 lg:p-6"
+            class="career-spine relative flex flex-row items-center justify-between gap-4 overflow-hidden border-b border-primary/10 p-5 lg:absolute lg:inset-y-0 lg:left-0 lg:w-[calc(10.5rem+1px)] lg:flex-col lg:items-start lg:justify-between lg:border-b-0 lg:p-6"
             :class="[
               activeIndex === i && 'lg:border-r',
               i === careerSteps.length - 1 && 'border-b-0',

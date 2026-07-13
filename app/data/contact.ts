@@ -5,11 +5,11 @@ export interface DayHours {
   close: string | null
 }
 
-// Placeholder — swap in the real booking link and confirmed opening hours.
+// Confirm the opening hours below when they're settled.
 export const practice = {
   name: 'Smart Smiles',
   location: 'Ystrad Mynach',
-  bookingHref: '#',
+  bookingHref: 'https://smartsmiles.portal.dental/',
   // 19 Bedwlwyn Rd, Ystrad Mynach, Hengoed CF82 7AA — via Nominatim/OSM.
   coordinates: { lat: 51.6419655, lng: -3.2360676 },
   hours: [

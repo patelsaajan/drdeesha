@@ -133,6 +133,7 @@
              app.config.ts) to a solid fill — this is the one moment we want
              to out-shout the quieter after-pill and slider above it. -->
         <UButton
+          :href="practice.bookingHref"
           color="primary"
           variant="subtle"
           size="lg"
@@ -148,6 +149,7 @@
 
 <script setup lang="ts">
 import { type CaseStudy, caseStudies } from '../data/cases'
+import { practice } from '../data/contact'
 
 const open = ref(false)
 const selected = ref<CaseStudy | null>(null)
