@@ -1,9 +1,15 @@
 <template>
-  <!-- Lower z-index than the testimonials section above (z-20): while that
-       section is pinned/scroll-locked, this stays hidden behind it instead
-       of visibly sliding over it — it's only actually seen once the pin
-       releases and both are back in normal, non-overlapping flow. -->
-  <footer id="contact" ref="root" class="relative z-10 flex min-h-dvh flex-col overflow-hidden bg-primary text-white">
+  <!-- Curtain exit over the testimonials (lg only, where its pin exists):
+       lg:z-30 paints this above the pinned section (z-20), and
+       TestimonialsSection pulls this footer's flow position up by the
+       deck's measured height (a JS-managed negative margin-top) so it
+       starts entering the viewport exactly as the row scrub finishes and
+       slides up over the still-pinned section — without that pull-up,
+       pinSpacing places the footer at the pin's release point and the
+       curtain degrades into dead scroll plus a plain scroll-in. Below lg
+       (no pin) the margin is cleared and this stays in normal flow under
+       the mobile nav layers at z-10. -->
+  <footer id="contact" ref="root" class="relative z-10 flex min-h-dvh flex-col overflow-hidden bg-primary text-white lg:z-30">
     <!-- Top panel: a lighter tint of primary, everything above the shade
          change. flex-1 + items-center: whatever height min-h-dvh leaves
          over after the bottom panel takes its natural cut lands here, with

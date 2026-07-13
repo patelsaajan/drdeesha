@@ -47,11 +47,10 @@
 
     <!-- Desktop: pinned (scroll locked) until the row-scrub finishes: the top
          and bottom rows slide right, the middle row slides left, each
-         revealing cards that start hidden off one edge. The footer sits at a
-         lower z-index than this section (see SiteFooter.vue), so during the
-         pin it stays hidden behind rather than visibly sliding over it — it
-         only becomes visible once the pin releases and both are back in
-         normal, non-overlapping flow. -->
+         revealing cards that start hidden off one edge. The pin then holds
+         for one extra viewport while the footer — z-raised above this
+         section on lg (see SiteFooter.vue) — pulls up over it like a
+         curtain, so the section exits covered rather than scrolled past. -->
     <div ref="desk" class="hidden min-h-dvh flex-col overflow-x-clip lg:flex">
       <!-- Reserved band: exactly the top 1/5 of the section, eyebrow + heading
            centred within it. -->
@@ -185,16 +184,35 @@ onMounted(() => {
     // and scrub each row horizontally over the extra scroll distance below.
     // Odd rows (top, bottom) start with their overflow hidden off the left
     // and slide right to reveal it; the middle row does the reverse.
+    // Over the 3-viewport pin the rows run eased (power2.out) for 1.4 of
+    // the 1.5-long timeline: quick out of the gate, decelerating so that
+    // by the 2-viewport mark (timeline 1.0) they're ~90% home and creeping
+    // — which is exactly where the footer's top edge crosses into view, so
+    // the curtain starts climbing while the cards are still drifting the
+    // last few pixels. The footer's flow position is pulled up by the
+    // deck's full MEASURED height — not 100dvh, because on shorter
+    // viewports the deck runs taller than one viewport and that difference
+    // opens a dead-scroll gap between rows and curtain. With margin
+    // -deskHeight and exactly 3 viewports of pin, the footer fully covers
+    // the screen at the moment the pin releases.
+    const footerEl = document.getElementById('contact')
+
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: deskEl,
         start: 'top top',
-        end: '+=200%',
+        end: () => `+=${window.innerHeight * 3}`,
         scrub: 0.8,
         pin: true,
         pinSpacing: true,
         anticipatePin: 1,
         invalidateOnRefresh: true,
+        // Runs before every refresh's measurements (including the initial
+        // one), so resizes keep the pull-up in step with the deck's
+        // current height.
+        onRefreshInit: () => {
+          if (footerEl) gsap.set(footerEl, { marginTop: -deskEl.offsetHeight })
+        },
       },
     })
 
@@ -203,12 +221,21 @@ onMounted(() => {
       const revealsRight = i % 2 === 0
       if (revealsRight) {
         gsap.set(rowEl, { x: () => -rowExtra(rowEl) })
-        tl.to(rowEl, { x: 0, ease: 'none' }, 0)
+        tl.to(rowEl, { x: 0, ease: 'power2.out', duration: 1.4 }, 0)
       } else {
         gsap.set(rowEl, { x: 0 })
-        tl.to(rowEl, { x: () => -rowExtra(rowEl), ease: 'none' }, 0)
+        tl.to(rowEl, { x: () => -rowExtra(rowEl), ease: 'power2.out', duration: 1.4 }, 0)
       }
     })
+
+    // Dead tail to 1.5 — pads the timeline so the full pin distance stays
+    // 3 viewports and the rows' 1.4 lands at 2.8 viewports of scroll.
+    tl.to({}, { duration: 0.5 }, 1)
+
+    // Leaving lg: hand the footer its normal flow position back.
+    return () => {
+      if (footerEl) footerEl.style.marginTop = ''
+    }
   })
 })
 

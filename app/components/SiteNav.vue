@@ -222,6 +222,15 @@ function jumpTo(id: string) {
     return
   }
 
+  // The stylesheet's scroll-behavior:smooth (kept for the footer's plain
+  // anchor links) would fight the tween: the browser re-animates every
+  // incremental position the tween sets, the real position never matches
+  // the expected one, and autoKill reads that as the visitor scrolling —
+  // killing the tween on its first tick. Park it on 'auto' for the ride.
+  const htmlStyle = document.documentElement.style
+  htmlStyle.scrollBehavior = 'auto'
+  const restore = () => { htmlStyle.scrollBehavior = '' }
+
   const targetY = window.scrollY + el.getBoundingClientRect().top
   const duration = gsap.utils.clamp(0.7, 1.6, Math.abs(targetY - window.scrollY) / 2600)
   gsap.to(window, {
@@ -229,6 +238,8 @@ function jumpTo(id: string) {
     duration,
     ease: 'power3.inOut',
     overwrite: 'auto',
+    onComplete: restore,
+    onInterrupt: restore,
   })
 }
 
