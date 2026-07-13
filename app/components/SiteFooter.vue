@@ -3,9 +3,13 @@
        section is pinned/scroll-locked, this stays hidden behind it instead
        of visibly sliding over it — it's only actually seen once the pin
        releases and both are back in normal, non-overlapping flow. -->
-  <footer id="contact" ref="root" class="relative z-10 flex min-h-dvh flex-col justify-start overflow-hidden bg-primary text-white">
-    <!-- Top panel: a lighter tint of primary, everything above the shade change. -->
-    <div class="py-16 lg:py-20" :style="{ backgroundColor: usePrimaryTint(80) }">
+  <footer id="contact" ref="root" class="relative z-10 flex min-h-dvh flex-col overflow-hidden bg-primary text-white">
+    <!-- Top panel: a lighter tint of primary, everything above the shade
+         change. flex-1 + items-center: whatever height min-h-dvh leaves
+         over after the bottom panel takes its natural cut lands here, with
+         the CTA centred in it — breathing room around the closing argument
+         instead of a slab of empty primary under the baseline links. -->
+    <div class="flex flex-1 items-center py-16 lg:py-20" :style="{ backgroundColor: usePrimaryTint(80) }">
       <div class="mx-auto w-full max-w-6xl px-4 sm:px-6">
 
         <!-- CTA (left) / map to the practice (right, opposite). items-start,
@@ -39,10 +43,13 @@
       </div>
     </div>
 
-    <!-- Bottom panel: solid primary (inherited from the footer itself), everything
-         from the shade change down. Extra bottom room under lg so the docked
-         mobile nav bar doesn't sit over the baseline links. -->
-    <div class="pb-36 lg:pb-20">
+    <!-- Bottom panel: solid primary (inherited from the footer itself),
+         everything from the shade change down — capped at its content
+         height (shrink-0, no grow) so it never stretches to fill the
+         viewport; the CTA panel above absorbs that instead. Extra bottom
+         room under lg so the docked mobile nav bar doesn't sit over the
+         baseline links. -->
+    <div class="shrink-0 pb-36 lg:pb-20">
       <div class="mx-auto w-full max-w-6xl px-4 sm:px-6">
 
         <!-- Wordmark / section links / socials -->

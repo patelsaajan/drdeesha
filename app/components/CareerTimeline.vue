@@ -1,7 +1,7 @@
 <template>
-  <section id="experience" ref="root" class="relative z-20 bg-background text-foreground">
+  <section id="experience" class="relative z-20 bg-background text-foreground">
 
-    <div class="mx-auto max-w-6xl px-4 pt-24 pb-10 sm:px-6 lg:pt-28">
+    <div ref="header" class="mx-auto max-w-6xl px-4 pt-24 pb-10 sm:px-6 lg:pt-28">
       <p class="reveal font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
         Experience
       </p>
@@ -21,8 +21,8 @@
          a stacked tab inside one rounded frame, and tapping one folds its
          card open in place — the thumb's version of the desktop hover-peel.
          One card is always open (the current role by default). -->
-    <div class="career-track overflow-x-clip px-4 pt-4 pb-24 sm:px-6 lg:px-3 lg:pb-28">
-      <div class="mx-auto flex w-full flex-col overflow-hidden rounded-xl border border-primary/10 lg:w-max lg:flex-row lg:overflow-visible lg:rounded-none lg:border-0">
+    <div ref="track" class="career-track overflow-x-clip px-4 pt-4 pb-24 sm:px-6 lg:px-3 lg:pb-28">
+      <div class="reveal mx-auto flex w-full flex-col overflow-hidden rounded-xl border border-primary/10 lg:w-max lg:flex-row lg:overflow-visible lg:rounded-none lg:border-0">
         <article
           v-for="(step, i) in careerSteps"
           :key="step.id"
@@ -171,8 +171,15 @@ function spineStyle(i: number) {
 }
 
 // Header entrance — same reveal treatment as every other section header.
-const root = ref<HTMLElement | null>(null)
-useSectionReveal(root)
+const header = ref<HTMLElement | null>(null)
+useSectionReveal(header)
+
+// The deck gets its own observer rather than riding the header's: the
+// section is tall enough that a single section-level trigger fires while
+// the deck is still below the fold, playing its entrance unseen. Observed
+// on its own, it rises as one unit the moment it actually shows up.
+const track = ref<HTMLElement | null>(null)
+useSectionReveal(track)
 </script>
 
 <style scoped>

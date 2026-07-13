@@ -1,15 +1,18 @@
 <template>
   <div id="home" class="relative bg-background">
 
-    <!-- Fixed wordmark — stays centred while smiles scroll behind it -->
-    <div class="intro-title pointer-events-none fixed inset-0 z-10 flex flex-col items-center justify-center gap-2">
-      <h1 class="m-0 font-serif font-normal leading-none tracking-heading text-foreground" style="font-size: clamp(3rem, 10vw, 7rem)">
+    <!-- Fixed wordmark — stays centred while smiles scroll behind it. On
+         first load it performs the site's one entrance: the name rises,
+         then the hairlines draw outward from the DENTAL label. Precise and
+         unhurried, finished before the first scroll. -->
+    <div ref="intro" class="intro-title pointer-events-none fixed inset-0 z-10 flex flex-col items-center justify-center gap-2">
+      <h1 class="intro-word m-0 font-serif font-normal leading-none tracking-heading text-foreground" style="font-size: clamp(3rem, 10vw, 7rem)">
         Dr Deesha
       </h1>
       <div class="flex items-center gap-3" style="width: clamp(20rem, 55vw, 48rem)">
-        <span class="flex-1 h-px bg-foreground" />
-        <span class="font-display font-semibold tracking-eyebrow uppercase text-foreground" style="font-size: clamp(0.7rem, 1.2vw, 0.9rem)">Dental</span>
-        <span class="flex-1 h-px bg-foreground" />
+        <span class="intro-rule intro-rule-l h-px flex-1 bg-foreground" />
+        <span class="intro-eyebrow font-display font-semibold uppercase tracking-eyebrow text-foreground" style="font-size: clamp(0.7rem, 1.2vw, 0.9rem)">Dental</span>
+        <span class="intro-rule intro-rule-r h-px flex-1 bg-foreground" />
       </div>
     </div>
 
@@ -33,6 +36,8 @@
 </template>
 
 <script setup lang="ts">
+import gsap from 'gsap'
+
 const images = [
   '/images/smile/smile-1.jpeg',
   '/images/smile/smile-2.jpeg',
@@ -133,6 +138,35 @@ function onMotionPreferenceChange(e: MediaQueryListEvent) {
   prefersReducedMotion.value = e.matches
 }
 
+// First-load choreography for the wordmark. Reduced-motion visitors never
+// enter here: the anti-FOUC styles that hide these elements only apply
+// under no-preference, so for them everything is simply visible at first
+// paint with no JS involved.
+const intro = ref<HTMLElement | null>(null)
+let introCtx: gsap.Context | undefined
+
+function playIntro() {
+  const el = intro.value
+  if (!el || prefersReducedMotion.value) return
+
+  // Wait for the serif to land so the name doesn't font-swap mid-rise, but
+  // cap the wait — a slow font CDN shouldn't hold the entrance hostage.
+  Promise.race([
+    document.fonts?.ready ?? Promise.resolve(),
+    new Promise(resolve => setTimeout(resolve, 600)),
+  ]).then(() => {
+    introCtx = gsap.context(() => {
+      gsap.timeline({ defaults: { ease: 'expo.out' } })
+        .fromTo('.intro-word', { autoAlpha: 0, y: 30 }, { autoAlpha: 1, y: 0, duration: 1.15 })
+        .fromTo('.intro-eyebrow', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6, ease: 'power2.out' }, '-=0.55')
+        // Hairlines draw outward from the label: each anchors its origin at
+        // the label-side end, so growth reads as leaving the word.
+        .fromTo('.intro-rule-l', { scaleX: 0 }, { scaleX: 1, duration: 0.9, transformOrigin: '100% 50%' }, '<')
+        .fromTo('.intro-rule-r', { scaleX: 0 }, { scaleX: 1, duration: 0.9, transformOrigin: '0% 50%' }, '<')
+    }, el)
+  })
+}
+
 onMounted(() => {
   onResize()
   window.addEventListener('scroll', onScroll, { passive: true })
@@ -140,17 +174,31 @@ onMounted(() => {
   motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
   prefersReducedMotion.value = motionQuery.matches
   motionQuery.addEventListener('change', onMotionPreferenceChange)
+  playIntro()
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', onScroll)
   window.removeEventListener('resize', onResize)
   motionQuery?.removeEventListener('change', onMotionPreferenceChange)
+  introCtx?.revert()
 })
 </script>
 
 <style scoped>
 .smile {
   will-change: transform;
+}
+
+/* Entrance start states — only where we'll animate. Reduced-motion visitors
+   get the wordmark fully visible from first paint, no JS required. */
+@media (prefers-reduced-motion: no-preference) {
+  .intro-word,
+  .intro-eyebrow {
+    opacity: 0;
+  }
+  .intro-rule {
+    transform: scaleX(0);
+  }
 }
 </style>

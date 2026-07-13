@@ -129,6 +129,8 @@
 </template>
 
 <script setup lang="ts">
+import gsap from 'gsap'
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin'
 import { practice } from '../data/contact'
 import { siteSections as sections } from '../data/sections'
 
@@ -186,12 +188,31 @@ function measureTick() {
 
 watch(currentId, () => nextTick(measureTick))
 
+// Section jumps ride a GSAP tween instead of native smooth scroll: the
+// duration scales with distance (clamped both ends) on a symmetric ease, so
+// a hop to the neighbouring section feels immediate while a full-page
+// journey sweeps through the pinned scrub sections at a deliberate pace
+// instead of the browser's. autoKill hands control straight back to the
+// visitor's own wheel or touch the moment they use it.
 function jumpTo(id: string) {
   const el = document.getElementById(id)
   if (!el) return
-  el.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' })
   expanded.value = false
   menuOpen.value = false
+
+  if (reduceMotion()) {
+    el.scrollIntoView({ behavior: 'auto', block: 'start' })
+    return
+  }
+
+  const targetY = window.scrollY + el.getBoundingClientRect().top
+  const duration = gsap.utils.clamp(0.7, 1.6, Math.abs(targetY - window.scrollY) / 2600)
+  gsap.to(window, {
+    scrollTo: { y: targetY, autoKill: true },
+    duration,
+    ease: 'power3.inOut',
+    overwrite: 'auto',
+  })
 }
 
 function onKeydown(e: KeyboardEvent) {
@@ -201,6 +222,8 @@ function onKeydown(e: KeyboardEvent) {
 let observer: IntersectionObserver | undefined
 
 onMounted(() => {
+  gsap.registerPlugin(ScrollToPlugin)
+
   // First width measurement, then re-measure once webfonts land (Fraunces
   // arriving after mount changes the label's rendered width). Also on resize:
   // the desktop pill is display:none under lg, where the measurer reports 0.

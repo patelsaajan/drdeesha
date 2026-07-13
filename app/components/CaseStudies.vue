@@ -42,22 +42,29 @@
           <!-- Warm legibility scrim, deepening a touch on hover -->
           <div aria-hidden="true" class="absolute inset-0 bg-linear-to-t from-black/85 via-black/30 to-black/5 transition-opacity duration-500 group-hover:from-black/90" />
 
-          <!-- Caption stays put; only the text under the eyebrow trades places
-               with the CTA on hover. Both occupy the same footprint (the CTA
-               overlays the title zone on pointer devices), so nothing climbs
-               up over the photo. -->
+          <!-- Caption stays put; only the swap zone trades places with the
+               CTA on hover. Both occupy the same footprint (the CTA overlays
+               the swap zone on pointer devices), so nothing climbs up over
+               the photo. On the feature card the serif title sits above the
+               swap and never moves — only its summary line steps aside for
+               the CTA; the smaller cards swap their title, the only text
+               they have. -->
           <div class="case-caption absolute inset-x-0 bottom-0 z-10 px-5 pb-5 lg:px-6 lg:pb-6">
             <p class="font-display text-3xs font-semibold uppercase tracking-label text-accent">
               {{ study.treatment }}
             </p>
 
-            <div class="case-swap relative mt-1">
+            <p v-if="i === 0" class="mt-1 font-serif text-2xl leading-snug text-white lg:text-3xl">
+              {{ study.title }}
+            </p>
+
+            <div class="case-swap relative" :class="i === 0 ? 'mt-1.5' : 'mt-1'">
               <div class="case-title">
-                <p class="font-serif leading-snug text-white" :class="i === 0 ? 'text-2xl lg:text-3xl' : 'text-xl'">
-                  {{ study.title }}
-                </p>
-                <p v-if="i === 0" class="mt-1.5 max-w-md font-display text-sm font-light leading-relaxed text-white/75">
+                <p v-if="i === 0" class="max-w-md font-display text-sm font-light leading-relaxed text-white/75">
                   {{ study.summary }}
+                </p>
+                <p v-else class="font-serif text-xl leading-snug text-white">
+                  {{ study.title }}
                 </p>
               </div>
 
@@ -163,14 +170,17 @@ useSectionReveal(root)
   }
 }
 
-/* Warm accent-tinted lift on hover — a friendlier echo of the career cards'
-   primary-tinted shadow. Shadow only (not transform), so it never fights the
-   inline transform GSAP leaves on the card after the entrance reveal. */
+/* Primary-tinted lift on hover — same family as the shared card shadow the
+   career deck and about candids use, but cranked: the shared token's -30px
+   spread barely registers under these full-bleed photo cards, so this pulls
+   the spread in and adds ink to make the lift unmistakable. Shadow only
+   (not transform), so it never fights the inline transform GSAP leaves on
+   the card after the entrance reveal. */
 .case-card {
   transition: box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .case-card:hover {
-  box-shadow: 0 24px 48px -22px color-mix(in oklab, var(--color-accent) 42%, transparent);
+  box-shadow: 0 24px 56px -14px color-mix(in oklab, var(--color-primary) 55%, transparent);
 }
 
 .case-arrow {
@@ -181,10 +191,12 @@ useSectionReveal(root)
   transform: translateX(0.15rem);
 }
 
-/* In-place swap. The title keeps the caption's footprint (it's the sizer);
-   the CTA overlays its bottom line, hidden at rest, and on hover/focus the
-   two trade places — title drifts up and out as the CTA rises in. The
-   caption block itself never moves, so the eyebrow stays off the photo. */
+/* In-place swap. The swap zone keeps the caption's footprint (its sizer is
+   the summary on the feature card, the title on the rest); the CTA overlays
+   its bottom line, hidden at rest, and on hover/focus the two trade places
+   — the sizer drifts up and out as the CTA rises in. The caption block
+   itself never moves, so the eyebrow (and the feature card's title, which
+   lives above the swap) stays put. */
 .case-title {
   transition:
     opacity 0.3s ease,
