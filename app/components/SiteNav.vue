@@ -80,7 +80,7 @@
       :href="practice.bookingHref"
       variant="solid"
       color="primary"
-      class="site-nav-book h-full shrink-0 cursor-pointer rounded-l-none rounded-r-lg border-l border-black/8 bg-primary! px-6 text-white! transition-colors duration-200 hover:bg-accent!"
+      class="site-nav-book h-full shrink-0 cursor-pointer rounded-l-none rounded-r-lg border-l border-black/8 bg-primary! px-6 text-white! transition-colors duration-200 hover:bg-accent! hover:text-primary!"
     >
       Book Now
     </UButton>
@@ -137,7 +137,7 @@
         :href="practice.bookingHref"
         variant="solid"
         color="primary"
-        class="site-nav-book h-full shrink-0 cursor-pointer rounded-l-none rounded-r-lg border-l border-black/8 bg-primary! px-6 text-white! transition-colors duration-200 hover:bg-accent!"
+        class="site-nav-book h-full shrink-0 cursor-pointer rounded-l-none rounded-r-lg border-l border-black/8 bg-primary! px-6 text-white! transition-colors duration-200 hover:bg-accent! hover:text-primary!"
       >
         Book Now
       </UButton>

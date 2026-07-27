@@ -78,12 +78,12 @@
       </div>
     </div>
 
-    <!-- Case detail — a left side-panel on desktop, a draggable bottom sheet
+    <!-- Case detail — a right side-panel on desktop, a draggable bottom sheet
          on mobile (thumb-dismissable, so it keeps its handle there).
          Sized/styled via app.config.ts (ui.drawer). -->
     <UDrawer
       v-model:open="open"
-      :direction="isDesktop ? 'left' : 'bottom'"
+      :direction="isDesktop ? 'right' : 'bottom'"
       :handle="!isDesktop"
       :title="selected?.title"
       :description="selected?.summary"
@@ -138,7 +138,7 @@
           variant="subtle"
           size="lg"
           block
-          class="rounded-full bg-primary text-white duration-250 ease-out hover:bg-accent active:bg-accent"
+          class="rounded-full bg-primary text-white duration-250 ease-out hover:bg-accent hover:text-primary active:bg-accent active:text-primary"
         >
           Book a consultation
         </UButton>

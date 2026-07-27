@@ -56,7 +56,7 @@
           :style="{ backgroundColor: usePrimaryTint(30) }"
         >
           <NuxtImg
-            src="/images/dr-deesha.jpeg"
+            src="/images/about/portrait.jpeg"
             alt="Dr Deesha, smiling in a black roll-neck against a dark studio backdrop"
             sizes="100vw lg:33vw"
             preload
@@ -105,7 +105,7 @@
           </figcaption>
           <div class="candid-slide candid-slide-up absolute inset-0 overflow-hidden rounded-xl">
             <NuxtImg
-              src="/images/deesha-1.jpg"
+              src="/images/about/candid-1.jpg"
               alt="Dr Deesha beaming under a jacaranda tree in a glasshouse garden"
               sizes="50vw lg:33vw"
               loading="lazy"
@@ -131,7 +131,7 @@
           </figcaption>
           <div class="candid-slide candid-slide-right absolute inset-0 overflow-hidden rounded-xl">
             <NuxtImg
-              src="/images/deesha-3.jpg"
+              src="/images/about/candid-3.jpg"
               alt="Dr Deesha blowing a kiss beside the Aquarius fountain on a city wander"
               sizes="50vw lg:33vw"
               loading="lazy"
@@ -165,7 +165,7 @@
         >
           <div class="candid-caption absolute inset-0 overflow-hidden rounded-xl">
             <NuxtImg
-              src="/images/deesha-2.jpg"
+              src="/images/about/candid-2.jpg"
               alt="Dr Deesha waving beside elephants bathing in a Chiang Mai river"
               sizes="100vw lg:33vw"
               loading="lazy"
@@ -230,21 +230,21 @@
         <!-- Booking — the ramp's full-strength endpoint, standing a full
              1x2 column down the grid's bottom-right corner (the deesha-2
              lid slides down over its neighbour, not this). The whole tile
-             is the link: hover floods it with the accent, the same orange
+             is the link: hover floods it with the accent, the same colour
              every other CTA resolves to (solid bg-primary class rather than
              an inline style, so hover:bg-accent can win). The action
              carries the serif headline; "Ready when you are." is its
              eyebrow. The extra vertical room lets the type run larger. -->
         <a
           :href="practice.bookingHref"
-          class="reveal group col-span-2 flex flex-col items-start justify-center gap-5 rounded-xl bg-primary p-6 text-white outline-none transition-colors duration-250 ease-out hover:bg-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 sm:p-8 lg:col-start-5 lg:row-span-2 lg:row-start-2"
+          class="reveal group col-span-2 flex flex-col items-start justify-center gap-5 rounded-xl bg-primary p-6 text-white outline-none transition-colors duration-250 ease-out hover:bg-accent hover:text-primary focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 sm:p-8 lg:col-start-5 lg:row-span-2 lg:row-start-2"
         >
-          <p class="font-display text-xs font-semibold uppercase tracking-eyebrow text-white/70">
+          <p class="font-display text-xs font-semibold uppercase tracking-eyebrow text-white/70 group-hover:text-primary/70">
             Ready when you are.
           </p>
           <p class="m-0 font-serif font-normal leading-snug tracking-heading" style="font-size: clamp(1.5rem, 2.4vw, 2.25rem)">
             Book an appointment
-            <span aria-hidden="true" class="inline-block text-accent transition-all duration-250 ease-out group-hover:translate-x-0.5 group-hover:text-white">↗</span>
+            <span aria-hidden="true" class="inline-block text-accent transition-all duration-250 ease-out group-hover:translate-x-0.5 group-hover:text-primary">↗</span>
           </p>
         </a>
 
@@ -256,7 +256,7 @@
           :style="{ backgroundColor: usePrimaryTint(30) }"
         >
           <NuxtImg
-            src="/images/deesha-2.jpg"
+            src="/images/about/candid-2.jpg"
             alt="Dr Deesha waving beside elephants bathing in a Chiang Mai river"
             sizes="100vw"
             loading="lazy"

@@ -10,10 +10,9 @@
      white text" needs re-checking. */
   --color-primary: #3C0061;
   --color-secondary: #7ab3c8;
-  /* Friendly pumpkin orange — warmer and more vibrant than the old burnt
-     tone, while kept deep enough that white text on it still holds ~4.2:1
-     (clears AA for the bold button labels it backs on hover). */
-  --color-accent: #d1541a;
+  /* Bright amber-yellow. Too light for white text (~2:1, fails AA) — labels
+     that land on this background use text-primary instead (~7.6:1, AAA). */
+  --color-accent: #F5A623;
 
   --font-display: "Fraunces", Georgia, serif;
   --font-serif: "Bodoni Moda", Georgia, serif;

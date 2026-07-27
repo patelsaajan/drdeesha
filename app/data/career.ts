@@ -28,7 +28,7 @@ export const careerSteps: CareerStep[] = [
     location: 'Leeds',
     description:
       'Five years of foundations: anatomy, materials, and my first real patients. Leeds taught me that good dentistry is equal parts science and steadiness.',
-    image: '/images/dr-deesha-graduation.jpg',
+    image: '/images/career/graduation.jpg',
     mark: 'BDS',
   },
   {
@@ -39,7 +39,7 @@ export const careerSteps: CareerStep[] = [
     location: 'Newark',
     description:
       'My first year in practice, treating a whole community from anxious first-timers to lifelong regulars. I learned to slow down and listen before I ever picked up a handpiece.',
-    image: '/images/dr-deesha-newark.jpeg',
+    image: '/images/career/newark.jpeg',
     mark: 'DF1',
   },
   {
@@ -50,7 +50,7 @@ export const careerSteps: CareerStep[] = [
     location: 'Birmingham',
     description:
       'A hospital year split between children and complex restorative work. Treating nervous young patients made gentleness a habit, not an afterthought.',
-    image: '/images/dr-deesha-bdh.jpeg',
+    image: '/images/career/bdh.jpeg',
     mark: 'DCT1',
   },
   {
@@ -61,7 +61,7 @@ export const careerSteps: CareerStep[] = [
     location: 'Postgraduate',
     description:
       'A masters spent obsessing over the details of a smile: proportion, shade, and the millimetre decisions that separate good from seamless.',
-    image: '/images/dr-deesha-ta.jpg',
+    image: '/images/career/ta.jpg',
     mark: 'TA',
   },
   {
@@ -72,7 +72,7 @@ export const careerSteps: CareerStep[] = [
     location: 'Ystrad Mynach',
     description:
       'Where it all comes together. From routine check-ups to full smile makeovers, this is the unhurried, precise dentistry I set out to practise.',
-    image: '/images/dr-deesha-smart-smiles.jpg',
+    image: '/images/career/smart-smiles.jpg',
     mark: 'NOW',
     current: true,
   },

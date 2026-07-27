@@ -18,8 +18,8 @@ export interface CaseStudy {
   after: string
 }
 
-const BEFORE = '/images/case-studies/case-study-1-before.jpeg'
-const AFTER = '/images/case-studies/case-study-1-after.jpeg'
+const BEFORE = '/images/cases/case-study-1-before.jpeg'
+const AFTER = '/images/cases/case-study-1-after.jpeg'
 
 export const caseStudies: CaseStudy[] = [
   {

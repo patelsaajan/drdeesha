@@ -38,7 +38,7 @@
               color="neutral"
               variant="solid"
               size="xl"
-              class="reveal mt-9 rounded-full px-10 text-base duration-250 ease-out hover:bg-accent hover:text-white"
+              class="reveal mt-9 rounded-full px-10 text-base duration-250 ease-out hover:bg-accent hover:text-primary"
             >
               Book an appointment
             </UButton>
