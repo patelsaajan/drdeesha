@@ -131,12 +131,15 @@ let ctx: gsap.Context | undefined
 let mm: gsap.MatchMedia | undefined
 let observer: IntersectionObserver | undefined
 
-// How far a row's content runs past its clip wrapper — the distance the
-// scrub has to travel to bring the hidden cards fully into view.
+// How far a row's content shifts during the scrub. Capped well short of
+// the row's actual overflow — this is a drift to sell the reveal, not a
+// filmstrip scroll through every card.
+const ROW_SHIFT_MAX = 200
+
 function rowExtra(rowEl: HTMLElement) {
   const clip = rowEl.parentElement
   if (!clip) return 0
-  return Math.max(0, rowEl.scrollWidth - clip.clientWidth)
+  return Math.min(ROW_SHIFT_MAX, Math.max(0, rowEl.scrollWidth - clip.clientWidth))
 }
 
 onMounted(() => {
