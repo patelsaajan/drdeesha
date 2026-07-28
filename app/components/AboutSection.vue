@@ -18,8 +18,13 @@
       <!-- Editorial mosaic, same family as the cases grid: mixed-size tiles
            where the studio portrait is the anchor (name + qualifications sat
            on its scrim), primary-tinted text tiles carry the bio around it,
-           and three candid photos fill in — personality by showing, not
-           telling. Mobile keeps the mosaic as a two-column stack; lg pins
+           and candid photos fill in on desktop — personality by showing,
+           not telling. Below lg the personal candids (jacaranda, the
+           elephants) drop out, so a patient scrolling on their phone only
+           meets the tiles that actually help them size up a dentist — bio,
+           portrait, the chairside photo, the philosophy and reassurance
+           copy, and the booking CTAs — as a lean two-column stack, closing
+           CTA last. lg pins
            every tile to an explicit slot across five 17rem rows: a
            full-width row leads with the professional bio, then a 6-col
            arrangement of the rest — the portrait holds the top-centre as a
@@ -28,24 +33,30 @@
            booking tile, itself a whole-tile link, takes its old single-row
            slot instead. Every slide target stays a single 1x1 cell. Every
            surface — the section wash included — comes off the shared
-           primary tint ramp (usePrimaryTint). All cards carry white text, so
-           they live in the 60-85 band (60 is where white first tests
-           legible on the ramp), spread so edge-sharing surfaces —
-           hover-revealed caption cards included — stay clearly apart. Full
-           primary stays reserved for the one booking tile that has to catch
-           the eye. Type is scaled per tile to how much copy it carries, so
-           each box reads comfortably full at the fixed lg row height. -->
+           primary tint ramp (usePrimaryTint), and no cell drops below 55.
+           Text cards spread across that ramp (70, 70, 72, 78, 85), placed so
+           no two edge-sharing surfaces land near each other; photo tiles sit at
+           55 as a load-time ground the image covers anyway. Full primary
+           (bg-primary, the ramp's dark end) belongs to the booking CTAs — a
+           class rather than an inline tint so hover:bg-accent can win. Only
+           the section wash sits light, at 6: it's the ground the gutters show
+           as grout, not a cell. Type is scaled per tile to the room it has —
+           the 1x2 intro carries the largest body size, the 4-col bio a step
+           under it — so each box reads comfortably full at its row height. -->
       <div class="mt-14 grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-6 lg:grid-rows-[repeat(5,17rem)]">
 
         <!-- The professional bio — leads the mosaic right under the section
-             title, sharing row one with the chairside photo beside it. The
-             lightest tint in the card ramp (60, its floor for legible white
-             text) so it opens quietly before the deeper tiles below it. -->
+             title, sharing row one with the chairside photo beside it. Sits
+             mid-ramp at 72; its only text neighbour is the booking CTA
+             directly below at full primary, so it has room to run deep without
+             crowding anything. -->
         <div
           class="reveal col-span-2 flex flex-col justify-center rounded-xl p-6 text-white sm:p-8 lg:col-span-4 lg:col-start-1 lg:row-start-1 lg:p-6"
-          :style="{ backgroundColor: usePrimaryTint(60) }"
+          :style="{ backgroundColor: usePrimaryTint(72) }"
         >
-          <p class="font-display text-base font-light leading-relaxed text-white/85">
+          <!-- lg:text-xl — the widest tile in the mosaic, so the copy can run
+               up a step and still hold its 4-col measure inside one row. -->
+          <p class="font-display text-base font-light leading-relaxed text-white/85 lg:text-xl">
             I'm a general dentist working at the wonderful {{ practice.name }} in
             {{ practice.location }}, South Wales and I enjoy providing a wide range of general
             and cosmetic dental treatments in a calm and welcoming environment. I'm passionate
@@ -57,7 +68,7 @@
              completing row one alongside the bio. -->
         <figure
           class="reveal relative col-span-2 m-0 aspect-video overflow-hidden rounded-xl lg:col-span-2 lg:col-start-5 lg:row-start-1 lg:aspect-auto"
-          :style="{ backgroundColor: usePrimaryTint(30) }"
+          :style="{ backgroundColor: usePrimaryTint(55) }"
         >
           <NuxtImg
             src="/images/about/chairside.png"
@@ -92,7 +103,7 @@
         <!-- The anchor portrait — name and qualifications live on the photo -->
         <figure
           class="reveal relative col-span-2 m-0 aspect-3/4 overflow-hidden rounded-xl sm:aspect-square lg:col-start-3 lg:row-span-2 lg:row-start-2 lg:aspect-auto"
-          :style="{ backgroundColor: usePrimaryTint(30) }"
+          :style="{ backgroundColor: usePrimaryTint(55) }"
         >
           <NuxtImg
             src="/images/about/portrait.jpeg"
@@ -115,45 +126,22 @@
           </figcaption>
         </figure>
 
-        <!-- Candids — a square pair on mobile, singles slotted around on lg.
-             deesha-1 is a lid over its own caption: hovering (or focusing)
-             slides the photo off toward the tile's own edge, uncovering the
-             caption sitting beneath it — the "outside the practice" text tile
-             runs the same trick, its text card sliding off to reveal the
-             deesha-2 candid hiding under it. A second deesha-1 print sits
-             plain (no caption) further down the mosaic.
-             Exit direction follows placement: each interactive tile hugs an
-             outer column, so its lid slides off toward that edge (this one on
-             the left slides left; the text tile on the right slides right).
-             lg:overflow-hidden clips the lid at the tile bound, so it appears
+        <!-- Candids — desktop only (see the mosaic-level comment above): the
+             jacaranda print sits plain; only the "outside the practice"
+             text tile is interactive, its text card sliding off toward the
+             mosaic's left edge to reveal the deesha-2 candid hiding under it.
+             lg:overflow-hidden clips that lid at the tile bound, so it appears
              to slip *under* the mosaic's edge rather than float out over the
              section wash. candid--left / --right set the exit direction. -->
-        <!-- Left-column candid → its photo lid slides left off the edge. -->
+        <!-- Jacaranda — a plain print closing the mosaic's bottom-left corner.
+             No caption and no slide: just the photograph. A personal travel
+             shot earns its place in the full desktop mosaic but isn't
+             something a patient needs to see to size up a dentist, so it's
+             hidden below lg rather than competing with the credential and
+             reassurance tiles for scroll space. -->
         <figure
-          tabindex="0"
-          class="candid candid--left reveal relative col-span-1 m-0 aspect-square rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-primary/40 lg:col-span-2 lg:col-start-1 lg:row-start-3 lg:aspect-auto lg:overflow-hidden"
-          :style="{ backgroundColor: usePrimaryTint(80) }"
-        >
-          <figcaption class="candid-caption absolute inset-0 m-0 flex flex-col justify-center p-6 text-white">
-            <p class="m-0 font-display text-base font-light leading-relaxed text-white/85">
-              Found the jacaranda in full bloom and refused to leave.
-              I'll cross a whole city for a good garden.
-            </p>
-          </figcaption>
-          <div class="candid-slide absolute inset-0 overflow-hidden rounded-xl">
-            <NuxtImg
-              src="/images/about/candid-1.jpg"
-              alt="Dr Deesha beaming under a jacaranda tree in a glasshouse garden"
-              sizes="50vw lg:33vw"
-              loading="lazy"
-              class="absolute inset-0 h-full w-full object-cover"
-            />
-          </div>
-        </figure>
-
-        <figure
-          class="reveal relative col-span-1 m-0 aspect-square overflow-hidden rounded-xl lg:col-span-2 lg:col-start-3 lg:row-start-5 lg:aspect-auto"
-          :style="{ backgroundColor: usePrimaryTint(80) }"
+          class="reveal relative hidden m-0 overflow-hidden rounded-xl lg:col-span-2 lg:col-start-1 lg:row-start-5 lg:block lg:aspect-auto"
+          :style="{ backgroundColor: usePrimaryTint(55) }"
         >
           <NuxtImg
             src="/images/about/candid-1.jpg"
@@ -169,26 +157,33 @@
              across the double width. -->
         <div
           class="reveal col-span-2 flex flex-col justify-center rounded-xl p-6 text-white sm:p-8 lg:col-span-4 lg:col-start-1 lg:row-start-4"
-          :style="{ backgroundColor: usePrimaryTint(60) }"
+          :style="{ backgroundColor: usePrimaryTint(78) }"
         >
-          <p class="m-0 max-w-3xl font-serif font-normal leading-snug tracking-heading" style="font-size: clamp(1.6rem, 2.6vw, 2.4rem)">
-            Good dentistry is quiet work. Gentle in the chair, plain in the explanation, made to last.
+          <!-- Written and sized to land on two lines. Copy length and size are
+               a pair here: the cap goes up to 2.75rem precisely because the
+               copy came down — two lines at the old 2.25rem left the card half
+               empty. Keep the copy near this length; the row is a fixed 17rem
+               and this tile doesn't clip, so a third line would show. -->
+          <p class="m-0 max-w-3xl font-serif font-normal leading-snug tracking-heading" style="font-size: clamp(1.6rem, 2.9vw, 2.75rem)">
+            Good dentistry is quiet work. Gentle, plain, lasting.
           </p>
         </div>
 
         <!-- The person outside the practice — the same mechanic as the
              jacaranda tile, just with the roles reversed: here the TEXT is the
              lid. It's the tile's resting face and the only moving part,
-             sliding off to the right (clipped at the tile edge, so it vanishes
-             under the mosaic's right border) to uncover the deesha-2 candid
-             waiting beneath.
-             The text layer keeps the in-flow positioning, so below lg — where
-             none of the swap CSS applies — it still sits as a normal text
-             tile, painting over the absolute photo behind it. -->
+             sliding off to the left (clipped at the tile edge, so it vanishes
+             under the mosaic's left border) to uncover the deesha-2 candid
+             waiting beneath. candid--left because the tile hugs the mosaic's
+             left column — direction always tracks which outer edge it sits on.
+             Hidden below lg along with the other candids: its resting face is
+             personal-interest copy (Pilates, hiking, baking), which isn't
+             what a patient is scrolling for on mobile, and the hover/focus
+             swap it exists for has no mobile equivalent anyway. -->
         <div
           tabindex="0"
-          class="candid candid--right reveal relative col-span-2 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-primary/40 lg:col-start-5 lg:row-start-2 lg:overflow-hidden"
-          :style="{ backgroundColor: usePrimaryTint(30) }"
+          class="candid candid--left reveal relative col-span-2 hidden rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-primary/40 lg:col-start-1 lg:row-start-3 lg:block lg:overflow-hidden"
+          :style="{ backgroundColor: usePrimaryTint(55) }"
         >
           <div class="candid-caption absolute inset-0 overflow-hidden rounded-xl">
             <NuxtImg
@@ -201,44 +196,24 @@
           </div>
           <div
             class="candid-slide relative flex flex-col justify-center rounded-xl p-6 text-white sm:p-8 lg:absolute lg:inset-0 lg:p-6"
-            :style="{ backgroundColor: usePrimaryTint(70) }"
+            :style="{ backgroundColor: usePrimaryTint(78) }"
           >
-            <p class="font-display text-base font-light leading-relaxed text-white/85">
-              Outside of dentistry, you'll usually find me at Pilates, being an amateur nail tech
-              or trying out new baking recipes.
+            <p class="font-display text-base font-light leading-relaxed text-white/85 lg:text-xl">
+              Outside of dentistry, you'll usually find me at Pilates, hiking somewhere with a
+              good view, being an amateur nail tech, or trying out new baking recipes.
             </p>
           </div>
         </div>
 
-        <!-- Lapsed-visit reassurance -->
+        <!-- An open invitation — a single cell in the right column, alongside
+             the portrait. -->
         <div
-          class="reveal col-span-2 flex flex-col rounded-xl p-6 text-white sm:p-8 lg:col-start-5 lg:row-start-5 lg:p-6"
-          :style="{ backgroundColor: usePrimaryTint(65) }"
+          class="reveal col-span-2 flex flex-col justify-center rounded-xl p-6 text-white sm:p-8 lg:col-start-5 lg:row-start-2 lg:p-6"
+          :style="{ backgroundColor: usePrimaryTint(70) }"
         >
-          <p class="font-display text-base font-light leading-relaxed text-white/85 lg:text-lg">
-            If it's been years since your last check-up, you won't get a lecture here:
-            just a clear plan and a bit of credit for showing up.
-          </p>
-          <p class="mt-7 flex items-center gap-3 font-display text-2xs uppercase tracking-label text-white/60 lg:mt-auto">
-            <span class="h-px w-8 bg-white/30" />
-            New patients welcome
-          </p>
-        </div>
-
-        <!-- An open invitation — a single cell in the bottom-left corner,
-             closing the left column. -->
-        <div
-          class="reveal col-span-2 flex flex-col rounded-xl p-6 text-white sm:p-8 lg:col-start-1 lg:row-start-5 lg:p-6"
-          :style="{ backgroundColor: usePrimaryTint(75) }"
-        >
-          <p class="font-display text-base font-light leading-relaxed text-white/85">
+          <p class="m-0 font-display text-base font-light leading-relaxed text-white/85 lg:text-xl">
             Questions are welcome, and so are second opinions. Bring the X-rays,
             the worries, the photo of the smile you're after.
-          </p>
-          <p class="mt-7 flex items-center gap-3 font-display text-2xs uppercase tracking-label text-white/60 lg:mt-auto">
-            No rush
-            <span aria-hidden="true" class="h-1 w-1 rounded-full bg-accent" />
-            No jargon
           </p>
         </div>
 
@@ -252,28 +227,44 @@
           class="reveal col-span-2 flex flex-col justify-center rounded-xl p-6 text-white sm:p-8 lg:col-start-5 lg:row-span-2 lg:row-start-3"
           :style="{ backgroundColor: usePrimaryTint(85) }"
         >
-          <p class="font-display text-base font-light leading-relaxed text-white/85">
+          <!-- lg:text-2xl — the only 1x2 text tile, so it has roughly twice
+               the vertical room per word and carries the largest body size. -->
+          <p class="font-display text-base font-light leading-relaxed text-white/85 lg:text-2xl">
             I believe dentistry is about much more than teeth. Visiting the dentist can feel
             daunting, so I aim to create a calm, supportive experience. Whether it's a gentle
             aesthetic enhancement or getting you out of pain, your comfort always comes first.
           </p>
         </div>
 
-        <!-- Below lg deesha-2 stands alone: on desktop it hides under the
-             "outside the practice" lid above, and a photo the mosaic paid
-             for shouldn't vanish from phones. -->
-        <figure
-          class="reveal relative col-span-2 m-0 aspect-video overflow-hidden rounded-xl lg:hidden"
-          :style="{ backgroundColor: usePrimaryTint(30) }"
+        <!-- The section's closing CTA — the lapsed-visit reassurance promoted
+             into the booking action itself, running the bottom row's middle and
+             right columns beside the jacaranda candid. The reassurance stays
+             the headline (it's what earns the click; "Book an appointment" on
+             its own asks without answering the worry), so the invitation reads
+             as the consequence of it rather than a bare button. Whole tile is
+             the link, same accent flood on hover as every other CTA.
+             Placed last in the DOM (rather than styled to the bottom with
+             CSS order) so it also lands last in the reveal stagger, which
+             animates in DOM order — keeping the mobile stack's final,
+             most-important box the last thing to animate in too. Desktop
+             position is unaffected: lg:row-start-5 places it explicitly,
+             independent of source order. -->
+        <a
+          :href="practice.bookingHref"
+          class="reveal group col-span-2 flex flex-col justify-center gap-6 rounded-xl bg-primary p-6 text-white outline-none transition-colors duration-250 ease-out hover:bg-accent hover:text-primary focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 sm:p-8 lg:col-span-4 lg:col-start-3 lg:row-start-5 lg:p-8"
         >
-          <NuxtImg
-            src="/images/about/candid-2.jpg"
-            alt="Dr Deesha waving beside elephants bathing in a Chiang Mai river"
-            sizes="100vw"
-            loading="lazy"
-            class="absolute inset-0 h-full w-full object-cover"
-          />
-        </figure>
+          <p class="m-0 font-display text-2xs uppercase tracking-label text-white/60 transition-colors group-hover:text-primary/70">
+            New patients welcome
+          </p>
+          <p class="m-0 max-w-2xl font-serif font-normal leading-snug tracking-heading transition-colors" style="font-size: clamp(1.15rem, 1.7vw, 1.55rem)">
+            If it's been years since your last check-up, you won't get a lecture here.
+            Just a clear plan, and a bit of credit for showing up.
+          </p>
+          <p class="m-0 flex items-center gap-2 font-display text-sm font-semibold uppercase tracking-label text-white transition-colors group-hover:text-primary">
+            Book an appointment
+            <span aria-hidden="true" class="inline-block text-accent transition-all duration-250 ease-out group-hover:translate-x-0.5 group-hover:text-primary">↗</span>
+          </p>
+        </a>
 
       </div>
     </div>
@@ -284,9 +275,9 @@
 import { practice } from '../data/contact'
 
 // Tiles ride the site's shared staggered entrance, in DOM order — the bio
-// row, then intro, portrait, and the candids cascading in behind them.
-// A slightly wider stagger than the default so each square lands as its
-// own beat.
+// row, then chairside, portrait, and the rest cascading in behind them,
+// closing CTA last. A slightly wider stagger than the default so each
+// square lands as its own beat.
 const root = ref<HTMLElement | null>(null)
 useSectionReveal(root, { stagger: 0.12 })
 </script>
@@ -338,10 +329,6 @@ useSectionReveal(root, { stagger: 0.12 })
   .candid--left {
     --candid-exit: calc(-100% - 1.25rem);
     --candid-peek: -8%;
-  }
-  /* Offset in time so the two tiles don't tease in unison. */
-  .candid--right .candid-slide {
-    animation-delay: 2.75s;
   }
   /* :hover still matches while the cursor rides the departing lid (it stays
      a descendant), so following it out doesn't snap the reveal shut.
