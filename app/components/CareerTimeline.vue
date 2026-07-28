@@ -105,6 +105,7 @@
                   sizes="100vw lg:32vw"
                   loading="lazy"
                   class="career-img w-full rounded-lg bg-foreground/5 object-cover lg:min-h-0 lg:flex-1"
+                  :class="step.focalPoint"
                 />
 
                 <p class="font-display text-sm font-light leading-relaxed text-foreground/75 lg:text-base">
