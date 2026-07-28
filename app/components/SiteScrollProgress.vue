@@ -18,7 +18,8 @@
     class="pointer-events-none fixed left-2 top-1/2 z-40 hidden h-32 w-1.5 -translate-y-1/2 overflow-hidden rounded-full bg-foreground/25 sm:h-40 lg:block lg:h-48"
   >
     <div
-      class="scroll-progress-fill absolute inset-x-0 top-0 w-full rounded-full bg-primary"
+      class="scroll-progress-fill absolute inset-x-0 top-0 w-full rounded-full"
+      :class="complete ? 'bg-accent' : 'bg-primary'"
       :style="{ height: `${progress * 100}%` }"
     />
     <span
@@ -43,7 +44,8 @@
     style="top: calc(0.5rem + env(safe-area-inset-top, 0px))"
   >
     <div
-      class="scroll-progress-fill-h absolute inset-y-0 left-0 h-full bg-primary"
+      class="scroll-progress-fill-h absolute inset-y-0 left-0 h-full"
+      :class="complete ? 'bg-accent' : 'bg-primary'"
       :style="{ width: `${progress * 100}%` }"
     />
     <span
@@ -61,6 +63,7 @@ import { siteSections } from '../data/sections'
 
 const progress = ref(0)
 const milestones = ref<{ id: string, offset: number }[]>([])
+const complete = computed(() => progress.value >= 1)
 
 function clamp01(n: number) {
   return Math.min(1, Math.max(0, n))
@@ -125,10 +128,10 @@ onUnmounted(() => {
 
 <style scoped>
 .scroll-progress-fill {
-  transition: height 0.1s linear;
+  transition: height 0.1s linear, background-color 0.2s ease;
 }
 .scroll-progress-fill-h {
-  transition: width 0.1s linear;
+  transition: width 0.1s linear, background-color 0.2s ease;
 }
 
 @media (prefers-reduced-motion: reduce) {
