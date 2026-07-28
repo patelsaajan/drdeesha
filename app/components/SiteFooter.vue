@@ -97,7 +97,7 @@
         <!-- Baseline: legal on the left, place on the right — the same
              name-dot-location line About signs off with. -->
         <div class="reveal mt-8 flex flex-col gap-2 font-display text-xs uppercase tracking-label text-white/50 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {{ year }} Dr Deesha Dental. General Dental Council registered.</p>
+          <p>© {{ year }} Dr Deesha Dental. GDC no 309307.</p>
           <p class="flex items-center gap-3">
             {{ practice.name }}
             <span aria-hidden="true" class="h-1 w-1 rounded-full bg-accent" />
