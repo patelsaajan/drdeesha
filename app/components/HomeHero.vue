@@ -55,7 +55,9 @@ const COUNT = 5
 // further away. Adjacent entries keep a wide factor gap (>=1.6) since they're
 // the two smiles that fly up closest together in time — a close pair sharing a
 // horizontal lane at once is what would read as a collision rather than a
-// staggered cascade.
+// staggered cascade. This only holds while SMILE_STAGGER keeps non-adjacent
+// smiles off screen together: entries 0 and 4 sit just 0.2 columns apart and
+// overlap by ~85%, so they must never be airborne at the same moment.
 const LAYOUT: { factor: number, speed: number, depth: 'front' | 'back' }[] = [
   { factor: -0.95, speed: 1.1, depth: 'front' },
   { factor: 1.6, speed: 0.75, depth: 'back' },
@@ -112,11 +114,27 @@ function playIntro() {
   }, el)
 }
 
-// The smiles' one entrance. ~1s after load they rise, staggered, from fully
-// below the fold (y: +vh) to fully above it (y: -vh), each in its own
-// horizontal lane so the cascade never collides. Purely time-driven; when it's
-// done the smiles have cleared the top and the name stands alone. Reduced-
-// motion visitors get none of this — the CSS below keeps the smiles hidden.
+// The smiles' one entrance. They rise the moment the hero mounts, staggered,
+// from fully below the fold (y: +vh) to fully above it (y: -vh), each in its
+// own horizontal lane so the cascade never collides. Purely time-driven; when
+// it's done the smiles have cleared the top and the name stands alone.
+// Reduced-motion visitors get none of this — the CSS below keeps the smiles
+// hidden.
+//
+// Gap between one smile launching and the next. Load-bearing, not decorative:
+// several of the hand-placed horizontal offsets overlap in x, and the cascade
+// is what keeps an overlapping pair from ever being airborne together. Five
+// smiles at ~389px would need 1945px laid side by side and a 1440px screen
+// hasn't got it, so they can only be separated in time, not in space. Don't
+// collapse this toward zero without narrowing the smiles to match.
+const SMILE_STAGGER = 0.55
+
+// Pause before the first smile starts to rise.
+const SMILE_LEAD_IN = 0.5
+
+// Extra px past the fold a smile parks at, so it is provably off screen at
+// rest rather than flush to the edge by a subpixel.
+const FOLD_CLEARANCE = 8
 const heroRoot = ref<HTMLElement | null>(null)
 let smileCtx: gsap.Context | undefined
 
@@ -125,20 +143,40 @@ function playSmiles() {
   if (!root || prefersReducedMotion.value) return
 
   const vh = window.innerHeight
-  const startY = vh // centre at 150vh — fully below the fold
-  const endY = -vh // centre at -50vh — fully above the fold
 
   smileCtx = gsap.context(() => {
     const els = gsap.utils.toArray<HTMLElement>('.smile')
 
-    const tl = gsap.timeline({ delay: 0.15 }) // the beat before they fly
+    // A short beat before the first smile moves. Deliberate, and distinct
+    // from the 1.6s lag this used to have: that came from the tween starting
+    // a whole viewport below the fold, so nothing was on screen long after
+    // it had begun. Now the motion is visible the moment it starts, and this
+    // is simply the pause in front of it. Applied to the timeline, so all
+    // five shift together and the cascade spacing is unaffected.
+    const tl = gsap.timeline({ delay: SMILE_LEAD_IN })
     els.forEach((el, i) => {
       const smile = smiles[i]!
       // Back-layer smiles start smaller so, with their slower speed and the
       // wordmark occluding them, they read as set further back.
       const scale = smile.depth === 'back' ? 0.8 : 1
-      gsap.set(el, { xPercent: -50, yPercent: -50, y: startY, scale, autoAlpha: 1 })
-      tl.to(el, { y: endY, duration: 6 / smile.speed, ease: 'power2.inOut' }, i * 0.55)
+
+      // Park each smile exactly one edge past the fold, not a whole viewport
+      // beyond it. `.smile` sits at top:50% with yPercent:-50, so its centre
+      // rests at mid-screen and this offset is half a viewport plus half the
+      // smile — the least that still hides it completely. The previous ±vh
+      // buried 320px of dead travel at each end, and since power2.inOut is at
+      // its slowest there, the first smile spent 1.6s crawling up through
+      // off-screen space before a single pixel showed.
+      const offscreen = vh / 2 + (el.offsetHeight * scale) / 2 + FOLD_CLEARANCE
+      gsap.set(el, { xPercent: -50, yPercent: -50, y: offscreen, scale, autoAlpha: 1 })
+
+      // Linear, because the start and end are now only just out of frame:
+      // an ease-in would spend its slow phase on screen and read as a crawl,
+      // where before that phase was hidden. Nothing abrupt is exposed by it —
+      // both ends of the tween still happen past the fold.
+      // The duration is rescaled to suit the shorter distance so the time a
+      // smile actually spends crossing the screen is unchanged.
+      tl.to(el, { y: -offscreen, duration: 2.5 / smile.speed, ease: 'none' }, i * SMILE_STAGGER)
     })
   }, root)
 }
