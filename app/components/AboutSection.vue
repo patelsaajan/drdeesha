@@ -79,6 +79,26 @@
           />
         </figure>
 
+        <!-- An open invitation — placed ahead of the booking CTA in the DOM
+             so the reassurance lands right before the ask on the mobile
+             stack. lg:col-start-5 lg:row-start-2 seats it in the right
+             column alongside the portrait on desktop, independent of this
+             source position.
+             The lightest text tile, and 67 is its floor: the surrounding
+             tiles all came down 5 in the same pass, but this one stopped at 3
+             because a further 2 puts its white/85 body copy at 4.42:1, under
+             the 4.5:1 AA needs for text this size. Don't round it down to 65
+             for tidiness without darkening the text. -->
+        <div
+          class="reveal col-span-2 flex flex-col justify-center rounded-xl p-6 text-white sm:p-8 lg:col-start-5 lg:row-start-2 lg:p-6"
+          :style="{ backgroundColor: usePrimaryTint(67) }"
+        >
+          <p class="m-0 font-display text-base font-light leading-relaxed text-white/85 lg:text-xl">
+            Questions are welcome, and so are second opinions. Bring the X-rays,
+            the worries, the photo of the smile you're after.
+          </p>
+        </div>
+
         <!-- Booking — the ramp's full-strength endpoint, now a single 1x1
              cell in what used to be the intro's slot (the intro paragraph
              has swapped down into the old 1x2 booking slot below). The
@@ -203,22 +223,6 @@
               good view, being an amateur nail tech, or trying out new baking recipes.
             </p>
           </div>
-        </div>
-
-        <!-- An open invitation — a single cell in the right column, alongside
-             the portrait. The lightest text tile, and 67 is its floor: the
-             surrounding tiles all came down 5 in the same pass, but this one
-             stopped at 3 because a further 2 puts its white/85 body copy at
-             4.42:1, under the 4.5:1 AA needs for text this size. Don't round
-             it down to 65 for tidiness without darkening the text. -->
-        <div
-          class="reveal col-span-2 flex flex-col justify-center rounded-xl p-6 text-white sm:p-8 lg:col-start-5 lg:row-start-2 lg:p-6"
-          :style="{ backgroundColor: usePrimaryTint(67) }"
-        >
-          <p class="m-0 font-display text-base font-light leading-relaxed text-white/85 lg:text-xl">
-            Questions are welcome, and so are second opinions. Bring the X-rays,
-            the worries, the photo of the smile you're after.
-          </p>
         </div>
 
         <!-- Intro — the top of the card ramp (80), now standing a full 1x2
