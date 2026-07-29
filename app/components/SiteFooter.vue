@@ -58,40 +58,40 @@
     <div class="shrink-0 pb-36 lg:pb-20">
       <div class="mx-auto w-full max-w-6xl px-4 sm:px-6">
 
-        <!-- Wordmark / section links / socials -->
-        <div class="mt-8 flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-          <!-- Brand mark — the same lockup as the hero, so the footer's
-               signature matches how the page opened. Artwork is black ink
-               on transparency; brightness-0 + invert repaints it white for
-               this primary ground rather than shipping a second asset. -->
-          <div class="reveal">
+        <!-- Wordmark + section links / socials -->
+        <div class="mt-8 flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
+          <div class="reveal flex flex-col gap-6">
+            <!-- Brand mark — the same lockup as the hero, so the footer's
+                 signature matches how the page opened. Artwork is black ink
+                 on transparency; brightness-0 + invert repaints it white for
+                 this primary ground rather than shipping a second asset. -->
             <NuxtImg
               src="/images/logo/dr-deesha-logo.png"
               alt="Dr Deesha Dental"
               width="288"
               height="108"
               loading="lazy"
-              class="h-auto w-32 brightness-0 invert lg:w-36"
+              class="h-auto w-40 brightness-0 invert lg:w-48"
             />
-          </div>
 
-          <!-- Way back into the page — same section list the top nav carries,
-               so the footer isn't a dead end after the CTA. Tighter gap
-               below sm: at 24px the four labels' combined width pushes
-               "Reviews" onto an orphan line on most phones; 16px keeps all
-               four on one row from ~360px up (the narrowest handful of
-               devices, ~320px, still wrap one word — an acceptable trade
-               against cramming the gap further). -->
-          <nav aria-label="Sections" class="reveal flex flex-wrap items-center gap-x-4 gap-y-2 sm:gap-x-6">
-            <a
-              v-for="link in sectionLinks"
-              :key="link.id"
-              :href="`#${link.id}`"
-              class="font-display text-2xs font-semibold uppercase tracking-label text-white/55 transition-colors hover:text-white"
-            >
-              {{ link.label }}
-            </a>
-          </nav>
+            <!-- Way back into the page — same section list the top nav carries,
+                 so the footer isn't a dead end after the CTA. Tighter gap
+                 below sm: at 24px the four labels' combined width pushes
+                 "Reviews" onto an orphan line on most phones; 16px keeps all
+                 four on one row from ~360px up (the narrowest handful of
+                 devices, ~320px, still wrap one word — an acceptable trade
+                 against cramming the gap further). -->
+            <nav aria-label="Sections" class="flex flex-wrap items-center gap-x-4 gap-y-2 sm:gap-x-6">
+              <a
+                v-for="link in sectionLinks"
+                :key="link.id"
+                :href="`#${link.id}`"
+                class="font-display text-2xs font-semibold uppercase tracking-label text-white/55 transition-colors hover:text-white"
+              >
+                {{ link.label }}
+              </a>
+            </nav>
+          </div>
 
           <nav aria-label="Dr Deesha on social media" class="reveal flex items-center gap-2">
             <a
@@ -108,15 +108,15 @@
           </nav>
         </div>
 
-        <!-- Baseline: legal on the left, place on the right — the same
-             name-dot-location line About signs off with. -->
-        <div class="reveal mt-8 flex flex-col gap-2 font-display text-xs uppercase tracking-label text-white/50 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {{ year }} Dr Deesha Dental. GDC no 309307.</p>
+        <!-- Baseline: place, then legal underneath it — both right-aligned
+             as a single sign-off block. -->
+        <div class="reveal mt-8 flex flex-col items-end gap-2 text-right font-display text-xs uppercase tracking-label text-white/50">
           <p class="flex items-center gap-3">
             {{ practice.name }}
             <span aria-hidden="true" class="h-1 w-1 rounded-full bg-accent" />
             {{ practice.location }}
           </p>
+          <p>© {{ year }} Dr Deesha Dental. GDC no 309307.</p>
         </div>
       </div>
     </div>
