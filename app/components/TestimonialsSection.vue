@@ -14,10 +14,13 @@
 
       <!-- Full-bleed viewport (negative margins undo the section padding) so
            the peeking card runs to the screen edge; ms-0 + per-item ps keeps
-           the first card aligned with the heading above. Quotes aren't
-           line-clamped here — the carousel is the only way these are read on
-           mobile, and items-stretch keeps every card the height of the
-           tallest. -->
+           the first card aligned with the heading above.
+           items-stretch keeps every card the height of the tallest, which is
+           why the quote has to be clamped here even though only one card is
+           read at a time: unclamped, the single longest review in the set
+           sizes ALL eight, and a ~660-character one runs past 640px on a
+           narrow screen. Ten lines caps the tallest at ~324px and every other
+           card follows it down. -->
       <UCarousel
         v-slot="{ item }"
         :items="mobileTestimonials"
@@ -27,16 +30,13 @@
         :ui="{ container: 'ms-0 items-stretch', item: 'basis-[82%] ps-4 sm:basis-96 sm:ps-6' }"
         @select="(i: number) => (slide = i)"
       >
-        <article class="flex h-full select-none flex-col justify-between gap-4 rounded-xl border border-foreground/10 bg-background p-6">
-          <blockquote class="m-0 font-serif text-lg leading-snug text-foreground">
+        <article class="flex h-full select-none flex-col justify-between gap-2 rounded-xl border border-foreground/10 bg-background p-6">
+          <blockquote class="m-0 line-clamp-10 font-serif text-lg leading-snug text-foreground">
             &ldquo;{{ item.quote }}&rdquo;
           </blockquote>
-          <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <span class="font-display text-sm font-semibold tracking-wide text-foreground">{{ item.name }}</span>
-            <span class="h-1 w-1 rounded-full bg-foreground/30" />
-            <span class="font-display text-sm font-light text-foreground/55">{{ item.context }}</span>
-            <span v-if="item.source" class="font-display text-3xs uppercase tracking-label text-foreground/40">· {{ item.source }}</span>
-          </div>
+          <p class="m-0 text-right font-display text-sm font-semibold tracking-wide text-foreground">
+            {{ item.name }}
+          </p>
         </article>
       </UCarousel>
 
@@ -80,17 +80,14 @@
             <article
               v-for="item in row"
               :key="item.id"
-              class="testimonial-card flex h-52 w-72 shrink-0 flex-col justify-center gap-4 overflow-hidden rounded-xl border border-foreground/10 bg-background p-6 transition-all duration-300 hover:border-primary/20 hover:bg-primary/5 hover:shadow-card sm:w-80"
+              class="testimonial-card flex min-h-53 shrink-0 flex-col justify-between gap-2 overflow-hidden rounded-xl border border-foreground/10 bg-background p-6 transition-all duration-300 hover:border-primary/20 hover:bg-primary/5 hover:shadow-card"
             >
-              <blockquote class="m-0 line-clamp-3 font-serif text-lg leading-snug text-foreground">
+              <blockquote class="m-0 line-clamp-5 font-serif text-lg leading-snug text-foreground">
                 &ldquo;{{ item.quote }}&rdquo;
               </blockquote>
-              <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
-                <span class="font-display text-sm font-semibold tracking-wide text-foreground">{{ item.name }}</span>
-                <span class="h-1 w-1 rounded-full bg-foreground/30" />
-                <span class="font-display text-sm font-light text-foreground/55">{{ item.context }}</span>
-                <span v-if="item.source" class="font-display text-3xs uppercase tracking-label text-foreground/40">· {{ item.source }}</span>
-              </div>
+              <p class="m-0 text-right font-display text-sm font-semibold tracking-wide text-foreground">
+                {{ item.name }}
+              </p>
             </article>
           </div>
         </div>
@@ -104,17 +101,33 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { testimonials } from '../data/testimonials'
 
-// Always exactly 3 rows (top/middle/bottom, alternating scrub direction) —
-// however many testimonials there are get split evenly across them.
-const ROW_COUNT = 3
-const perRow = Math.ceil(testimonials.length / ROW_COUNT)
-const rows = Array.from(
-  { length: ROW_COUNT },
-  (_, i) => testimonials.slice(i * perRow, i * perRow + perRow),
-)
+// No review is ever shown twice. Repeating the set to pad short rows doesn't
+// work here: every row is on screen simultaneously, so a copy sits in plain
+// sight next to its twin no matter how far apart the two are placed in the
+// array — spacing them only controls which row they land in, not whether
+// both are visible.
+//
+// So the row count follows the data instead. A row needs roughly five 408px
+// cards to out-measure the viewport and have any distance left to scrub, so
+// the set is spread over as many rows as it can genuinely fill, capped at
+// the design's three. At 10 reviews that is 2 rows of 5; it becomes 3 rows
+// at 15, which is the count the three-band layout really wants.
+const MIN_PER_ROW = 5
+const ROW_COUNT = Math.max(1, Math.min(3, Math.floor(testimonials.length / MIN_PER_ROW)))
 
-// Mobile shows a short loop, not the full set — eight swipes is plenty to
-// make the point, and the counter stays legible.
+// Split by proportional boundaries rather than Math.ceil(n / ROW_COUNT) slices.
+// Ceil front-loads the early rows and dumps the remainder on the last one —
+// 16 reviews would go 6/6/4 — and since the SHORTEST row is what decides
+// whether a band has room to scrub, that runt row is exactly what stalls.
+// Proportional boundaries even it out to 6/5/5 instead.
+const rows = Array.from({ length: ROW_COUNT }, (_, i) => testimonials.slice(
+  Math.floor((i * testimonials.length) / ROW_COUNT),
+  Math.floor(((i + 1) * testimonials.length) / ROW_COUNT),
+))
+
+// Mobile shows a short loop of the real set — never the padded one, since a
+// carousel you swipe through would make the repeats obvious. Eight swipes is
+// plenty to make the point, and the counter stays legible.
 const mobileTestimonials = testimonials.slice(0, 8)
 
 // Mobile carousel position, for the running count under it.
@@ -247,6 +260,21 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+/* Card width is fluid rather than fixed, and that is load-bearing, not
+   cosmetic: a row only scrubs while it out-measures the viewport, so a fixed
+   width silently stops working once the screen outgrows it. At the previous
+   flat 408px the five-card rows were narrower than the screen from ~2100px
+   up — no travel at all, and the band left-aligned with dead space beside it.
+   Tying the card to 28vw keeps the invariant at any width: a row of n cards
+   spans n × 28vw, which clears 100vw for any n ≥ 4, so the rows scale with
+   the screen instead of being outrun by it. 28vw is the value that lands on
+   ~400px at 1440, matching the size the design was tuned at. The bounds stop
+   it turning silly on the extremes; past roughly 3400px the max takes over
+   and the invariant lapses, which is well beyond any real desktop. */
+.testimonial-card {
+  width: clamp(20rem, 28vw, 44rem);
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .reveal {
     opacity: 0;

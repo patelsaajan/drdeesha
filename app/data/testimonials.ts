@@ -1,186 +1,127 @@
+// Patient reviews — the single source for the testimonials section. Add,
+// remove or reorder entries here and the section adapts on its own; nothing
+// else needs touching.
+//
+// Two things the count affects (see TestimonialsSection.vue):
+//   - mobile shows only the first 8, so put the strongest ones early.
+//   - desktop never repeats a review (every row is on screen at once, so a
+//     repeat would sit beside its twin), which means the row count follows
+//     the count here: it takes 5 per row for a band to be wide enough to
+//     scroll, so 3 rows needs 15+. At the current 16 that is 3 rows of
+//     5/5/6. Dropping below 15 silently falls back to 2 rows, and below 10
+//     to a single row. Nothing here needs tuning either way.
+//
+// Apostrophes: these are single-quoted strings, so a straight ' inside one
+// ends it early and breaks the file. Use the typographic ’ as below.
+//
+// These are real, attributed reviews, quoted verbatim — reviewers' own typos
+// and misspellings included. Keep it that way: edited or invented reviews breach
+// ASA/CAP rules, GDC advertising guidance, and the Digital Markets,
+// Competition and Consumers Act 2024.
 export interface Testimonial {
   /** Stable key */
-  id: string
+  id: number
   /** The review, without surrounding quote marks */
   quote: string
   /** Who said it */
   name: string
-  /** Short context, e.g. treatment or patient type */
-  context: string
-  /** Optional source, e.g. "Google" */
-  source?: string
-  /** Pull one out as the lead quote */
-  featured?: boolean
 }
 
 export const testimonials: Testimonial[] = [
   {
-    id: 'sarah',
+    id: 1,
     quote:
-      'I’d avoided dentists for years. Deesha talked me through every step, and I actually left smiling. I’ve since had my whole smile done and I couldn’t be happier.',
-    name: 'Sarah M.',
-    context: 'Bonding & whitening',
-    source: 'Google',
-    featured: true,
+      'I had a great visit with Dr Chudasama. It was one of the most informative and thorough appointments I’ve had at a dentist. She took the time to answer every question I had clearly and with real confidence, which made the whole experience feel reassuring.',
+    name: 'Saajan P',
   },
   {
-    id: 'james',
+    id: 2,
     quote:
-      'Gentle, precise, and genuinely kind. My veneers look completely natural, no one can tell.',
-    name: 'James T.',
-    context: 'Porcelain veneers',
-    source: 'Google',
+      'Haven’t been to the dentist in over 10 years so was a bit apprehensive, but no matter though as Deesha and her assistant Sofie were great. Made me feel very comfortable and talked me through my treatment plan in detail. Very professional but also friendly, would recommend!',
+    name: 'Dylan T',
   },
   {
-    id: 'priya',
+    id: 3,
     quote:
-      'She fixed a gap I’d been self-conscious about my whole life, in a single appointment. Life-changing.',
-    name: 'Priya K.',
-    context: 'Edge bonding',
-    source: 'Google',
+      'Dr Deesha was absolutely incredible and extremely thorough. I usually get anxious at the dentist but Deesha made me feel completely relaxed and at ease. She explained everything she was doing and consistently checked in with me to make sure I wasn’t in pain or uncomfortable. Sophie, the dental nurse was also great and they worked brilliantly together. Thank you to all the staff, especially Deesha, for providing such high quality and patient-centred care, you were so helpful! I could not recommend Dr.Chudasama enough! Thank you again, you were fantastic!',
+    name: 'Kishen Mehta',
   },
   {
-    id: 'hannah',
+    id: 4,
     quote:
-      'The calmest dental experience I’ve ever had. My kids actually ask to go back.',
-    name: 'Hannah L.',
-    context: 'Family patient',
-    source: 'Google',
+      'I was nervous about my appointment, The staff were very welcoming, relaxed atmosphere and my Dentist Deesha (hope i spelt it right) and her assistant were brilliant with me. Chatting like we knew each other for years. Having the xrays done were not as uncomfortable as they have been in the past. I was so grateful I had to give Deesha a hug of gratitude for my experience today. PS there are handy disabled parking a cross the road.',
+    name: 'A Granham',
   },
   {
-    id: 'owen',
+    id: 5,
     quote:
-      'Booked in nervous, walked out grinning. Worth every mile of the drive.',
-    name: 'Owen R.',
-    context: 'Invisalign',
-    source: 'Google',
+      'I honestly couldn’t thank the team enough for everything they did. Booked straight back in for more work in the coming weeks.',
+    name: 'Liam B',
   },
   {
-    id: 'emma',
+    id: 6,
     quote:
-      'Straightened my teeth without anyone at work even noticing I was wearing aligners. Barely felt like treatment.',
-    name: 'Emma S.',
-    context: 'Invisalign',
-    source: 'Google',
+      'Deesha and Sophie were terrific. Very friendly and thorough check up and clean, would highly recommend!',
+    name: 'Ken D',
   },
   {
-    id: 'marcus',
+    id: 7,
     quote:
-      'Lost a front tooth in my twenties and hated smiling for years. You genuinely cannot tell which one is the implant now.',
-    name: 'Marcus D.',
-    context: 'Single implant',
-    source: 'Google',
+      'I was extremely nervous about going, but I needn’t be. The whole staff are wonderful and my dentist, Deesha, was amazing. She was calming, kind, straightforward and completely non-judgmental. She explained everything to me and gave me as much time as I needed. Her assistant nurse was also lovely. I have a long treatment plan, and Siana-the coordinator- took me to a private room to go over everything and discuss my options. She was extremely professional and friendly. I’m pretty sure everyone checked if I was okay, as I got quite flustered and anxious, it was very kind. I would definitely recommend them to everyone and especially to anyone who is reluctant about going.',
+    name: 'Aislinn S',
   },
   {
-    id: 'chloe',
+    id: 8,
     quote:
-      'Whitening with zero sensitivity, which I didn’t think was possible. Eased into it exactly at my pace.',
-    name: 'Chloe W.',
-    context: 'Enlighten whitening',
-    source: 'Google',
+      'My first time meeting dentist Deesha and she was very welcoming and took the time to explain things, which I really appreciated.',
+    name: 'Ruth K',
   },
   {
-    id: 'liam',
+    id: 9,
     quote:
-      'I’m the most nervous patient you’ll ever meet and I still went back for a second visit. That says everything.',
-    name: 'Liam P.',
-    context: 'Composite bonding',
-    source: 'Google',
+      'Dr Deesha was very professional and informed of everything she was doing. Explained in detail.',
+    name: 'Nancy P',
   },
   {
-    id: 'grace',
+    id: 10,
     quote:
-      'Cracked a tooth on a Friday night and got seen first thing Saturday. Calm, quick, no drama.',
-    name: 'Grace H.',
-    context: 'Emergency appointment',
-    source: 'Google',
+      'Deesha has treated me with care and respect and offered a full explanation every step of the way. My bottom teeth now look normal again and I am delighted x',
+    name: 'Susan A',
   },
   {
-    id: 'david',
+    id: 11,
     quote:
-      'Ten veneers and every single one matches like it grew there. Worth every consultation it took to get the shade right.',
-    name: 'David N.',
-    context: 'Porcelain veneers',
-    source: 'Google',
+      'The whole staffing team were very nice and friendly and couldn’t do enough. The dentist was very friendly and explained everything so that I understood what was happening',
+    name: 'Lisa T',
   },
   {
-    id: 'aisha',
+    id: 12,
     quote:
-      'My daughter used to cry at the dentist. Now she asks when her next check-up is. I still can’t quite believe it.',
-    name: 'Aisha R.',
-    context: 'Family patient',
-    source: 'Google',
+      'Amazing team! Deesha and Katelyn were amazing with me - so kind and helpful and even the reception staff were lovely.',
+    name: 'Shannon S',
   },
   {
-    id: 'noah',
+    id: 13,
     quote:
-      'Explained every option before touching anything. First dentist who’s ever made me feel like a decision-maker, not a patient.',
-    name: 'Noah B.',
-    context: 'Composite bonding',
-    source: 'Google',
+      'Was seen today for an emergency appointment with Deesha, couldn’t recommend enough! Made me feel at ease and welcomed the secono I walked into the room, explained everything so thoroughly. The staff in the dental practice was also amazing! Thank you again',
+    name: 'Karen H',
   },
   {
-    id: 'freya',
+    id: 14,
     quote:
-      'Flew back from abroad just for my check-ups now. That’s the honest truth.',
-    name: 'Freya C.',
-    context: 'General patient',
-    source: 'Google',
+      'Deesha Chudasama was very professional and caring and I felt in safe hands with the filling for my chipped tooth today.',
+    name: 'Nadine C',
   },
   {
-    id: 'tom',
+    id: 15,
     quote:
-      'Chipped a front tooth the week of my wedding. Fixed same-day and you’d never know it happened.',
-    name: 'Tom K.',
-    context: 'Emergency appointment',
-    source: 'Google',
+      'The hygienist and assistant today were really good. The dentist, Dessha Chudassma, was excellent, very reassuring and thorough.',
+    name: 'Susan P',
   },
   {
-    id: 'ruby',
+    id: 16,
     quote:
-      'Nine months of Invisalign and not one awkward moment. Painless, honestly.',
-    name: 'Ruby A.',
-    context: 'Invisalign',
-    source: 'Google',
-  },
-  {
-    id: 'daniel',
-    quote:
-      'Went in for a whitening consult, left with a whole plan I actually understood. No pressure, just options.',
-    name: 'Daniel F.',
-    context: 'Enlighten whitening',
-    source: 'Google',
-  },
-  {
-    id: 'nadia',
-    quote:
-      'I’d put off an implant for three years out of dread. Should’ve booked years ago.',
-    name: 'Nadia S.',
-    context: 'Single implant',
-    source: 'Google',
-  },
-  {
-    id: 'ben',
-    quote:
-      'Recommended by three separate people before I’d even asked. Now I understand why.',
-    name: 'Ben O.',
-    context: 'General patient',
-    source: 'Google',
-  },
-  {
-    id: 'sophie',
-    quote:
-      'Six veneers later and strangers still ask if they’re real. Best answer I could give.',
-    name: 'Sophie L.',
-    context: 'Porcelain veneers',
-    source: 'Google',
-  },
-  {
-    id: 'harry',
-    quote:
-      'Talked me through every stage of the bonding before starting. Left knowing exactly what I was getting.',
-    name: 'Harry M.',
-    context: 'Composite bonding',
-    source: 'Google',
+      'Excellent service from the personal welcome as I arrived, to the Xray, anaesthetic and extraction. Staff were great and Dr. Deesha performed the procedure in what seemed to be record time.',
+    name: 'Rhodi E',
   },
 ]
