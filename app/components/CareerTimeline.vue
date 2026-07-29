@@ -28,7 +28,7 @@
           :key="step.id"
           tabindex="0"
           :aria-label="`${step.institution}, ${step.qualification}`"
-          class="career-card group relative flex flex-col overflow-hidden bg-background outline-none lg:block lg:h-160 lg:w-140 lg:shrink-0 lg:rounded-xl lg:border-y lg:border-primary/10 focus-visible:ring-2 focus-visible:ring-primary/40"
+          class="career-card group relative flex flex-col overflow-hidden bg-background outline-none lg:block lg:h-160 lg:w-140 lg:shrink-0 lg:rounded-xl focus-visible:ring-2 focus-visible:ring-primary/40"
           :class="[
             i > 0 && 'lg:-ml-98',
             activeIndex === i && 'is-active',
@@ -91,7 +91,7 @@
             <div class="career-fold-clip">
               <div
                 class="career-content flex flex-1 flex-col gap-5 p-5 lg:absolute lg:inset-y-0 lg:left-42 lg:right-0 lg:p-6"
-                :style="{ opacity: activeIndex === i ? 1 : 0 }"
+                :class="activeIndex === i && 'is-open'"
               >
                 <div class="flex flex-wrap items-center gap-2">
                   <p class="font-display text-2xs font-semibold uppercase leading-snug tracking-label text-primary">
@@ -189,14 +189,45 @@ useSectionReveal(track)
 </script>
 
 <style scoped>
+/* The slide runs on the entrance's expo.out curve too. Expo front-loads its
+   travel harder than the quint it replaces, so despite the longer duration
+   the card reads as leaving *sooner* and then settling for longer — which is
+   the half of the gesture that was feeling abrupt. */
 .career-card {
   transition:
-    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-    border-radius 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    border-radius 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
+/* Content reveal: a fade-up in the spirit of the site's section entrance
+   (useSectionReveal), running concurrently with the slide above rather than
+   after it — the content is already fading from the slide's first frame, so
+   the two read as one gesture of the card peeling open.
+   Same 0.7s as the slide, so the two start and land on the same frame.
+   The easing is what stops that overlap turning back into the old flash.
+   Expo (and the plain `ease` before it) front-loads opacity hard — the old
+   fade was 51% up at 0.15s and 80% at 0.25s, i.e. essentially finished while
+   the card was still physically covering the content, so the card cleared to
+   reveal something already fully arrived. Easing IN instead spreads it over
+   the whole travel: ~11% at 0.1s, ~24% at 0.15s, ~46% as the card clears
+   (~0.23s), full only as the card lands. The content surfaces out from under
+   the card rather than being uncovered already finished. */
 .career-content {
-  transition: opacity 0.5s ease;
+  opacity: 0;
+  transform: translateY(12px);
+  /* Leaving is deliberately quicker: the closing card is being covered again,
+     and content lingering under an incoming card muddies the seam. Only the
+     arrival needs to be luxurious. */
+  transition:
+    opacity 0.25s ease-out,
+    transform 0.25s ease-out;
+}
+.career-content.is-open {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.7s cubic-bezier(0.25, 0, 0.35, 1),
+    transform 0.7s cubic-bezier(0.25, 0, 0.35, 1);
 }
 
 /* Mobile fold: a grid row is the animatable stand-in for height:auto, so
@@ -231,11 +262,20 @@ useSectionReveal(track)
   transform: rotate(45deg);
 }
 
-/* Elevation for the open card — the shared card token (now primary-tinted
-   site-wide). Desktop only; the mobile stack neutralises it below. */
+/* Elevation. Desktop only; the mobile stack neutralises it below.
+   Every card carries the sideways spine cast, not just the open one — that
+   shadow is what makes the deck read as books on a shelf rather than flat
+   panels butted together, and it needs to fall at every seam to do it.
+   The cast goes LEFT because z-index climbs with index: each card's left edge
+   is the one painting over its neighbour, so a rightward cast would be drawn
+   underneath the next card and never seen. The open card adds the shared
+   downward card lift on top, so it still reads as pulled out of the stack. */
 @media (min-width: 1024px) {
+  .career-card {
+    box-shadow: var(--shadow-spine);
+  }
   .career-card.is-active {
-    box-shadow: var(--shadow-card);
+    box-shadow: var(--shadow-card), var(--shadow-spine);
   }
 }
 
