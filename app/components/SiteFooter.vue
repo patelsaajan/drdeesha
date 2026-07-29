@@ -134,7 +134,6 @@ const sectionLinks = siteSections.filter(s => !['home', 'contact'].includes(s.id
 // Placeholder hrefs — swap in the real handles when ready.
 const socials = [
   { label: 'Instagram', href: '#', icon: 'simple-icons:instagram' },
-  { label: 'Facebook', href: '#', icon: 'simple-icons:facebook' },
   { label: 'TikTok', href: '#', icon: 'simple-icons:tiktok' },
 ]
 
