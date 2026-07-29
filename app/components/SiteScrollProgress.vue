@@ -13,7 +13,7 @@
     aria-valuemin="0"
     aria-valuemax="100"
     aria-label="Page scroll progress"
-    class="pointer-events-none fixed left-2 top-1/2 z-40 hidden h-32 w-1.5 -translate-y-1/2 overflow-hidden rounded-full bg-foreground/25 sm:h-40 lg:block lg:h-48"
+    class="pointer-events-none fixed left-2 top-1/2 z-40 hidden h-40 w-2 -translate-y-1/2 overflow-hidden rounded-full bg-foreground/25 sm:h-48 lg:block lg:h-60"
   >
     <div
       class="scroll-progress-fill absolute inset-x-0 top-0 w-full rounded-full"
@@ -50,6 +50,13 @@ function updateProgress() {
   progress.value = scrollable > 0 ? clamp01(window.scrollY / scrollable) : 0
 }
 
+// A tick this close to the start of the track is indistinguishable from the
+// track's own top edge, so it reads as a rendering artefact on the rounded cap
+// rather than a marker. `home` begins at scrollY 0 and so always lands there;
+// this is expressed as an offset rather than an id so any section pinned to
+// the top of the page is treated the same way.
+const MILESTONE_MIN_OFFSET = 0.02
+
 // Section offsets don't change as you scroll, only on layout shifts — kept
 // separate from updateProgress so it isn't recomputed on every scroll tick.
 function updateMilestones() {
@@ -62,7 +69,9 @@ function updateMilestones() {
     const el = document.getElementById(section.id)
     if (!el) return []
     const top = el.getBoundingClientRect().top + window.scrollY
-    return [{ id: section.id, offset: clamp01(top / scrollable) }]
+    const offset = clamp01(top / scrollable)
+    if (offset < MILESTONE_MIN_OFFSET) return []
+    return [{ id: section.id, offset }]
   })
 }
 
