@@ -33,10 +33,10 @@
            booking tile, itself a whole-tile link, takes its old single-row
            slot instead. Every slide target stays a single 1x1 cell. Every
            surface — the section wash included — comes off the shared
-           primary tint ramp (usePrimaryTint), and no cell drops below 55.
-           Text cards spread across that ramp (70, 70, 72, 78, 85), placed so
+           primary tint ramp (usePrimaryTint), and no cell drops below 50.
+           Text cards spread across that ramp (67, 67, 73, 73, 80), placed so
            no two edge-sharing surfaces land near each other; photo tiles sit at
-           55 as a load-time ground the image covers anyway. Full primary
+           50 as a load-time ground the image covers anyway. Full primary
            (bg-primary, the ramp's dark end) belongs to the booking CTAs — a
            class rather than an inline tint so hover:bg-accent can win. Only
            the section wash sits light, at 6: it's the ground the gutters show
@@ -47,12 +47,12 @@
 
         <!-- The professional bio — leads the mosaic right under the section
              title, sharing row one with the chairside photo beside it. Sits
-             mid-ramp at 72; its only text neighbour is the booking CTA
+             mid-ramp at 67; its only text neighbour is the booking CTA
              directly below at full primary, so it has room to run deep without
              crowding anything. -->
         <div
           class="reveal col-span-2 flex flex-col justify-center rounded-xl p-6 text-white sm:p-8 lg:col-span-4 lg:col-start-1 lg:row-start-1 lg:p-6"
-          :style="{ backgroundColor: usePrimaryTint(72) }"
+          :style="{ backgroundColor: usePrimaryTint(67) }"
         >
           <!-- lg:text-xl — the widest tile in the mosaic, so the copy can run
                up a step and still hold its 4-col measure inside one row. -->
@@ -68,7 +68,7 @@
              completing row one alongside the bio. -->
         <figure
           class="reveal relative col-span-2 m-0 aspect-video overflow-hidden rounded-xl lg:col-span-2 lg:col-start-5 lg:row-start-1 lg:aspect-auto"
-          :style="{ backgroundColor: usePrimaryTint(55) }"
+          :style="{ backgroundColor: usePrimaryTint(50) }"
         >
           <NuxtImg
             src="/images/about/chairside.png"
@@ -103,7 +103,7 @@
         <!-- The anchor portrait — name and qualifications live on the photo -->
         <figure
           class="reveal relative col-span-2 m-0 aspect-3/4 overflow-hidden rounded-xl sm:aspect-square lg:col-start-3 lg:row-span-2 lg:row-start-2 lg:aspect-auto"
-          :style="{ backgroundColor: usePrimaryTint(55) }"
+          :style="{ backgroundColor: usePrimaryTint(50) }"
         >
           <NuxtImg
             src="/images/about/portrait.jpeg"
@@ -141,7 +141,7 @@
              reassurance tiles for scroll space. -->
         <figure
           class="reveal relative hidden m-0 overflow-hidden rounded-xl lg:col-span-2 lg:col-start-1 lg:row-start-5 lg:block lg:aspect-auto"
-          :style="{ backgroundColor: usePrimaryTint(55) }"
+          :style="{ backgroundColor: usePrimaryTint(50) }"
         >
           <NuxtImg
             src="/images/about/candid-1.jpg"
@@ -157,7 +157,7 @@
              across the double width. -->
         <div
           class="reveal col-span-2 flex flex-col justify-center rounded-xl p-6 text-white sm:p-8 lg:col-span-4 lg:col-start-1 lg:row-start-4"
-          :style="{ backgroundColor: usePrimaryTint(78) }"
+          :style="{ backgroundColor: usePrimaryTint(73) }"
         >
           <!-- Written and sized to land on two lines. Copy length and size are
                a pair here: the cap goes up to 2.75rem precisely because the
@@ -183,7 +183,7 @@
         <div
           tabindex="0"
           class="candid candid--left reveal relative col-span-2 hidden rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-primary/40 lg:col-start-1 lg:row-start-3 lg:block lg:overflow-hidden"
-          :style="{ backgroundColor: usePrimaryTint(55) }"
+          :style="{ backgroundColor: usePrimaryTint(50) }"
         >
           <div class="candid-caption absolute inset-0 overflow-hidden rounded-xl">
             <NuxtImg
@@ -196,7 +196,7 @@
           </div>
           <div
             class="candid-slide relative flex flex-col justify-center rounded-xl p-6 text-white sm:p-8 lg:absolute lg:inset-0 lg:p-6"
-            :style="{ backgroundColor: usePrimaryTint(78) }"
+            :style="{ backgroundColor: usePrimaryTint(73) }"
           >
             <p class="font-display text-base font-light leading-relaxed text-white/85 lg:text-xl">
               Outside of dentistry, you'll usually find me at Pilates, hiking somewhere with a
@@ -206,10 +206,14 @@
         </div>
 
         <!-- An open invitation — a single cell in the right column, alongside
-             the portrait. -->
+             the portrait. The lightest text tile, and 67 is its floor: the
+             surrounding tiles all came down 5 in the same pass, but this one
+             stopped at 3 because a further 2 puts its white/85 body copy at
+             4.42:1, under the 4.5:1 AA needs for text this size. Don't round
+             it down to 65 for tidiness without darkening the text. -->
         <div
           class="reveal col-span-2 flex flex-col justify-center rounded-xl p-6 text-white sm:p-8 lg:col-start-5 lg:row-start-2 lg:p-6"
-          :style="{ backgroundColor: usePrimaryTint(70) }"
+          :style="{ backgroundColor: usePrimaryTint(67) }"
         >
           <p class="m-0 font-display text-base font-light leading-relaxed text-white/85 lg:text-xl">
             Questions are welcome, and so are second opinions. Bring the X-rays,
@@ -217,7 +221,7 @@
           </p>
         </div>
 
-        <!-- Intro — the top of the card ramp (85), now standing a full 1x2
+        <!-- Intro — the top of the card ramp (80), now standing a full 1x2
              column down the grid's bottom-right corner where the booking
              tile used to sit (the deesha-2 lid slides down over its
              neighbour, not this). Only the booking tile goes darker: full
@@ -225,7 +229,7 @@
              eye. -->
         <div
           class="reveal col-span-2 flex flex-col justify-center rounded-xl p-6 text-white sm:p-8 lg:col-start-5 lg:row-span-2 lg:row-start-3"
-          :style="{ backgroundColor: usePrimaryTint(85) }"
+          :style="{ backgroundColor: usePrimaryTint(80) }"
         >
           <!-- lg:text-2xl — the only 1x2 text tile, so it has roughly twice
                the vertical room per word and carries the largest body size. -->
