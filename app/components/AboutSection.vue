@@ -22,9 +22,10 @@
            not telling. Below lg the personal candids (jacaranda, the
            elephants) drop out, so a patient scrolling on their phone only
            meets the tiles that actually help them size up a dentist — bio,
-           portrait, the chairside photo, the philosophy and reassurance
-           copy, and the booking CTAs — as a lean two-column stack, closing
-           CTA last. lg pins
+           the chairside photo, the open invitation, the quiet-work quote,
+           the reassurance CTA, the portrait, and the philosophy copy — as a
+           lean two-column stack, the reassurance CTA leading the booking
+           moment and the booking CTA closing it. lg pins
            every tile to an explicit slot across five 17rem rows: a
            full-width row leads with the professional bio, then a 6-col
            arrangement of the rest — the portrait holds the top-centre as a
@@ -79,11 +80,11 @@
           />
         </figure>
 
-        <!-- An open invitation — placed ahead of the booking CTA in the DOM
-             so the reassurance lands right before the ask on the mobile
-             stack. lg:col-start-5 lg:row-start-2 seats it in the right
-             column alongside the portrait on desktop, independent of this
-             source position.
+        <!-- An open invitation — sits early in the mobile stack, right after
+             the chairside photo and ahead of the quote and reassurance CTA
+             that follow it. lg:col-start-5 lg:row-start-2 seats it in the
+             right column alongside the portrait on desktop, independent of
+             this source position.
              The lightest text tile, and 67 is its floor: the surrounding
              tiles all came down 5 in the same pass, but this one stopped at 3
              because a further 2 puts its white/85 body copy at 4.42:1, under
@@ -99,22 +100,50 @@
           </p>
         </div>
 
-        <!-- Booking — the ramp's full-strength endpoint, now a single 1x1
-             cell in what used to be the intro's slot (the intro paragraph
-             has swapped down into the old 1x2 booking slot below). The
-             whole tile is the link: hover floods it with the accent, the
-             same colour every other CTA resolves to (solid bg-primary
-             class rather than an inline style, so hover:bg-accent can
-             win). The action carries the serif headline; "Ready when you
-             are." is its eyebrow. -->
+        <!-- Pull-quote — the mid-ramp tint, a serif beat placed just ahead
+             of the reassurance CTA below so the sentiment lands right before
+             that ask on the mobile stack. It keeps its lg:row-start-4
+             desktop slot regardless, running two cells wide under the
+             portrait; max-w keeps the line's measure honest across the
+             double width. -->
+        <div
+          class="reveal col-span-2 flex flex-col justify-center rounded-xl p-6 text-white sm:p-8 lg:col-span-4 lg:col-start-1 lg:row-start-4"
+          :style="{ backgroundColor: usePrimaryTint(73) }"
+        >
+          <!-- Written and sized to land on two lines. Copy length and size are
+               a pair here: the cap goes up to 2.75rem precisely because the
+               copy came down — two lines at the old 2.25rem left the card half
+               empty. Keep the copy near this length; the row is a fixed 17rem
+               and this tile doesn't clip, so a third line would show. -->
+          <p class="m-0 max-w-3xl font-serif font-normal leading-snug tracking-heading" style="font-size: clamp(1.6rem, 2.9vw, 2.75rem)">
+            Good dentistry is quiet work. Gentle, plain, lasting.
+          </p>
+        </div>
+
+        <!-- The reassurance CTA — the lapsed-visit reassurance promoted into
+             the booking action itself. Moved up in source order, ahead of
+             the booking CTA below, so it's the first booking prompt a
+             visitor meets on mobile, right under the quote above; the
+             reassurance stays the headline (it's what earns the click —
+             "Book an appointment" on its own asks without answering the
+             worry), so the invitation reads as the consequence of it rather
+             than a bare button. Whole tile is the link, same accent flood on
+             hover as every other CTA. Desktop position is unaffected:
+             lg:row-start-5 lg:col-start-3 still place it in the mosaic's
+             bottom row beside the jacaranda candid, independent of source
+             order. -->
         <a
           :href="practice.bookingHref"
-          class="reveal group col-span-2 flex flex-col items-start justify-center gap-5 rounded-xl bg-primary p-6 text-white outline-none transition-colors duration-250 ease-out hover:bg-accent hover:text-primary focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 sm:p-8 lg:col-start-1 lg:row-start-2 lg:p-6"
+          class="reveal group col-span-2 flex flex-col justify-center gap-6 rounded-xl bg-primary p-6 text-white outline-none transition-colors duration-250 ease-out hover:bg-accent hover:text-primary focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 sm:p-8 lg:col-span-4 lg:col-start-3 lg:row-start-5 lg:p-8"
         >
-          <p class="font-display text-xs font-semibold uppercase tracking-eyebrow text-white/70 group-hover:text-primary/70">
-            Ready when you are.
+          <p class="m-0 font-display text-2xs uppercase tracking-label text-white/60 transition-colors group-hover:text-primary/70">
+            New patients welcome
           </p>
-          <p class="m-0 font-serif font-normal leading-snug tracking-heading" style="font-size: clamp(1.5rem, 2.4vw, 2.25rem)">
+          <p class="m-0 max-w-2xl font-serif font-normal leading-snug tracking-heading transition-colors" style="font-size: clamp(1.15rem, 1.7vw, 1.55rem)">
+            If it's been years since your last check-up, you won't get a lecture here.
+            Just a clear plan, and a bit of credit for showing up.
+          </p>
+          <p class="m-0 flex items-center gap-2 font-display text-sm font-semibold uppercase tracking-label text-white transition-colors group-hover:text-primary">
             Book an appointment
             <span aria-hidden="true" class="inline-block text-accent transition-all duration-250 ease-out group-hover:translate-x-0.5 group-hover:text-primary">↗</span>
           </p>
@@ -172,23 +201,6 @@
           />
         </figure>
 
-        <!-- Pull-quote — the mid-ramp tint, a serif beat running two cells
-             wide under the portrait. max-w keeps the line's measure honest
-             across the double width. -->
-        <div
-          class="reveal col-span-2 flex flex-col justify-center rounded-xl p-6 text-white sm:p-8 lg:col-span-4 lg:col-start-1 lg:row-start-4"
-          :style="{ backgroundColor: usePrimaryTint(73) }"
-        >
-          <!-- Written and sized to land on two lines. Copy length and size are
-               a pair here: the cap goes up to 2.75rem precisely because the
-               copy came down — two lines at the old 2.25rem left the card half
-               empty. Keep the copy near this length; the row is a fixed 17rem
-               and this tile doesn't clip, so a third line would show. -->
-          <p class="m-0 max-w-3xl font-serif font-normal leading-snug tracking-heading" style="font-size: clamp(1.6rem, 2.9vw, 2.75rem)">
-            Good dentistry is quiet work. Gentle, plain, lasting.
-          </p>
-        </div>
-
         <!-- The person outside the practice — the same mechanic as the
              jacaranda tile, just with the roles reversed: here the TEXT is the
              lid. It's the tile's resting face and the only moving part,
@@ -244,31 +256,24 @@
           </p>
         </div>
 
-        <!-- The section's closing CTA — the lapsed-visit reassurance promoted
-             into the booking action itself, running the bottom row's middle and
-             right columns beside the jacaranda candid. The reassurance stays
-             the headline (it's what earns the click; "Book an appointment" on
-             its own asks without answering the worry), so the invitation reads
-             as the consequence of it rather than a bare button. Whole tile is
-             the link, same accent flood on hover as every other CTA.
-             Placed last in the DOM (rather than styled to the bottom with
-             CSS order) so it also lands last in the reveal stagger, which
-             animates in DOM order — keeping the mobile stack's final,
-             most-important box the last thing to animate in too. Desktop
-             position is unaffected: lg:row-start-5 places it explicitly,
-             independent of source order. -->
+        <!-- Booking — the ramp's full-strength endpoint, a single 1x1 cell
+             that sits in what used to be the intro's slot on desktop (the
+             intro paragraph swapped down into the old 1x2 booking slot
+             below), via lg:row-start-2. Moved last in source order so on
+             mobile it closes the stack as the final booking prompt — the
+             reassurance CTA above now leads instead. The whole tile is the
+             link: hover floods it with the accent, the same colour every
+             other CTA resolves to (solid bg-primary class rather than an
+             inline style, so hover:bg-accent can win). The action carries
+             the serif headline; "Ready when you are." is its eyebrow. -->
         <a
           :href="practice.bookingHref"
-          class="reveal group col-span-2 flex flex-col justify-center gap-6 rounded-xl bg-primary p-6 text-white outline-none transition-colors duration-250 ease-out hover:bg-accent hover:text-primary focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 sm:p-8 lg:col-span-4 lg:col-start-3 lg:row-start-5 lg:p-8"
+          class="reveal group col-span-2 flex flex-col items-start justify-center gap-5 rounded-xl bg-primary p-6 text-white outline-none transition-colors duration-250 ease-out hover:bg-accent hover:text-primary focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 sm:p-8 lg:col-start-1 lg:row-start-2 lg:p-6"
         >
-          <p class="m-0 font-display text-2xs uppercase tracking-label text-white/60 transition-colors group-hover:text-primary/70">
-            New patients welcome
+          <p class="font-display text-xs font-semibold uppercase tracking-eyebrow text-white/70 group-hover:text-primary/70">
+            Ready when you are.
           </p>
-          <p class="m-0 max-w-2xl font-serif font-normal leading-snug tracking-heading transition-colors" style="font-size: clamp(1.15rem, 1.7vw, 1.55rem)">
-            If it's been years since your last check-up, you won't get a lecture here.
-            Just a clear plan, and a bit of credit for showing up.
-          </p>
-          <p class="m-0 flex items-center gap-2 font-display text-sm font-semibold uppercase tracking-label text-white transition-colors group-hover:text-primary">
+          <p class="m-0 font-serif font-normal leading-snug tracking-heading" style="font-size: clamp(1.5rem, 2.4vw, 2.25rem)">
             Book an appointment
             <span aria-hidden="true" class="inline-block text-accent transition-all duration-250 ease-out group-hover:translate-x-0.5 group-hover:text-primary">↗</span>
           </p>
@@ -283,9 +288,9 @@
 import { practice } from '../data/contact'
 
 // Tiles ride the site's shared staggered entrance, in DOM order — the bio
-// row, then chairside, portrait, and the rest cascading in behind them,
-// closing CTA last. A slightly wider stagger than the default so each
-// square lands as its own beat.
+// row, then chairside, and the rest cascading in behind them, booking CTA
+// last. A slightly wider stagger than the default so each square lands as
+// its own beat.
 const root = ref<HTMLElement | null>(null)
 useSectionReveal(root, { stagger: 0.12 })
 </script>
