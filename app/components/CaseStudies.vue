@@ -42,6 +42,17 @@
           <!-- Warm legibility scrim, deepening a touch on hover -->
           <div aria-hidden="true" class="absolute inset-0 bg-linear-to-t from-black/85 via-black/30 to-black/5 transition-opacity duration-500 group-hover:from-black/90" />
 
+          <!-- Second, bottom-anchored pass to seat the caption more firmly.
+               Not a legibility rescue — white on the scrim above already
+               measures ~14-17:1 over these photographs — this is weight, so
+               the text reads as sitting on a base rather than floating on the
+               picture. Bottom-anchored rather than deepening the stops above:
+               that gradient spans the whole card (it is only ~52% black where
+               the caption starts), so darkening it enough to matter here
+               would also dull the middle of the photograph. This one is
+               confined to the lower half and tapers out before the subject. -->
+          <div aria-hidden="true" class="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/55 to-transparent" />
+
           <!-- Caption stays put; only the swap zone trades places with the
                CTA on hover. Both occupy the same footprint (the CTA overlays
                the swap zone on pointer devices), so nothing climbs up over
