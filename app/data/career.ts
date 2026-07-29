@@ -56,7 +56,7 @@ export const careerSteps: CareerStep[] = [
     qualification: 'Dental Core Training · Paediatrics & Restorative',
     location: 'Birmingham',
     description:
-      'A hospital year split between children and complex restorative work. Treating nervous young patients made gentleness a habit, not an afterthought.',
+      'A hospital year split between children and oral surgey. Treating nervous young patients made gentleness a habit, not an afterthought.',
     image: '/images/career/bdh.jpeg',
     focalPoint: 'object-[50%_40%]',
     mark: 'DCT1',
@@ -68,10 +68,10 @@ export const careerSteps: CareerStep[] = [
     qualification: 'Restorative & Aesthetic Dentistry',
     location: 'Postgraduate',
     description:
-      'A masters spent obsessing over the details of a smile: proportion, shade, and the millimetre decisions that separate good from seamless.',
+      'PgDip restorative and aesthetics: a diploma spent obsessing over the details of a smile: proportion, shade, and the millimetre decisions that separate good from seamless.',
     image: '/images/career/ta.jpg',
     focalPoint: 'object-[50%_24%]',
-    mark: 'TA',
+    mark: 'PgDip',
   },
   {
     id: 'smart-smiles',
