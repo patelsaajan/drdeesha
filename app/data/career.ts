@@ -13,6 +13,11 @@ export interface CareerStep {
   description: string
   /** Path under /public. Swap the placeholder for a real portrait. */
   image: string
+  /** Tailwind object-position utility keeping the subject in frame — the
+   *  mobile (4:3) and desktop (tall) crops cut different axes, but each
+   *  axis of a position value only acts when that axis is actually cropped,
+   *  so one value covers both. */
+  focalPoint: string
   /** Short tag drawn large and rotated down the card's spine */
   mark: string
   /** Marks the current role */
@@ -28,7 +33,8 @@ export const careerSteps: CareerStep[] = [
     location: 'Leeds',
     description:
       'Five years of foundations: anatomy, materials, and my first real patients. Leeds taught me that good dentistry is equal parts science and steadiness.',
-    image: '/images/dr-deesha-graduation.jpg',
+    image: '/images/career/graduation.jpg',
+    focalPoint: 'object-[50%_40%]',
     mark: 'BDS',
   },
   {
@@ -39,7 +45,8 @@ export const careerSteps: CareerStep[] = [
     location: 'Newark',
     description:
       'My first year in practice, treating a whole community from anxious first-timers to lifelong regulars. I learned to slow down and listen before I ever picked up a handpiece.',
-    image: '/images/dr-deesha-newark.jpeg',
+    image: '/images/career/newark.jpeg',
+    focalPoint: 'object-[72%_24%]',
     mark: 'DF1',
   },
   {
@@ -49,8 +56,9 @@ export const careerSteps: CareerStep[] = [
     qualification: 'Dental Core Training · Paediatrics & Restorative',
     location: 'Birmingham',
     description:
-      'A hospital year split between children and complex restorative work. Treating nervous young patients made gentleness a habit, not an afterthought.',
-    image: '/images/dr-deesha-bdh.jpeg',
+      'A hospital year split between children and oral surgey. Treating nervous young patients made gentleness a habit, not an afterthought.',
+    image: '/images/career/bdh.jpeg',
+    focalPoint: 'object-[50%_40%]',
     mark: 'DCT1',
   },
   {
@@ -60,9 +68,10 @@ export const careerSteps: CareerStep[] = [
     qualification: 'Restorative & Aesthetic Dentistry',
     location: 'Postgraduate',
     description:
-      'A masters spent obsessing over the details of a smile: proportion, shade, and the millimetre decisions that separate good from seamless.',
-    image: '/images/dr-deesha-ta.jpg',
-    mark: 'TA',
+      'PgDip restorative and aesthetics: a diploma spent obsessing over the details of a smile: proportion, shade, and the millimetre decisions that separate good from seamless.',
+    image: '/images/career/ta.jpg',
+    focalPoint: 'object-[50%_24%]',
+    mark: 'PgDip',
   },
   {
     id: 'smart-smiles',
@@ -72,7 +81,8 @@ export const careerSteps: CareerStep[] = [
     location: 'Ystrad Mynach',
     description:
       'Where it all comes together. From routine check-ups to full smile makeovers, this is the unhurried, precise dentistry I set out to practise.',
-    image: '/images/dr-deesha-smart-smiles.jpg',
+    image: '/images/career/smart-smiles.jpg',
+    focalPoint: 'object-[35%_20%]',
     mark: 'NOW',
     current: true,
   },

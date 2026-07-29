@@ -22,3 +22,7 @@ logs
 .env
 .env.*
 !.env.example
+
+# Full-resolution case-study photography, kept locally as the source for the
+# aligned crops in public/images/cases (see app/data/cases.ts). Not shipped.
+case-originals

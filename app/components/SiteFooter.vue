@@ -38,7 +38,7 @@
               color="neutral"
               variant="solid"
               size="xl"
-              class="reveal mt-9 rounded-full px-10 text-base duration-250 ease-out hover:bg-accent hover:text-white"
+              class="reveal mt-9 rounded-full px-10 text-base duration-250 ease-out hover:bg-accent hover:text-primary"
             >
               Book an appointment
             </UButton>
@@ -60,15 +60,29 @@
 
         <!-- Wordmark / section links / socials -->
         <div class="mt-8 flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-          <div class="reveal flex items-center gap-3">
-            <span class="font-serif text-xl leading-none tracking-heading text-white">Dr Deesha</span>
-            <span class="h-4 w-px bg-white/25" />
-            <span class="font-display text-3xs font-semibold uppercase tracking-eyebrow text-white/70">Dental</span>
+          <!-- Brand mark — the same lockup as the hero, so the footer's
+               signature matches how the page opened. Artwork is black ink
+               on transparency; brightness-0 + invert repaints it white for
+               this primary ground rather than shipping a second asset. -->
+          <div class="reveal">
+            <NuxtImg
+              src="/images/logo/dr-deesha-logo.png"
+              alt="Dr Deesha Dental"
+              width="288"
+              height="108"
+              loading="lazy"
+              class="h-auto w-32 brightness-0 invert lg:w-36"
+            />
           </div>
 
           <!-- Way back into the page — same section list the top nav carries,
-               so the footer isn't a dead end after the CTA. -->
-          <nav aria-label="Sections" class="reveal flex flex-wrap items-center gap-x-6 gap-y-2">
+               so the footer isn't a dead end after the CTA. Tighter gap
+               below sm: at 24px the four labels' combined width pushes
+               "Reviews" onto an orphan line on most phones; 16px keeps all
+               four on one row from ~360px up (the narrowest handful of
+               devices, ~320px, still wrap one word — an acceptable trade
+               against cramming the gap further). -->
+          <nav aria-label="Sections" class="reveal flex flex-wrap items-center gap-x-4 gap-y-2 sm:gap-x-6">
             <a
               v-for="link in sectionLinks"
               :key="link.id"
@@ -97,7 +111,7 @@
         <!-- Baseline: legal on the left, place on the right — the same
              name-dot-location line About signs off with. -->
         <div class="reveal mt-8 flex flex-col gap-2 font-display text-xs uppercase tracking-label text-white/50 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {{ year }} Dr Deesha Dental. General Dental Council registered.</p>
+          <p>© {{ year }} Dr Deesha Dental. GDC no 309307.</p>
           <p class="flex items-center gap-3">
             {{ practice.name }}
             <span aria-hidden="true" class="h-1 w-1 rounded-full bg-accent" />
@@ -120,7 +134,6 @@ const sectionLinks = siteSections.filter(s => !['home', 'contact'].includes(s.id
 // Placeholder hrefs — swap in the real handles when ready.
 const socials = [
   { label: 'Instagram', href: '#', icon: 'simple-icons:instagram' },
-  { label: 'Facebook', href: '#', icon: 'simple-icons:facebook' },
   { label: 'TikTok', href: '#', icon: 'simple-icons:tiktok' },
 ]
 

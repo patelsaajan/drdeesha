@@ -13,35 +13,26 @@
           ref="frame"
           class="reveal absolute inset-0 z-30 overflow-hidden rounded-xl bg-foreground"
         >
-          <!-- YouTube embed, cropped to cover like a native <video object-cover>
-               would: `yt-cover` is a container-query context sized to the
-               frame's own current box (whatever GSAP has resized it to,
-               contained or full-screen), and the iframe inside is oversized
-               off of that container's own cqw/cqh units using the standard
-               16:9 cover-crop formula — vw/vh would only be correct once the
-               frame has actually reached full-viewport size, not while it's
-               still the small contained rest-state box. -->
-          <div class="yt-cover absolute inset-0">
-            <iframe
-              v-if="showVideo"
-              :src="youtubeSrc"
-              title="Dr Deesha performing a composite restoration, in the chair"
-              allow="autoplay; encrypted-media"
-              frameborder="0"
-              class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-              :class="reduce ? 'pointer-events-auto' : 'pointer-events-none'"
-            />
-          </div>
+          <!-- Self-hosted file rather than an embed, so object-cover does the
+               cropping natively at whatever size GSAP has the frame at — the
+               container-query trick this used to need existed only because an
+               iframe can't be object-fit. Motion-reduced visitors get a
+               normal, pausable player instead of one that starts itself. -->
+          <video
+            v-if="showVideo"
+            :src="VIDEO_SRC"
+            :autoplay="!reduce"
+            :controls="reduce"
+            :class="reduce ? 'pointer-events-auto' : 'pointer-events-none'"
+            class="absolute inset-0 h-full w-full object-cover"
+            muted
+            loop
+            playsinline
+            preload="auto"
+            aria-label="Dr Deesha performing a composite restoration, in the chair"
+            @loadedmetadata="startPlayback"
+          />
 
-          <!-- Caption over a legibility scrim -->
-          <div class="pointer-events-none absolute inset-x-0 bottom-0 bg-linear-to-t from-black/55 via-black/15 to-transparent p-6 sm:p-10 lg:p-14">
-            <p class="font-display text-xs font-semibold uppercase tracking-eyebrow text-white/70">
-              In the chair
-            </p>
-            <p class="mt-2 max-w-md font-serif font-normal leading-tight tracking-heading text-white" style="font-size: clamp(1.5rem, 3vw, 2.5rem)">
-              A tooth, rebuilt.
-            </p>
-          </div>
         </div>
       </div>
     </div>
@@ -52,32 +43,24 @@
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-const YOUTUBE_ID = 'GKZ3LZBOiLI'
+const VIDEO_SRC = '/images/cases/case-video.mp4'
 
 const reduce = ref(false)
 // Mounted only once the section is nearly in view (see the IntersectionObserver
-// below), rather than at page load — the branding-flash fade delay in the
-// styles below is timed off of this, so it needs to actually track when the
-// visitor is about to see it, not when the page happened to load.
+// below) rather than at page load — this is a ~5MB file well below the fold,
+// and `preload="auto"` on it would otherwise start fetching immediately.
 const showVideo = ref(false)
 
-// `loop=1` only works for a single video if `playlist` repeats its own id.
-// Autoplay/controls flip with `reduce`: motion-reduced visitors get a normal,
-// pausable embed instead of one that starts playing itself.
-const youtubeSrc = computed(() => {
-  const params = new URLSearchParams({
-    autoplay: reduce.value ? '0' : '1',
-    mute: '1',
-    loop: '1',
-    playlist: YOUTUBE_ID,
-    controls: reduce.value ? '1' : '0',
-    modestbranding: '1',
-    playsinline: '1',
-    rel: '0',
-    iv_load_policy: '3',
-  })
-  return `https://www.youtube-nocookie.com/embed/${YOUTUBE_ID}?${params}`
-})
+// Belt-and-braces on autoplay. Browsers refuse to autoplay unless the element
+// is muted at the moment play is attempted, and the `muted` attribute alone
+// is historically unreliable through a framework's render — so set the
+// property directly and kick playback off, swallowing the rejection that a
+// stricter autoplay policy would hand back.
+function startPlayback(e: Event) {
+  const el = e.target as HTMLVideoElement
+  el.muted = true
+  if (!reduce.value) el.play().catch(() => {})
+}
 
 const root = ref<HTMLElement | null>(null)
 const pinAnchor = ref<HTMLElement | null>(null)
@@ -177,43 +160,4 @@ onUnmounted(() => {
   }
 }
 
-/* Crops the YouTube embed to cover its box the way a native
-   <video object-cover> would. `container-type: size` makes `cqw`/`cqh`
-   below track this element's own current size — the frame it sits in is
-   resized by GSAP between a small contained rest state and a full-viewport
-   grown one, so sizing off `vw`/`vh` (the viewport) would only be correct
-   in the latter case. */
-.yt-cover {
-  container-type: size;
-}
-.yt-cover iframe {
-  border: 0;
-  /* Standard 16:9 cover-crop formula (16/9 ≈ 1.778, 9/16 = 0.5625), just
-     expressed in container units instead of viewport ones. */
-  width: 178cqh;
-  height: 56.25cqw;
-  min-width: 100%;
-  min-height: 100%;
-  /* YouTube briefly shows its title/channel overlay on load — required by
-     their embed terms, can't be turned off via URL params. Rather than show
-     that flash, stay invisible for the couple of seconds it's on screen
-     (the video is already autoplaying muted underneath) and fade in once
-     it's had time to auto-hide. */
-  opacity: 0;
-  animation: yt-reveal 0.5s ease forwards;
-  animation-delay: 2s;
-}
-
-@keyframes yt-reveal {
-  to {
-    opacity: 1;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .yt-cover iframe {
-    opacity: 1;
-    animation: none;
-  }
-}
 </style>
