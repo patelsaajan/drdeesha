@@ -66,14 +66,14 @@
       <UBadge
         color="neutral"
         variant="solid"
-        class="pointer-events-none absolute left-3 top-3 font-display text-3xs font-semibold uppercase tracking-label"
+        class="pointer-events-none absolute left-3 top-3 font-body text-xs font-semibold uppercase tracking-label"
       >
         Before
       </UBadge>
       <UBadge
         color="primary"
         variant="solid"
-        class="pointer-events-none absolute right-3 top-3 font-display text-3xs font-semibold uppercase tracking-label"
+        class="pointer-events-none absolute right-3 top-3 font-body text-xs font-semibold uppercase tracking-label"
       >
         After
       </UBadge>

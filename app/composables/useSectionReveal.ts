@@ -6,16 +6,13 @@ import gsap from 'gsap'
  * fades up (autoAlpha + y) on a stagger the first time the section scrolls
  * into view. Respects prefers-reduced-motion by showing everything at once.
  *
- * Pair with the component's own scoped anti-FOUC rule so nothing flashes
- * before GSAP takes over:
- *
- *   @media (prefers-reduced-motion: no-preference) {
- *     .reveal { opacity: 0; }
- *   }
+ * The matching anti-FOUC start state (`.js .reveal { opacity: 0 }`) lives
+ * once in main.css, gated on both motion preference and the html.js class
+ * app.vue sets — so no-JS visitors never get a hidden page and components
+ * don't each carry a copy of the rule.
  *
  * Sections that orchestrate extra timeline work alongside their reveals
- * (AboutSection's portrait, TestimonialsSection's row scrub) keep their own
- * bespoke setup instead of this.
+ * (TestimonialsSection's row scrub) keep their own bespoke setup instead.
  */
 export function useSectionReveal(
   root: Ref<HTMLElement | null>,

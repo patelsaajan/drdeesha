@@ -8,9 +8,11 @@ brand
 
 Mixed patient base: general patients seeking a reliable local dentist (nervous, reassurance-driven), cosmetic patients pursuing smile makeovers and veneers (aspirational, aesthetics-led), and emergency patients needing quick confidence in a practice. All arrive via the landing page. The design must signal quality to the aspirational buyer without alienating the everyday patient.
 
+Secondary audience: fellow dentists and practices. Colleagues browse the case studies for clinical detail (technique, materials); prospective professional contacts read the site as Dr Deesha's portfolio. They are served by depth behind the patient-first surface — clinical notes inside the case drawers, credentials and GDC number visible — never by diverting the primary booking journey.
+
 ## Product Purpose
 
-Marketing site for Dr Deesha Dental — a dental practice positioning itself as precise, trustworthy, and polished. Success means a prospective patient reads the brand as professional and credible within seconds, then books an appointment. The photography grid of real smiles does the persuasion work; the interface frames it without getting in the way.
+Marketing site for Dr Deesha Dental — a dental practice positioning itself as precise, trustworthy, and polished. Success means a prospective patient reads the brand as professional and credible within seconds, then books an appointment. The photography grid of real smiles does the persuasion work; the interface frames it without getting in the way. A secondary success: a visiting colleague or practice reads the same page as a credible professional portfolio and can find the clinical depth and contact route without the patient experience getting louder for it.
 
 ## Brand Personality
 

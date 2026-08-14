@@ -5,12 +5,7 @@
          mostly full-width, the next peeking in from the edge as the swipe
          affordance, with a plain running count underneath. -->
     <div class="px-4 pt-24 pb-20 sm:px-6 lg:hidden">
-      <p class="reveal font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
-        Kind words
-      </p>
-      <h2 class="reveal mt-4 font-serif font-normal leading-heading tracking-heading" style="font-size: clamp(2rem, 4vw, 3.25rem)">
-        What patients say about me.
-      </h2>
+      <SectionHeader eyebrow="Kind words" title="What patients say about me." />
 
       <!-- Full-bleed viewport (negative margins undo the section padding) so
            the peeking card runs to the screen edge; ms-0 + per-item ps keeps
@@ -31,16 +26,16 @@
         @select="(i: number) => (slide = i)"
       >
         <article class="flex h-full select-none flex-col justify-between gap-2 rounded-xl border border-foreground/10 bg-background p-6">
-          <blockquote class="m-0 line-clamp-10 font-serif text-lg leading-snug text-foreground">
+          <blockquote class="m-0 line-clamp-10 font-display text-lg leading-snug text-foreground">
             &ldquo;{{ item.quote }}&rdquo;
           </blockquote>
-          <p class="m-0 text-right font-display text-sm font-semibold tracking-wide text-foreground">
+          <p class="m-0 text-right font-body text-sm font-semibold tracking-wide text-foreground">
             {{ item.name }}
           </p>
         </article>
       </UCarousel>
 
-      <p class="reveal mt-6 font-display text-2xs uppercase tracking-label tabular-nums text-foreground/45">
+      <p class="reveal mt-6 font-body text-xs uppercase tracking-label tabular-nums text-foreground/65">
         {{ slide + 1 }} / {{ mobileTestimonials.length }}
       </p>
     </div>
@@ -56,12 +51,7 @@
            centred within it. -->
       <div class="flex h-[20dvh] w-full items-center px-4 sm:px-6">
         <div class="mx-auto w-full max-w-6xl">
-          <p class="reveal font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
-            Kind words
-          </p>
-          <h2 class="reveal mt-4 font-serif font-normal leading-heading tracking-heading" style="font-size: clamp(2rem, 4vw, 3.25rem)">
-            What patients say about me.
-          </h2>
+          <SectionHeader eyebrow="Kind words" title="What patients say about me." />
         </div>
       </div>
 
@@ -82,10 +72,10 @@
               :key="item.id"
               class="testimonial-card flex min-h-53 shrink-0 flex-col justify-between gap-2 overflow-hidden rounded-xl border border-foreground/10 bg-background p-6 transition-all duration-300 hover:border-primary/20 hover:bg-primary/5 hover:shadow-card"
             >
-              <blockquote class="m-0 line-clamp-5 font-serif text-lg leading-snug text-foreground">
+              <blockquote class="m-0 line-clamp-5 font-display text-lg leading-snug text-foreground">
                 &ldquo;{{ item.quote }}&rdquo;
               </blockquote>
-              <p class="m-0 text-right font-display text-sm font-semibold tracking-wide text-foreground">
+              <p class="m-0 text-right font-body text-sm font-semibold tracking-wide text-foreground">
                 {{ item.name }}
               </p>
             </article>
@@ -140,9 +130,10 @@ function setRowRef(el: Element | null, i: number) {
   rowRefs[i] = el as HTMLElement | null
 }
 
-let ctx: gsap.Context | undefined
+// The shared section entrance — same composable every other section uses.
+useSectionReveal(root)
+
 let mm: gsap.MatchMedia | undefined
-let observer: IntersectionObserver | undefined
 
 // How far a row's content shifts during the scrub. Capped well short of
 // the row's actual overflow — this is a drift to sell the reveal, not a
@@ -156,38 +147,14 @@ function rowExtra(rowEl: HTMLElement) {
 }
 
 onMounted(() => {
-  const el = root.value
   const deskEl = desk.value
-  if (!el) return
 
-  const reveals = gsap.utils.toArray<HTMLElement>(el.querySelectorAll('.reveal'))
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  // No pin, no scrub for reduced-motion visitors: the rows sit still and the
+  // footer flows normally. (The entrance reveals are already handled, with
+  // their own reduced-motion branch, inside useSectionReveal.)
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
-  if (reduce) {
-    gsap.set(reveals, { autoAlpha: 1, y: 0 })
-    return
-  }
-
-  gsap.set(reveals, { autoAlpha: 0, y: 28 })
   gsap.registerPlugin(ScrollTrigger)
-
-  ctx = gsap.context(() => {
-    observer = new IntersectionObserver(
-      ([entry], obs) => {
-        if (!entry?.isIntersecting) return
-        obs.disconnect()
-
-        gsap.timeline({ defaults: { ease: 'expo.out' } }).to(reveals, {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.9,
-          stagger: 0.08,
-        })
-      },
-      { threshold: 0.15 },
-    )
-    observer.observe(el)
-  }, el)
 
   // The pin + row scrub is desktop-only (the mobile layout is the carousel
   // above, display:none'd out of lg). gsap.matchMedia builds it when the lg
@@ -256,9 +223,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  observer?.disconnect()
   mm?.revert()
-  ctx?.revert()
 })
 </script>
 
@@ -276,12 +241,6 @@ onUnmounted(() => {
    and the invariant lapses, which is well beyond any real desktop. */
 .testimonial-card {
   width: clamp(20rem, 28vw, 44rem);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .reveal {
-    opacity: 0;
-  }
 }
 
 /* Fades each row's edges toward transparent rather than cutting cards off

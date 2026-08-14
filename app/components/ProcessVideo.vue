@@ -1,5 +1,8 @@
 <template>
   <section id="process" ref="root" class="relative z-20 bg-background text-foreground">
+    <!-- The section is deliberately wordless on screen — the film carries it —
+         but it still needs a heading for the document outline and AT. -->
+    <h2 class="sr-only">The process, up close</h2>
     <div class="mx-auto max-w-6xl px-4 py-24 sm:px-6 lg:py-28">
       <!-- Pin anchor: reserves the section's normal contained footprint and
            drives the scroll timing. GSAP's `pin` locks a `max-width`/
@@ -21,6 +24,7 @@
           <video
             v-if="showVideo"
             :src="VIDEO_SRC"
+            :poster="POSTER_SRC"
             :autoplay="!reduce"
             :controls="reduce"
             :class="reduce ? 'pointer-events-auto' : 'pointer-events-none'"
@@ -28,7 +32,7 @@
             muted
             loop
             playsinline
-            preload="auto"
+            preload="metadata"
             aria-label="Dr Deesha performing a composite restoration, in the chair"
             @loadedmetadata="startPlayback"
           />
@@ -44,6 +48,9 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 const VIDEO_SRC = '/images/cases/case-video.mp4'
+// First frame of the film, so the frame is never a black rectangle while
+// the (deferred) video fetches.
+const POSTER_SRC = '/images/process/poster.jpg'
 
 const reduce = ref(false)
 // Mounted only once the section is nearly in view (see the IntersectionObserver
@@ -152,12 +159,3 @@ onUnmounted(() => {
 })
 </script>
 
-<style scoped>
-/* Avoid a flash before GSAP takes over on capable displays. */
-@media (prefers-reduced-motion: no-preference) {
-  .reveal {
-    opacity: 0;
-  }
-}
-
-</style>

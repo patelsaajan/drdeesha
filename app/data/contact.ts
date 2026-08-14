@@ -10,6 +10,9 @@ export const practice = {
   name: 'Smart Smiles',
   location: 'Ystrad Mynach',
   bookingHref: 'https://smartsmiles.portal.dental/',
+  /** General Dental Council registration — shown in the footer and emitted
+   *  in the structured data. */
+  gdcNumber: '309307',
   // 19 Bedwlwyn Rd, Ystrad Mynach, Hengoed CF82 7AA — via Nominatim/OSM.
   coordinates: { lat: 51.6419655, lng: -3.2360676 },
   hours: [

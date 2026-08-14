@@ -9,6 +9,7 @@ export interface SiteSection {
 export const siteSections: SiteSection[] = [
   { id: 'home', label: 'Home' },
   { id: 'about', label: 'About' },
+  { id: 'process', label: 'Process' },
   { id: 'cases', label: 'Cases' },
   { id: 'experience', label: 'Experience' },
   { id: 'testimonials', label: 'Reviews' },

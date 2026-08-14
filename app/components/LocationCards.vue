@@ -18,12 +18,12 @@
     >
       <!-- Spine — always visible tab -->
       <div class="location-spine flex shrink-0 items-center justify-between gap-3 px-5 py-4">
-        <span class="font-display text-sm font-semibold uppercase tracking-label text-white">
+        <span class="font-body text-sm font-semibold uppercase tracking-label text-white">
           {{ item.label }}
         </span>
         <span
           v-if="item.id === 'map' && status"
-          class="font-display text-3xs uppercase tracking-label text-white/70"
+          class="font-body text-xs uppercase tracking-label text-white/70"
         >
           {{ status.label }}
         </span>
@@ -34,17 +34,21 @@
         <LocationMap v-if="item.id === 'map'" />
 
         <div v-else class="relative h-full">
-          <NuxtImg
+          <!-- Already a 640px AVIF — served as-is. Without intrinsic
+               dimensions IPX emitted a broken srcset descriptor for this
+               one, and there's no larger source to upscale from anyway. -->
+          <img
             src="/images/locations/smart-smiles.avif"
             :alt="`The front of ${practice.name}, ${practice.location}`"
-            sizes="40vw"
+            width="640"
+            height="410"
             loading="lazy"
             class="absolute inset-0 h-full w-full object-cover"
-          />
+          >
 
           <!-- Opening hours -->
           <dl class="pointer-events-none absolute inset-x-0 bottom-0 grid gap-y-1 bg-linear-to-t from-black/90 via-black/70 to-transparent p-5 pt-32">
-            <div v-for="g in hourGroups" :key="g.label" class="flex items-baseline justify-between gap-3 font-display text-3xs uppercase tracking-label">
+            <div v-for="g in hourGroups" :key="g.label" class="flex items-baseline justify-between gap-3 font-body text-xs uppercase tracking-label">
               <dt class="text-white/70">{{ g.label }}</dt>
               <dd class="m-0 text-white">{{ g.open && g.close ? `${formatTime(g.open)} – ${formatTime(g.close)}` : 'Closed' }}</dd>
             </div>
@@ -80,7 +84,7 @@ function cardStyle(i: number) {
     flexShrink: 0,
     flexBasis: active ? 'auto' : `${SPINE_HEIGHT}px`,
     backgroundColor: usePrimaryTint(active ? 65 : 95),
-    transition: 'flex-basis 0.5s cubic-bezier(0.22, 1, 0.36, 1), flex-grow 0.5s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.4s ease',
+    transition: 'flex-basis 0.5s var(--ease-out-soft), flex-grow 0.5s var(--ease-out-soft), background-color 0.4s ease',
   }
 }
 

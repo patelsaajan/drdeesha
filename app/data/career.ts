@@ -20,8 +20,6 @@ export interface CareerStep {
   focalPoint: string
   /** Short tag drawn large and rotated down the card's spine */
   mark: string
-  /** Marks the current role */
-  current?: boolean
 }
 
 export const careerSteps: CareerStep[] = [
@@ -56,7 +54,7 @@ export const careerSteps: CareerStep[] = [
     qualification: 'Dental Core Training · Paediatrics & Restorative',
     location: 'Birmingham',
     description:
-      'A hospital year split between children and oral surgey. Treating nervous young patients made gentleness a habit, not an afterthought.',
+      'A hospital year split between children and oral surgery. Treating nervous young patients made gentleness a habit, not an afterthought.',
     image: '/images/career/bdh.jpeg',
     focalPoint: 'object-[50%_40%]',
     mark: 'DCT1',
@@ -84,6 +82,5 @@ export const careerSteps: CareerStep[] = [
     image: '/images/career/smart-smiles.jpg',
     focalPoint: 'object-[35%_20%]',
     mark: 'NOW',
-    current: true,
   },
 ]

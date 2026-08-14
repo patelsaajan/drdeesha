@@ -11,6 +11,10 @@ export interface CaseStudy {
   description: string
   /** Small facts, rendered as a definition list */
   meta: { label: string, value: string }[]
+  /** Clinical detail for colleagues — technique, materials, shade. Rendered
+   *  in the drawer under its own heading when present. Populate ONLY from
+   *  real case notes; leave absent rather than inventing values. */
+  clinicalNotes?: { label: string, value: string }[]
   /** Card thumbnail — the "after" of the pair. */
   image: string
   /** Drawer before / after pair */

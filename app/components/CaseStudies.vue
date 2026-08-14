@@ -2,17 +2,11 @@
   <section id="cases" ref="root" class="relative z-20 bg-background text-foreground">
     <div class="mx-auto max-w-6xl px-4 py-24 sm:px-6 lg:py-28">
 
-      <header class="max-w-2xl">
-        <p class="reveal font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
-          Selected work
-        </p>
-        <h2 class="reveal mt-5 font-serif font-normal leading-heading tracking-heading" style="font-size: clamp(2rem, 4vw, 3.25rem)">
-          Smiles, up close.
-        </h2>
-        <p class="reveal mt-4 font-display text-base font-light leading-relaxed text-foreground/65">
+      <SectionHeader eyebrow="Selected work" title="Smiles, up close.">
+        <p class="reveal mt-4 font-body text-base font-light leading-relaxed text-foreground/65">
           A few of my recent cases. Open one to see the before, the after, and how I did it.
         </p>
-      </header>
+      </SectionHeader>
 
       <!-- Editorial mosaic, not a uniform card grid: the first case runs as a
            2x2 feature, the rest fill around it. Each card is full-bleed
@@ -39,8 +33,10 @@
             class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
           />
 
-          <!-- Warm legibility scrim, deepening a touch on hover -->
-          <div aria-hidden="true" class="absolute inset-0 bg-linear-to-t from-black/85 via-black/30 to-black/5 transition-opacity duration-500 group-hover:from-black/90" />
+          <!-- Warm legibility scrim, deepening a touch on hover. (Everything
+               inside this <button> is a span — buttons only permit phrasing
+               content, and absolute/block classes give them their boxes.) -->
+          <span aria-hidden="true" class="absolute inset-0 bg-linear-to-t from-black/85 via-black/30 to-black/5 transition-opacity duration-500 group-hover:from-black/90" />
 
           <!-- Second, bottom-anchored pass to seat the caption more firmly.
                Not a legibility rescue — white on the scrim above already
@@ -51,7 +47,7 @@
                the caption starts), so darkening it enough to matter here
                would also dull the middle of the photograph. This one is
                confined to the lower half and tapers out before the subject. -->
-          <div aria-hidden="true" class="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/55 to-transparent" />
+          <span aria-hidden="true" class="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/55 to-transparent" />
 
           <!-- Caption stays put; only the swap zone trades places with the
                CTA on hover. Both occupy the same footprint (the CTA overlays
@@ -60,31 +56,31 @@
                swap and never moves — only its summary line steps aside for
                the CTA; the smaller cards swap their title, the only text
                they have. -->
-          <div class="case-caption absolute inset-x-0 bottom-0 z-10 px-5 pb-5 lg:px-6 lg:pb-6">
-            <p class="font-display text-3xs font-semibold uppercase tracking-label text-accent">
+          <span class="case-caption absolute inset-x-0 bottom-0 z-10 px-5 pb-5 lg:px-6 lg:pb-6">
+            <span class="block font-body text-xs font-semibold uppercase tracking-label text-accent">
               {{ study.treatment }}
-            </p>
+            </span>
 
-            <p v-if="i === 0" class="mt-1 font-serif text-2xl leading-snug text-white lg:text-3xl">
+            <span v-if="i === 0" class="mt-1 block font-display text-2xl leading-snug text-white lg:text-3xl">
               {{ study.title }}
-            </p>
+            </span>
 
-            <div class="case-swap relative" :class="i === 0 ? 'mt-1.5' : 'mt-1'">
-              <div class="case-title">
-                <p v-if="i === 0" class="max-w-md font-display text-sm font-light leading-relaxed text-white/75">
+            <span class="case-swap relative block" :class="i === 0 ? 'mt-1.5' : 'mt-1'">
+              <span class="case-title block">
+                <span v-if="i === 0" class="block max-w-md font-body text-sm font-light leading-relaxed text-white/75">
                   {{ study.summary }}
-                </p>
-                <p v-else class="font-serif text-xl leading-snug text-white">
+                </span>
+                <span v-else class="block font-display text-xl leading-snug text-white">
                   {{ study.title }}
-                </p>
-              </div>
+                </span>
+              </span>
 
-              <span class="case-cta inline-flex items-center gap-1.5 font-display text-2xs font-semibold uppercase tracking-label text-white">
+              <span class="case-cta inline-flex items-center gap-1.5 font-body text-xs font-semibold uppercase tracking-label text-white">
                 See the detail
                 <span class="case-arrow text-accent">↗</span>
               </span>
-            </div>
-          </div>
+            </span>
+          </span>
         </button>
       </div>
     </div>
@@ -102,10 +98,10 @@
       <template v-if="selected" #header>
         <div class="flex flex-1 items-start justify-between gap-4">
           <div>
-            <p class="font-display text-2xs font-semibold uppercase tracking-label text-primary">
+            <p class="font-body text-xs font-semibold uppercase tracking-label text-primary">
               {{ selected.treatment }}
             </p>
-            <h3 class="mt-3 font-serif font-normal leading-heading tracking-heading" style="font-size: clamp(1.6rem, 3vw, 2.1rem)">
+            <h3 class="mt-3 font-display font-normal leading-heading tracking-heading" style="font-size: clamp(1.6rem, 3vw, 2.1rem)">
               {{ selected.title }}
             </h3>
           </div>
@@ -123,33 +119,52 @@
       <template v-if="selected" #body>
         <LazyBeforeAfterSlider :before="selected.before" :after="selected.after" :label="selected.title" />
 
-        <p class="mt-7 font-display text-base font-light leading-relaxed text-foreground/75">
+        <p class="mt-7 font-body text-base font-light leading-relaxed text-foreground/75">
           {{ selected.description }}
         </p>
 
         <dl class="mt-8 grid grid-cols-3 gap-4 border-t border-foreground/10 pt-6">
           <div v-for="fact in selected.meta" :key="fact.label">
-            <dt class="font-display text-3xs uppercase tracking-label text-foreground/45">
+            <dt class="font-body text-xs uppercase tracking-label text-foreground/65">
               {{ fact.label }}
             </dt>
-            <dd class="mt-1 font-serif text-lg leading-tight text-foreground">
+            <dd class="mt-1 font-display text-lg leading-tight text-foreground">
               {{ fact.value }}
             </dd>
           </div>
         </dl>
+
+        <!-- The colleague layer: technique/materials/shade from the real case
+             notes, shown only when a case carries them. Patients can skim
+             past; a visiting dentist gets the detail they came for. -->
+        <section v-if="selected.clinicalNotes?.length" class="mt-8 border-t border-foreground/10 pt-6">
+          <h4 class="m-0 font-body text-xs font-semibold uppercase tracking-label text-primary">
+            Clinical notes
+          </h4>
+          <dl class="mt-4 grid grid-cols-1 gap-3">
+            <div v-for="note in selected.clinicalNotes" :key="note.label" class="flex items-baseline justify-between gap-4">
+              <dt class="shrink-0 font-body text-xs uppercase tracking-label text-foreground/65">
+                {{ note.label }}
+              </dt>
+              <dd class="m-0 text-right font-body text-sm text-foreground/85">
+                {{ note.value }}
+              </dd>
+            </div>
+          </dl>
+        </section>
       </template>
 
       <template v-if="selected" #footer>
-        <!-- Bumped past the site's usual subtle/primary treatment (see
-             app.config.ts) to a solid fill — this is the one moment we want
-             to out-shout the quieter after-pill and slider above it. -->
+        <!-- The standard solid CTA (see app.config.ts primary/solid) — this
+             is the one moment we want to out-shout the quieter after-pill
+             and slider above it. -->
         <UButton
           :href="practice.bookingHref"
           color="primary"
-          variant="subtle"
+          variant="solid"
           size="lg"
           block
-          class="rounded-full bg-primary text-white duration-250 ease-out hover:bg-accent hover:text-primary active:bg-accent active:text-primary"
+          class="rounded-full duration-250 ease-out"
         >
           Book a consultation
         </UButton>
@@ -176,13 +191,6 @@ useSectionReveal(root)
 </script>
 
 <style scoped>
-/* Avoid a flash before GSAP takes over on capable displays. */
-@media (prefers-reduced-motion: no-preference) {
-  .reveal {
-    opacity: 0;
-  }
-}
-
 /* Primary-tinted lift on hover — same family as the shared card shadow the
    career deck and about candids use, but cranked: the shared token's -30px
    spread barely registers under these full-bleed photo cards, so this pulls
@@ -190,14 +198,14 @@ useSectionReveal(root)
    (not transform), so it never fights the inline transform GSAP leaves on
    the card after the entrance reveal. */
 .case-card {
-  transition: box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: box-shadow 0.5s var(--ease-out-expo);
 }
 .case-card:hover {
   box-shadow: 0 24px 56px -14px color-mix(in oklab, var(--color-primary) 55%, transparent);
 }
 
 .case-arrow {
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.3s var(--ease-out-expo);
 }
 .case-card:hover .case-arrow,
 .case-card:focus-visible .case-arrow {
@@ -213,7 +221,7 @@ useSectionReveal(root)
 .case-title {
   transition:
     opacity 0.3s ease,
-    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    transform 0.45s var(--ease-out-expo);
 }
 .case-cta {
   position: absolute;
@@ -223,7 +231,7 @@ useSectionReveal(root)
   transform: translateY(0.5rem);
   transition:
     opacity 0.3s ease,
-    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    transform 0.45s var(--ease-out-expo);
 }
 .case-card:hover .case-title,
 .case-card:focus-visible .case-title {

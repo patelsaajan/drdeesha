@@ -7,12 +7,11 @@
        "progress" reads as one visual language site-wide. Milestone ticks
        (siteSections — the same source SiteNav's scrollspy uses) mark where
        each section begins along the track. -->
+  <!-- Purely decorative chrome — the scrollbar already conveys position, so
+       this stays out of the accessibility tree rather than announcing itself
+       as a progressbar. -->
   <div
-    role="progressbar"
-    :aria-valuenow="Math.round(progress * 100)"
-    aria-valuemin="0"
-    aria-valuemax="100"
-    aria-label="Page scroll progress"
+    aria-hidden="true"
     class="pointer-events-none fixed left-2 top-1/2 z-40 hidden h-40 w-2 -translate-y-1/2 overflow-hidden rounded-full bg-foreground/25 sm:h-48 lg:block lg:h-60"
   >
     <div

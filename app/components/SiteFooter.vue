@@ -24,13 +24,13 @@
              like the page's actual closing argument. -->
         <div class="grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
           <div>
-            <p class="reveal font-display text-xs font-semibold uppercase tracking-eyebrow text-white/70">
+            <p class="reveal font-body text-xs font-semibold uppercase tracking-eyebrow text-white/70">
               Get in touch
             </p>
-            <p class="reveal mt-5 font-serif font-normal leading-heading tracking-heading text-white" style="font-size: clamp(2rem, 4vw, 3.25rem)">
+            <h2 class="reveal mt-5 font-display font-normal text-section-heading tracking-heading text-white">
               Let's find you a time.
-            </p>
-            <p class="reveal mt-5 max-w-md font-display text-base font-light leading-relaxed text-white/75">
+            </h2>
+            <p class="reveal mt-5 max-w-md font-body text-base font-light leading-relaxed text-white/75">
               Whether it's a routine check-up or the smile you've been picturing, I'll make time to see you. New and returning patients always welcome.
             </p>
             <UButton
@@ -87,7 +87,7 @@
               v-for="link in sectionLinks"
               :key="link.id"
               :href="`#${link.id}`"
-              class="font-display text-2xs font-semibold uppercase tracking-label text-white/55 transition-colors hover:text-white"
+              class="font-body text-xs font-semibold uppercase tracking-label text-white/55 transition-colors hover:text-white"
             >
               {{ link.label }}
             </a>
@@ -108,10 +108,17 @@
           </nav>
         </div>
 
+        <!-- The colleague path: quiet, one line, sitting above the legal
+             baseline. Patients read past it; a dentist or practice knows
+             where to reach her. -->
+        <p class="reveal mt-8 font-body text-xs uppercase tracking-label text-white/60">
+          Colleagues and professional enquiries — via {{ practice.name }}, {{ practice.location }}.
+        </p>
+
         <!-- Baseline: legal on the left, place on the right — the same
              name-dot-location line About signs off with. -->
-        <div class="reveal mt-8 flex flex-col gap-2 font-display text-xs uppercase tracking-label text-white/50 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {{ year }} Dr Deesha Dental. GDC no 309307.</p>
+        <div class="reveal mt-4 flex flex-col gap-2 font-body text-xs uppercase tracking-label text-white/60 sm:flex-row sm:items-center sm:justify-between">
+          <p>© {{ year }} Dr Deesha Dental. GDC no {{ practice.gdcNumber }}.</p>
           <p class="flex items-center gap-3">
             {{ practice.name }}
             <span aria-hidden="true" class="h-1 w-1 rounded-full bg-accent" />
@@ -143,11 +150,3 @@ const root = ref<HTMLElement | null>(null)
 useSectionReveal(root)
 </script>
 
-<style scoped>
-/* Avoid a flash of un-animated content before GSAP takes over on capable displays. */
-@media (prefers-reduced-motion: no-preference) {
-  .reveal {
-    opacity: 0;
-  }
-}
-</style>

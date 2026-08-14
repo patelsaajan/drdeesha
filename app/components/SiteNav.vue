@@ -13,9 +13,12 @@
        Desktop only — hover has no meaning on touch, so under lg the bottom
        bar further down takes over. -->
   <nav
+    aria-label="Sections"
     class="site-nav fixed top-6 right-6 z-40 hidden h-11 w-fit items-stretch overflow-hidden rounded-lg border border-black/8 bg-white/55 text-foreground shadow-lift backdrop-blur-md lg:flex"
     @mouseenter="expanded = true"
     @mouseleave="expanded = false"
+    @focusin="expanded = true"
+    @focusout="onNavFocusout"
   >
     <div
       v-for="(section, i) in sections"
@@ -28,9 +31,9 @@
     >
       <button
         type="button"
-        class="site-btn flex h-full min-w-0 cursor-pointer items-center justify-start overflow-hidden whitespace-nowrap px-4 font-display text-2xs font-semibold uppercase tracking-label"
+        class="site-btn flex h-full min-w-0 cursor-pointer items-center justify-start overflow-hidden whitespace-nowrap px-4 font-body text-xs font-semibold uppercase tracking-label"
         :class="[
-          section.id === current.id ? 'bg-primary/12 text-primary' : 'bg-transparent text-foreground/50 hover:text-foreground',
+          section.id === current.id ? 'bg-primary/12 text-primary' : 'bg-transparent text-foreground/70 hover:text-foreground',
           expanded && i > 0 && 'border-l border-black/8',
         ]"
         :style="{
@@ -57,7 +60,7 @@
     >
       <button
         type="button"
-        class="site-btn flex h-full min-w-0 cursor-pointer items-center justify-start overflow-hidden whitespace-nowrap bg-primary/12 px-4 font-display text-2xs font-semibold uppercase tracking-label text-primary"
+        class="site-btn flex h-full min-w-0 cursor-pointer items-center justify-start overflow-hidden whitespace-nowrap bg-primary/12 px-4 font-body text-xs font-semibold uppercase tracking-label text-primary"
         :style="{ opacity: expanded ? 0 : 1 }"
         @click="jumpTo(current.id)"
       >
@@ -80,7 +83,7 @@
       :href="practice.bookingHref"
       variant="solid"
       color="primary"
-      class="site-nav-book h-full shrink-0 cursor-pointer rounded-l-none rounded-r-lg border-l border-black/8 bg-primary! px-6 text-white! transition-colors duration-200 hover:bg-accent! hover:text-primary!"
+      class="site-nav-book h-full shrink-0 rounded-l-none rounded-r-lg border-l border-black/8 px-6 duration-200"
     >
       Book Now
     </UButton>
@@ -104,12 +107,14 @@
   >
     <div class="menu-fold grid" :class="menuOpen && 'is-open'">
       <div class="min-h-0 overflow-hidden">
-        <ul id="mobile-menu" class="m-0 mb-2 list-none rounded-lg border border-black/8 bg-white/85 p-1.5 shadow-lift backdrop-blur-md">
+        <!-- inert while closed: the items are rendered (so the fold can
+             animate) but must not be reachable by keyboard or AT. -->
+        <ul id="mobile-menu" :inert="!menuOpen" class="m-0 mb-2 list-none rounded-lg border border-black/8 bg-white/85 p-1.5 shadow-lift backdrop-blur-md">
           <li v-for="(section, i) in sections" :key="section.id">
             <button
               type="button"
-              class="menu-item flex min-h-11 w-full cursor-pointer items-center justify-between rounded-md px-4 font-display text-2xs font-semibold uppercase tracking-label"
-              :class="section.id === current.id ? 'bg-primary/12 text-primary' : 'text-foreground/60'"
+              class="menu-item flex min-h-11 w-full cursor-pointer items-center justify-between rounded-md px-4 font-body text-xs font-semibold uppercase tracking-label"
+              :class="section.id === current.id ? 'bg-primary/12 text-primary' : 'text-foreground/70'"
               :style="{ transitionDelay: menuStagger(i) }"
               @click="jumpTo(section.id)"
             >
@@ -124,7 +129,7 @@
     <div class="flex h-12 items-stretch overflow-hidden rounded-lg border border-black/8 bg-white/55 text-foreground shadow-lift backdrop-blur-md">
       <button
         type="button"
-        class="flex min-w-0 flex-1 cursor-pointer items-center gap-3 px-5 font-display text-2xs font-semibold uppercase tracking-label text-foreground"
+        class="flex min-w-0 flex-1 cursor-pointer items-center gap-3 px-5 font-body text-xs font-semibold uppercase tracking-label text-foreground"
         :aria-expanded="menuOpen"
         aria-controls="mobile-menu"
         @click="menuOpen = !menuOpen"
@@ -137,7 +142,7 @@
         :href="practice.bookingHref"
         variant="solid"
         color="primary"
-        class="site-nav-book h-full shrink-0 cursor-pointer rounded-l-none rounded-r-lg border-l border-black/8 bg-primary! px-6 text-white! transition-colors duration-200 hover:bg-accent! hover:text-primary!"
+        class="site-nav-book h-full shrink-0 rounded-l-none rounded-r-lg border-l border-black/8 px-6 duration-200"
       >
         Book Now
       </UButton>
@@ -247,6 +252,14 @@ function onKeydown(e: KeyboardEvent) {
   if (e.key === 'Escape') menuOpen.value = false
 }
 
+// Keyboard parity with hover: focus entering the pill unfurls it (so a
+// focused section button is always visible, never a zero-width tab stop),
+// and it folds back once focus moves on somewhere else entirely.
+function onNavFocusout(e: FocusEvent) {
+  const nav = e.currentTarget as HTMLElement
+  if (!nav.contains(e.relatedTarget as Node | null)) expanded.value = false
+}
+
 let observer: IntersectionObserver | undefined
 
 onMounted(() => {
@@ -288,7 +301,7 @@ onUnmounted(() => {
 
 <style scoped>
 .site-item {
-  transition: grid-template-columns 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: grid-template-columns 0.42s var(--ease-out-expo);
 }
 .site-btn {
   transition:
@@ -300,7 +313,7 @@ onUnmounted(() => {
 
 /* Odometer window glides between label widths in step with the roll. */
 .site-tick {
-  transition: width 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: width 0.45s var(--ease-out-expo);
 }
 
 /* The roll itself: outgoing label leaves at once, incoming follows a beat
@@ -309,13 +322,13 @@ onUnmounted(() => {
 .tick-up-enter-active,
 .tick-down-enter-active {
   transition:
-    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) 60ms,
+    transform 0.4s var(--ease-out-expo) 60ms,
     opacity 0.3s ease 60ms;
 }
 .tick-up-leave-active,
 .tick-down-leave-active {
   transition:
-    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.4s var(--ease-out-expo),
     opacity 0.25s ease;
 }
 /* Scrolling forward: new label rolls up into place, old one rolls up and out. */
@@ -342,7 +355,7 @@ onUnmounted(() => {
    fade/lift on a per-item delay for the cascade. */
 .menu-fold {
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: grid-template-rows 0.45s var(--ease-out-expo);
 }
 .menu-fold.is-open {
   grid-template-rows: 1fr;
@@ -352,7 +365,7 @@ onUnmounted(() => {
   transform: translateY(8px);
   transition:
     opacity 0.25s ease,
-    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.4s var(--ease-out-expo),
     background-color 0.3s ease,
     color 0.3s ease;
 }
@@ -371,8 +384,8 @@ onUnmounted(() => {
   height: 1.5px;
   background: currentColor;
   transition:
-    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-    top 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    transform 0.35s var(--ease-out-expo),
+    top 0.35s var(--ease-out-expo);
 }
 .menu-glyph::before {
   top: 1px;

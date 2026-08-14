@@ -2,15 +2,11 @@
   <section id="experience" class="relative z-20 bg-background text-foreground">
 
     <div ref="header" class="mx-auto max-w-6xl px-4 pt-24 pb-10 sm:px-6 lg:pt-28">
-      <p class="reveal font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
-        Experience
-      </p>
-      <h2 class="reveal mt-5 font-serif font-normal leading-heading tracking-heading" style="font-size: clamp(2rem, 4vw, 3.25rem)">
-        The path here.
-      </h2>
-      <p class="reveal mt-4 max-w-md font-display text-base font-light leading-relaxed text-foreground/65">
-        The short version of my apprenticeship, from the first lecture to the chair you'll sit in.
-      </p>
+      <SectionHeader eyebrow="Experience" title="The path here.">
+        <p class="reveal mt-4 max-w-md font-body text-base font-light leading-relaxed text-foreground/65">
+          The short version of my apprenticeship, from the first lecture to the chair you'll sit in.
+        </p>
+      </SectionHeader>
     </div>
 
     <!-- Independently centred, not aligned to the header's max-w-6xl column
@@ -61,23 +57,26 @@
             <!-- Oversized, faint tag running down the spine, its end pinned to the top -->
             <span
               aria-hidden="true"
-              class="career-mark pointer-events-none absolute left-1/2 top-6 hidden font-serif font-normal uppercase leading-none text-white/25 lg:block"
+              class="career-mark pointer-events-none absolute left-1/2 top-6 hidden font-display font-normal uppercase leading-none text-white/25 lg:block"
             >
               {{ step.mark }}
             </span>
             <div class="relative z-10 lg:mt-auto">
-              <p class="font-display text-2xs font-semibold uppercase leading-snug tracking-label text-white">
+              <p class="font-body text-xs font-semibold uppercase leading-snug tracking-label text-white">
                 {{ step.qualification }}
               </p>
             </div>
             <div class="relative z-10 flex shrink-0 items-center gap-3 lg:mt-1">
-              <p class="font-display text-3xs uppercase tracking-label text-white/70">
+              <!-- Full white, not white/70 — on the lightest spines (tint 60
+                   and 70) the faded version measured 3.14:1 and 4.04:1,
+                   under AA. Solid white clears 4.5:1 on every spine. -->
+              <p class="font-body text-xs uppercase tracking-label text-white">
                 {{ step.year }}
               </p>
               <!-- Mobile-only open/close cue; the fold below does the actual work -->
               <span
                 aria-hidden="true"
-                class="career-plus font-display text-lg font-light leading-none text-white/80 lg:hidden"
+                class="career-plus font-body text-lg font-light leading-none text-white/80 lg:hidden"
                 :class="activeIndex === i && 'is-open'"
               >+</span>
             </div>
@@ -94,7 +93,7 @@
                 :class="activeIndex === i && 'is-open'"
               >
                 <div class="flex flex-wrap items-center gap-2">
-                  <p class="font-display text-2xs font-semibold uppercase leading-snug tracking-label text-primary">
+                  <p class="font-body text-xs font-semibold uppercase leading-snug tracking-label text-primary">
                     {{ step.institution }}
                   </p>
                 </div>
@@ -108,11 +107,11 @@
                   :class="step.focalPoint"
                 />
 
-                <p class="font-display text-sm font-light leading-relaxed text-foreground/75 lg:text-base">
+                <p class="font-body text-sm font-light leading-relaxed text-foreground/75 lg:text-base">
                   {{ step.description }}
                 </p>
 
-                <p class="mt-auto font-display text-2xs uppercase tracking-label text-primary/45">
+                <p class="mt-auto font-body text-xs uppercase tracking-label text-primary/70">
                   {{ step.location }}
                 </p>
               </div>
@@ -195,9 +194,9 @@ useSectionReveal(track)
    the half of the gesture that was feeling abrupt. */
 .career-card {
   transition:
-    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-    border-radius 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transform 0.7s var(--ease-out-expo),
+    box-shadow 0.5s var(--ease-out-expo),
+    border-radius 0.4s var(--ease-out-expo);
 }
 /* Content reveal: a fade-up in the spirit of the site's section entrance
    (useSectionReveal), running concurrently with the slide above rather than
@@ -238,7 +237,7 @@ useSectionReveal(track)
   .career-fold {
     display: grid;
     grid-template-rows: 0fr;
-    transition: grid-template-rows 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: grid-template-rows 0.55s var(--ease-out-soft);
   }
   .career-fold.is-open {
     grid-template-rows: 1fr;
@@ -256,7 +255,7 @@ useSectionReveal(track)
 }
 
 .career-plus {
-  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.4s var(--ease-out-soft);
 }
 .career-plus.is-open {
   transform: rotate(45deg);
@@ -276,13 +275,6 @@ useSectionReveal(track)
   }
   .career-card.is-active {
     box-shadow: var(--shadow-card), var(--shadow-spine);
-  }
-}
-
-/* Avoid a flash of un-animated header before GSAP takes over. */
-@media (prefers-reduced-motion: no-preference) {
-  .reveal {
-    opacity: 0;
   }
 }
 

@@ -9,17 +9,20 @@
      (~15:1 contrast with white), so nothing built around "solid primary +
      white text" needs re-checking. */
   --color-primary: #3C0061;
-  --color-secondary: #7ab3c8;
   /* Bright amber-yellow. Too light for white text (~2:1, fails AA) — labels
      that land on this background use text-primary instead (~7.6:1, AAA). */
   --color-accent: #F5A623;
 
-  --font-display: "Fraunces", Georgia, serif;
-  --font-serif: "Bodoni Moda", Georgia, serif;
+  /* Bodoni carries the display voice (headings, pull-quotes); Fraunces is
+     the body/label face. Named for their roles so the utility classes read
+     as intent (font-display / font-body), not as a description of the cut. */
+  --font-display: "Bodoni Moda", Georgia, serif;
+  --font-body: "Fraunces", Georgia, serif;
 
-  /* Type scale — sub-xs labels (no standard exists below text-xs) */
-  --text-3xs: 0.625rem;
-  --text-2xs: 0.6875rem;
+  /* Type scale — the one heading size every section shares. One-off sizes
+     (portrait name, pull-quote, drawer title) stay local to their component. */
+  --text-section-heading: clamp(2rem, 4vw, 3.25rem);
+  --text-section-heading--line-height: 1.05;
 
   /* Letter-spacing */
   --tracking-eyebrow: 0.35em;
@@ -28,8 +31,11 @@
 
   /* Line-height */
   --leading-heading: 1.05;
-  --leading-quote: 1.15;
-  --leading-body: 1.75;
+
+  /* Easing — the site's two deceleration curves, shared by scoped styles
+     and available as ease-out-expo / ease-out-soft utilities. */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 
   /* Elevation — primary-tinted, not neutral grey, so lifted surfaces read
      as a soft amethyst glow on this palette rather than a muddy pool. */
@@ -51,6 +57,17 @@
   body {
     margin: 0;
     background-color: var(--color-background);
+  }
+
+  /* Anti-FOUC start state for the shared section entrance (useSectionReveal):
+     every .reveal starts invisible so GSAP's fade-up has something to do.
+     Gated twice — on motion preference, and on html.js (added by an inline
+     head script in app.vue) so that if JS never runs, nothing on the page is
+     hidden. Lives here once instead of copy-pasted into every component. */
+  @media (prefers-reduced-motion: no-preference) {
+    .js .reveal {
+      opacity: 0;
+    }
   }
 
   /* In-page anchors (footer section links, #contact) glide like the nav's

@@ -5,19 +5,23 @@ export default defineAppConfig({
         {
           color: 'primary' as const,
           variant: 'subtle' as const,
-          class: 'rounded-md ring-0 bg-primary/25 hover:bg-primary/35 active:bg-primary/35 font-display font-semibold tracking-wide cursor-pointer transition-colors',
+          class: 'rounded-md ring-0 bg-primary/25 hover:bg-primary/35 active:bg-primary/35 font-body font-semibold tracking-wide cursor-pointer transition-colors',
         },
         {
+          // The site's standard CTA: solid brand primary flooding to accent
+          // on hover — the treatment every Book Now resolves to, so callers
+          // only add positioning classes rather than fighting this with
+          // important overrides.
           color: 'primary' as const,
           variant: 'solid' as const,
-          class: 'bg-black/5 hover:bg-black/10 backdrop-blur-md text-foreground font-display font-semibold tracking-wide cursor-pointer transition-colors ring-0 shadow-none border-0',
+          class: 'bg-primary text-white hover:bg-accent hover:text-primary active:bg-accent active:text-primary font-body font-semibold tracking-wide cursor-pointer transition-colors ring-0 shadow-none border-0',
         },
         {
           // Inverted CTA for use on solid-primary/accent backgrounds (e.g. the
           // footer), where a primary-colored button would blend into the surface.
           color: 'neutral' as const,
           variant: 'solid' as const,
-          class: 'bg-white hover:bg-white/90 text-primary font-display font-semibold tracking-wide cursor-pointer transition-colors ring-0 shadow-none border-0',
+          class: 'bg-white hover:bg-white/90 text-primary font-body font-semibold tracking-wide cursor-pointer transition-colors ring-0 shadow-none border-0',
         },
       ],
     },
