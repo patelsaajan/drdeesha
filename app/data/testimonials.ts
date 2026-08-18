@@ -4,12 +4,13 @@
 //
 // Two things the count affects (see TestimonialsSection.vue):
 //   - mobile shows only the first 8, so put the strongest ones early.
-//   - desktop never repeats a review (every row is on screen at once, so a
-//     repeat would sit beside its twin), which means the row count follows
-//     the count here: it takes 5 per row for a band to be wide enough to
-//     scroll, so 3 rows needs 15+. At the current 16 that is 3 rows of
-//     5/5/6. Dropping below 15 silently falls back to 2 rows, and below 10
-//     to a single row. Nothing here needs tuning either way.
+//   - desktop pads each row by repeating that row's own first few reviews at
+//     its tail (spaced a full row apart, so a review and its copy are never
+//     on screen together). The row count follows the count here: it takes 5
+//     per row for a band to be wide enough to scroll, so 3 rows needs 15+.
+//     At the current 16 that is 3 rows of 5/5/6. Dropping below 15 silently
+//     falls back to 2 rows, and below 10 to a single row. Nothing here needs
+//     tuning either way.
 //
 // Apostrophes: these are single-quoted strings, so a straight ' inside one
 // ends it early and breaks the file. Use the typographic ’ as below.
