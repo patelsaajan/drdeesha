@@ -8,11 +8,11 @@
        Full-viewport introduction directly under the hero: the studio portrait
        claims the left third, and the remaining two thirds carry the name, the
        qualification lockup, a short bio and her pull-quote. The ground is
-       primary cut with
-       20% white (usePrimaryTint(80)) — the same tinting device the About
-       panel and footer use, so the two sections read as one family. White
-       body copy sits at ~9:1 on it; the eyebrow is white/70 rather than
-       white/60 because 60% lands at 4.31:1, just under AA for its size. -->
+       primary cut with 10% white (usePrimaryTint(90)) — the same tinting
+       device the About section and footer use, and About carries this exact
+       tint so the two run on as one surface. White body copy clears AAA on
+       it; the eyebrow is white/70 rather than white/60, which lands just
+       under AA for its size. -->
   <section
     class="relative z-10 grid min-h-dvh w-full overflow-hidden lg:grid-cols-5"
     :style="{ backgroundColor: usePrimaryTint(90) }"

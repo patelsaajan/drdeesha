@@ -10,13 +10,15 @@
        section is opaque and paints above it, so it's only ever visible here. -->
   <!-- --card-w is capped by height as well as width: on the vw term alone the
        row grows tall enough on a short laptop (1440x800) to push the CTA
-       below the fold, so the dvh term caps the card's own height (~39dvh via
-       its 3/4 aspect) and the whole stack keeps fitting. -->
+       below the fold, so the dvh term caps the card's own height and the
+       whole stack keeps fitting. The floor is low enough that a phone still
+       fits the centre pair plus the laterals either side — at a larger floor
+       only the two tall cards fit and the arch has nothing to read against. -->
   <section
     id="home"
     ref="heroRoot"
     class="sticky top-0 z-0 flex min-h-dvh flex-col items-center justify-center overflow-hidden bg-background pb-28 lg:pb-10"
-    style="--card-w: clamp(10.5rem, min(20vw, 29dvh), 32rem); padding-top: clamp(4rem, 9dvh, 6rem)"
+    style="--card-w: clamp(7.5rem, min(20vw, 26dvh), 32rem); padding-top: clamp(4rem, 9dvh, 6rem)"
   >
     <div class="flex w-full flex-col items-center px-6 text-center">
       <!-- Accent pill. Text is primary, not white: accent sits at ~2:1 against
@@ -49,13 +51,12 @@
       class="hero-rise mt-3 w-full cursor-grab overflow-hidden active:cursor-grabbing"
       style="padding-block: calc(var(--card-w) * 0.08)"
     >
-      <div ref="track" class="flex w-max items-start gap-0.5 will-change-transform">
-        <!-- Every card carries both photographs, stacked; which one shows is
-             decided per frame from the card's distance to the centre line
-             (see applyArc), not from its index. That's what keeps the two
-             centre cards on the consultation frame even while the row is
-             being dragged — an index-based arrangement would slide out of
-             position the moment it moved.
+      <div ref="track" class="flex w-max items-start gap-3 will-change-transform">
+        <!-- One photograph per card, chosen by its slot in PATTERN — the two
+             centrals carry the consultation portrait, the rest the wider
+             chairside frame. Because the assignment is fixed rather than
+             recomputed against the screen, no card ever swaps image and a
+             single <img> each is enough.
 
              `sizes` is set at 2x the card's true slot on purpose. @nuxt/image
              v2 derives srcset candidates from the vw breakpoints alone and
@@ -69,25 +70,20 @@
           ref="cardEls"
           class="hero-card relative shrink-0 overflow-hidden rounded-2xl select-none"
           draggable="false"
-          :style="{ width: 'var(--card-w)', backgroundColor: usePrimaryTint(50) }"
+          :style="{
+            width: 'var(--card-w)',
+            aspectRatio: String(slotAspect[(i - 1) % SLOTS_PER_COPY]),
+            backgroundColor: usePrimaryTint(50),
+          }"
         >
           <NuxtImg
-            :src="CHAIRSIDE"
-            :alt="i === 1 ? CHAIRSIDE_ALT : ''"
+            :src="slotImage((i - 1) % SLOTS_PER_COPY)"
+            :alt="i <= SLOTS_PER_COPY && FIRST_ALT_SLOTS.includes((i - 1) % SLOTS_PER_COPY) ? slotAlt((i - 1) % SLOTS_PER_COPY) : ''"
             sizes="22rem md:40vw"
             quality="82"
             draggable="false"
-            :loading="i <= 2 ? 'eager' : 'lazy'"
+            :loading="i <= SLOTS_PER_COPY ? 'eager' : 'lazy'"
             class="pointer-events-none absolute inset-0 h-full w-full object-cover"
-          />
-          <NuxtImg
-            :src="CONSULTATION"
-            :alt="i === 1 ? CONSULTATION_ALT : ''"
-            sizes="22rem md:40vw"
-            quality="82"
-            draggable="false"
-            :loading="i <= 2 ? 'eager' : 'lazy'"
-            class="hero-focus pointer-events-none absolute inset-0 h-full w-full object-cover"
           />
         </div>
       </div>
@@ -118,15 +114,44 @@ import { practice } from '../data/contact'
 const CHAIRSIDE = '/images/about/chairside.webp'
 const CONSULTATION = '/images/hero/consultation.webp'
 
-// How many cards hold the consultation frame at once, taken from the centre
-// outward.
-const FOCUS_CARDS = 2
+// The smile arch, as a fixed repeating pattern of six card slots. Dental
+// anatomy, roughly: central incisors longest, laterals beside them shorter,
+// canines longer again. `k` is the card's rendered height as a multiple of
+// its width; the two centrals carry the consultation portrait and everything
+// else carries the wider chairside frame.
+//
+// Fixed to the cards rather than recomputed against the screen each frame, so
+// the arch travels with the row when it's dragged instead of the cards
+// changing shape underneath it. That's also why the pattern has to *repeat*:
+// the loop wraps every SLOTS_PER_COPY cards, and a one-off arch would jump
+// at the seam. Repeating it means the wrap stays invisible and dragging
+// simply reveals the next set of teeth.
+const PATTERN = [
+  { k: 1.16, focus: false }, // canine — square but a little taller
+  { k: 1.0, focus: false }, // lateral — square
+  { k: 1.34, focus: true }, // central — tall
+  { k: 1.34, focus: true }, // central — tall
+  { k: 1.0, focus: false }, // lateral — square
+  { k: 1.16, focus: false }, // canine
+]
+const SLOTS_PER_COPY = PATTERN.length
 
+// Slot 2|3 is the seam the arch is centred on, so a slot's distance from the
+// centre line, in card widths, is its offset from 2.5.
+const SLOT_U = PATTERN.map((_, i) => Math.abs(i - (SLOTS_PER_COPY - 1) / 2))
 // Only the first card describes its photographs. Beyond that the same two
 // images repeat as decoration, and announcing them once per card would be
 // noise.
 const CHAIRSIDE_ALT = 'Dr Deesha treating a patient chairside, with a dental nurse assisting'
 const CONSULTATION_ALT = 'Dr Deesha with a smiling patient in the treatment chair at Smart Smiles'
+
+// Slots 0 and 2 are the first to use each photograph; every other card is the
+// same two images repeating as decoration, and describing them once per card
+// would be noise.
+const FIRST_ALT_SLOTS = [0, 2]
+function slotAlt(slot: number) {
+  return PATTERN[slot]!.focus ? CONSULTATION_ALT : CHAIRSIDE_ALT
+}
 
 // Cards laid end to end. Every card is now identical in content (both
 // photographs, one revealed), so the repeating unit is a single card and the
@@ -134,10 +159,23 @@ const CONSULTATION_ALT = 'Dr Deesha with a smiling patient in the treatment chai
 // wraps as it's dragged, so the window it can sweep always has content past
 // both screen edges. Left at a fixed count this breaks on wide screens,
 // where the card width clamp stops a unit from growing with the viewport.
-const SLOTS_PER_COPY = 1
 const MIN_COPIES = 3
 const copies = ref(MIN_COPIES)
 const cardCount = computed(() => copies.value * SLOTS_PER_COPY)
+
+// width / height per slot. The ring shrinks centre cards to ~82% and leaves
+// the outer ones near 100%, which cancelled the arch out when the ratios were
+// applied raw — the outer cards came out tallest on screen despite the centre
+// being tallest in layout. Each slot is therefore divided by the scale a card
+// resting in that slot will be drawn at. Derived from the slot, never from a
+// card's live position, so every card sharing a slot is identical and the
+// wrap stays seamless. Recomputed on resize, since the scale depends on how
+// many cards fit across the viewport.
+const slotAspect = ref<number[]>(PATTERN.map(p => 1 / p.k))
+
+function slotImage(slot: number) {
+  return PATTERN[slot]!.focus ? CONSULTATION : CHAIRSIDE
+}
 
 // Ring model — the viewer stands at the centre of a cylinder of cards and the
 // row is the far wall sweeping past. A card's layout position maps linearly to
@@ -174,6 +212,11 @@ const TAN_E = Math.tan(EDGE_ANGLE)
 function ringMap(t: number) {
   return (1 - TAN_BLEND) * t + (TAN_BLEND * Math.tan(t * EDGE_ANGLE)) / TAN_E
 }
+// The ring's own scaling at a viewing angle: the exact cos ratio, damped.
+function ringScale(psi: number) {
+  return 1 - DEPTH_STRENGTH * (1 - Math.cos(EDGE_ANGLE) / Math.cos(psi))
+}
+
 function ringSlope(t: number) {
   const sec = 1 / Math.cos(t * EDGE_ANGLE)
   return 1 - TAN_BLEND + (TAN_BLEND * EDGE_ANGLE * sec * sec) / TAN_E
@@ -271,9 +314,7 @@ function applyArc() {
         : Math.sign(raw) * (ringMap(ARC_LIMIT) + ringSlope(ARC_LIMIT) * (Math.abs(raw) - ARC_LIMIT))
 
     // Damped scale first, then back to the translateZ that produces it.
-    const sFull = Math.cos(EDGE_ANGLE) / Math.cos(psi)
-    const scale = 1 - DEPTH_STRENGTH * (1 - sFull)
-    const depth = PERSPECTIVE * (1 / scale - 1)
+    const depth = PERSPECTIVE * (1 / ringScale(psi) - 1)
     const yaw = (-t * EDGE_ANGLE * YAW_RATIO * 180) / Math.PI
 
     // Screen-space placement rides the CSS `translate` property, which
@@ -282,31 +323,7 @@ function applyArc() {
     els[i]!.style.translate = `${half + half * mapped - centre}px`
     els[i]!.style.transform = `perspective(${PERSPECTIVE}px) translateZ(${-depth}px) rotateY(${yaw}deg)`
 
-    dist[i] = Math.abs(raw)
   }
-
-  applyFocus(els)
-}
-
-// Distance from the centre line per card, refilled each frame by applyArc.
-let dist: number[] = []
-let focused: number[] = []
-
-// Reveal the consultation frame on the FOCUS_CARDS cards nearest the centre.
-// Recomputed every frame but only written to the DOM when the membership
-// actually changes — during a drag that's a handful of times, not 60/sec.
-function applyFocus(els: HTMLElement[]) {
-  const n = els.length
-  const next = Array.from({ length: n }, (_, i) => i)
-    .sort((a, b) => (dist[a] ?? Infinity) - (dist[b] ?? Infinity))
-    .slice(0, FOCUS_CARDS)
-    .sort((a, b) => a - b)
-
-  if (next.length === focused.length && next.every((v, i) => v === focused[i])) return
-
-  for (const i of focused) els[i]?.classList.remove('is-focus')
-  for (const i of next) els[i]?.classList.add('is-focus')
-  focused = next
 }
 
 // Resize fires in bursts, and this function yields at nextTick — without a
@@ -319,6 +336,7 @@ async function buildMarquee() {
   if (!measure()) return
 
   const copyW = step * SLOTS_PER_COPY
+  const half = viewW / 2
 
   // The ring mapping only ever moves a card *outward* from its layout slot
   // (|ringMap(t)| ≥ (1 - TAN_BLEND)|t| and = |t| at the edges), so plain
@@ -327,7 +345,7 @@ async function buildMarquee() {
   const startCopies = 2
   const need = Math.max(
     MIN_COPIES,
-    startCopies + 2 + Math.ceil(viewW / copyW),
+    startCopies + 1 + Math.ceil(viewW / copyW),
   )
   if (need !== copies.value) {
     copies.value = need
@@ -338,10 +356,28 @@ async function buildMarquee() {
   // Park startCopies in, and let pos roam one copy width either side of that
   // before wrapping — the content repeats every copyW, so the wrap is
   // pixel-identical and invisible in both directions.
-  dist = []
-  focused = []
+  //
+  // The start is nudged so the *seam between two cards* lands on the centre
+  // line, which is what puts a symmetric pair either side of it rather than
+  // one card dead centre and the arch sitting off-axis. Alignment survives
+  // wrapping: the row repeats every copyW, so shifting by a whole copy only
+  // relabels which card is which.
+  // Each slot's aspect, corrected for the scale a card resting there is drawn
+  // at — without this the ring's foreshortening cancels the arch out, and the
+  // outer cards come out tallest on screen despite the centre being tallest
+  // in layout. Derived from the slot, never from a card's live position, so
+  // every card sharing a slot is identical and the wrap stays seamless.
+  slotAspect.value = PATTERN.map((slot, i) => {
+    const t = gsap.utils.clamp(-ARC_LIMIT, ARC_LIMIT, (SLOT_U[i]! * step) / half)
+    return ringScale(t * EDGE_ANGLE) / slot.k
+  })
+
   copySpan = copyW
-  posMax = -startCopies * copyW
+  // Land the seam between the two centrals on the centre line, so the arch
+  // sits symmetrically about it rather than one card dead centre.
+  const base = -startCopies * copyW
+  const aligned = half - cardW / 2 - ((SLOTS_PER_COPY - 1) / 2) * step
+  posMax = aligned - Math.round((aligned - base) / copyW) * copyW
   pos = posMax
   velocity = 0
   gsap.set(track.value, { x: pos })
@@ -429,41 +465,13 @@ onUnmounted(() => {
   user-select: none;
 }
 
-/* The consultation frame sits on top of the chairside one and is revealed
-   only on the centre cards. Crossfaded rather than swapped so the change
-   during a drag reads as a dissolve instead of a flicker; both images are
-   already decoded, so nothing loads at the moment of the swap. */
-.hero-focus {
-  opacity: 0;
-  transition: opacity 0.45s ease;
-}
-.hero-card.is-focus .hero-focus {
-  opacity: 1;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-focus {
-    transition: none;
-  }
-}
-
-/* Square while it carries the chairside frame — a 16:9 original that the 3/4
-   portrait crop cut to pieces — and 3/4 on the centre pair, where the
-   consultation portrait wants the height. The row is items-start, so the
-   taller centre cards hang below a shared top edge rather than growing in
-   both directions. */
 .hero-card {
+  /* Placeholder only — applyArc sets the real value on the first frame. It's
+     updated continuously rather than transitioned: the profile is a smooth
+     function of position, so the value already animates itself and a
+     transition on top would just lag it. Nothing recomputes while the row is
+     at rest (tick returns early), so this costs nothing until a drag. */
   aspect-ratio: 1 / 1;
-  transition: aspect-ratio 0.45s ease;
-}
-.hero-card.is-focus {
-  aspect-ratio: 3 / 4;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-card {
-    transition: none;
-  }
 }
 
 .hero-card {

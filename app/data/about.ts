@@ -74,9 +74,5 @@ export const aboutTopics: AboutTopic[] = [
       'Outside of dentistry, you\'ll usually find me at Pilates, hiking somewhere with a good view, being an amateur nail tech, or trying out new baking recipes.',
       'It\'s the same instinct as the day job, really — steady hands, and a lot of patience for getting the details right.',
     ],
-    image: {
-      src: '/images/about/candid-2.webp',
-      alt: 'Dr Deesha smiling beside a river, elephants bathing in the background',
-    },
   },
 ]

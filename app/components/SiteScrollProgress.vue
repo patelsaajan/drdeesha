@@ -16,8 +16,7 @@
     class="pointer-events-none fixed left-2 top-1/2 z-40 hidden h-40 w-2 -translate-y-1/2 overflow-hidden rounded-full bg-foreground/25 sm:h-48 lg:block lg:h-60"
   >
     <div
-      class="scroll-progress-fill absolute inset-x-0 top-0 w-full rounded-full"
-      :class="complete ? 'bg-accent' : 'bg-primary'"
+      class="scroll-progress-fill absolute inset-x-0 top-0 w-full rounded-full bg-primary"
       :style="{ height: `${progress * 100}%` }"
     />
     <span
@@ -35,7 +34,6 @@ import { siteSections } from '../data/sections'
 
 const progress = ref(0)
 const milestones = ref<{ id: string, offset: number }[]>([])
-const complete = computed(() => progress.value >= 1)
 
 function clamp01(n: number) {
   return Math.min(1, Math.max(0, n))
