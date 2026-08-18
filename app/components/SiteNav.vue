@@ -1,4 +1,23 @@
 <template>
+  <!-- Brand mark. The nav pill is pinned hard against the right edge, so the
+       wordmark takes the opposite corner and gives the page its top-left
+       anchor. Bare rather than shelled in the nav's frosted pill, so the
+       wordmark reads as the mark itself and not as another control. Doubles
+       as the jump home. -->
+  <button
+    type="button"
+    aria-label="Dr Deesha Dental — back to top"
+    class="fixed top-6 left-6 z-40 flex cursor-pointer items-center rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4"
+    @click="jumpTo('home')"
+  >
+    <NuxtImg
+      src="/images/logo/dr-deesha-logo.webp"
+      alt="Dr Deesha Dental"
+      preload
+      class="h-auto w-28 lg:w-36"
+    />
+  </button>
+
   <!-- Light frosted pill, anchored to the right edge. Two-part rhythm:
        - Rest: one stationary chip sits directly left of a fixed Book Now
          button. Neither ever moves or restyles as you scroll — a section

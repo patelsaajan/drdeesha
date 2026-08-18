@@ -1,213 +1,395 @@
 <template>
-  <div id="home" ref="heroRoot" class="relative h-dvh overflow-hidden bg-background" style="--smile-w: min(clamp(12rem, 27vw, 28.5rem), 69dvh)">
+  <!-- Centred editorial stack — badge, title, bio, then a full-bleed arced
+       carousel and the booking CTA beneath it. The carousel sits still until
+       it's dragged; each card is scaled and tilted by its distance from the
+       viewport's centre line so the row reads as bending around a cylinder
+       rather than sliding flat. -->
+  <!-- --card-w is capped by height as well as width: on the vw term alone the
+       row grows tall enough on a short laptop (1440x800) to push the CTA
+       below the fold, so the dvh term caps the card's own height (~39dvh via
+       its 3/4 aspect) and the whole stack keeps fitting. -->
+  <section
+    id="home"
+    ref="heroRoot"
+    class="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden bg-background pb-28 lg:pb-10"
+    style="--card-w: clamp(10.5rem, min(20vw, 29dvh), 32rem); padding-top: clamp(4rem, 9dvh, 6rem)"
+  >
+    <div class="flex w-full flex-col items-center px-6 text-center">
+      <!-- Accent pill. Text is primary, not white: accent sits at ~2:1 against
+           white and fails AA, where primary on accent is ~7.6:1. -->
+      <p class="hero-rise m-0 rounded-full bg-accent/70 px-4 py-1.5 font-display text-2xs font-semibold uppercase tracking-label text-primary">
+        New patients welcome
+      </p>
 
-    <!-- Centred wordmark — the brand logo (name + DENTAL rule, set in the
-         practice's own typeface). On first load it performs the site's one
-         entrance: a single unhurried rise. -->
-    <h1 ref="intro" class="intro-title pointer-events-none absolute inset-0 z-10 m-0 flex items-center justify-center">
-      <NuxtImg
-        src="/images/logo/dr-deesha-logo.webp"
-        alt="Dr Deesha Dental"
-        preload
-        class="intro-logo h-auto"
-        style="width: clamp(18rem, 60vw, 46rem)"
-      />
-    </h1>
+      <h1
+        class="hero-rise m-0 mt-5 max-w-3xl font-display font-semibold leading-heading tracking-heading text-foreground"
+        style="font-size: clamp(2.25rem, min(5vw, 7.5dvh), 4rem)"
+      >
+        Feel confident in your smile
+      </h1>
 
-    <!-- Smiles. A beat after load they fly up from below the fold in a
-         staggered cascade, sweep past the wordmark and off the top — see
-         playSmiles(). Nothing here reacts to scroll. Back-layer smiles sit at
-         z-0 so they pass behind the wordmark (z-10); front-layer at z-20 sweep
-         over it — the name occluding one set and not the other is the parallax. -->
+      <p class="hero-rise m-0 mt-4 max-w-xl font-serif text-base font-normal leading-relaxed text-foreground/70 lg:text-lg">
+        General and cosmetic dentistry from Dr Deesha at {{ practice.name }} in
+        {{ practice.location }}, delivered calmly, carefully, and at your pace.
+      </p>
+
+      <!-- Same qualification lockup as the About portrait's caption, retinted
+           for the light ground. -->
+      <p class="hero-rise m-0 mt-4 font-display text-3xs font-semibold uppercase tracking-label text-foreground/55 sm:text-2xs">
+        BChD<span class="mx-1.5 text-accent">·</span>MChD<span class="mx-1.5 text-accent">·</span>BSc<span class="mx-1.5 text-accent">·</span>PgDip
+      </p>
+    </div>
+
+    <!-- Full-bleed: sits outside the padded column above so the row runs off
+         both edges of the screen, as the arc needs it to. -->
+    <!-- A sliver of vertical padding: overflow-hidden clips both axes (CSS
+         won't let one be hidden and the other visible), and perspective makes
+         the near edge of a yawed card project a few percent taller than its
+         layout box, which this absorbs. -->
     <div
-      v-for="smile in smiles"
-      :key="smile.id"
-      class="smile pointer-events-none absolute"
-      :class="smile.depth === 'back' ? 'z-0' : 'z-20'"
-      :style="{ top: '50%', left: smileLeft(smile.factor) }"
+      ref="viewport"
+      class="hero-rise mt-3 w-full cursor-grab overflow-hidden active:cursor-grabbing"
+      style="padding-block: calc(var(--card-w) * 0.08)"
     >
-      <div class="overflow-hidden rounded-sm bg-foreground/5" style="width: var(--smile-w); aspect-ratio: 3 / 2">
-        <NuxtImg :src="smile.src" alt="" sizes="12rem md:27vw" loading="lazy" class="h-full w-full object-cover" />
+      <div ref="track" class="flex w-max gap-0.5 will-change-transform">
+        <div
+          v-for="(src, i) in loopImages"
+          :key="i"
+          ref="cardEls"
+          class="hero-card aspect-3/4 shrink-0 overflow-hidden rounded-2xl select-none"
+          draggable="false"
+          :style="{ width: 'var(--card-w)', backgroundColor: usePrimaryTint(50) }"
+        >
+          <!-- Sized at 2x the card's true slot (18vw) on purpose. @nuxt/image
+               v2 derives srcset candidates from the vw breakpoints alone and
+               the `densities` option produced no 2x entries, so the widest
+               candidate was 276w — which Retina then upscaled into the soft
+               image this replaced. Overstating `sizes` is what gets a
+               big-enough candidate generated and picked. -->
+          <NuxtImg
+            :src="src"
+            :alt="i === 0 ? HERO_ALT : ''"
+            sizes="22rem md:40vw"
+            quality="82"
+            draggable="false"
+            :loading="i === 0 ? 'eager' : 'lazy'"
+            class="pointer-events-none h-full w-full object-cover"
+          />
+        </div>
       </div>
     </div>
-  </div>
+
+    <!-- Keeps the site's CTA convention — solid primary resolving to accent on
+         hover, same as every other booking prompt on the page. -->
+    <a
+      :href="practice.bookingHref"
+      class="hero-rise mt-5 rounded-full bg-primary px-8 py-3.5 font-display text-sm font-semibold uppercase tracking-label text-white outline-none transition-colors duration-250 ease-out hover:bg-accent hover:text-primary focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+    >
+      Book an appointment
+    </a>
+  </section>
 </template>
 
 <script setup lang="ts">
 import gsap from 'gsap'
+import { Observer } from 'gsap/Observer'
+import { practice } from '../data/contact'
 
-const images = [
-  '/images/hero/smile-1.webp',
-  '/images/hero/smile-2.webp',
-  '/images/hero/smile-3.webp',
-  '/images/hero/smile-4.webp',
-  '/images/hero/smile-5.webp',
+// One photograph, repeated across every card. The row is a texture rather than
+// a gallery, so a single strong image reads more deliberately than a mixed set
+// — and this one carries the whole proposition on its own: Dr Deesha and a
+// patient, both relaxed, mid-appointment.
+const IMAGES = [
+  '/images/hero/consultation.webp',
 ]
 
-const COLUMN_GAP = 20 // fixed px gap between adjacent smile columns, at any viewport size
-const COUNT = 5
+// Only the first card is described. The rest are the same photograph repeating
+// as decoration, and announcing it once per copy would be noise.
+const HERO_ALT = 'Dr Deesha with a smiling patient in the treatment chair at Smart Smiles'
 
-// Hand-placed horizontal offsets (units of column spacing, see smileLeft),
-// per-smile rise speeds, and depth, deliberately irregular rather than a
-// repeating grid. `speed` scales the fly-up duration: >1 rises faster, <1 lags
-// behind. `depth` puts a smile in front of or behind the wordmark; the back set
-// is also the slowest and gets scaled down (see playSmiles), so it reads as set
-// further away. Adjacent entries keep a wide factor gap (>=1.6) since they're
-// the two smiles that fly up closest together in time — a close pair sharing a
-// horizontal lane at once is what would read as a collision rather than a
-// staggered cascade. This only holds while SMILE_STAGGER keeps non-adjacent
-// smiles off screen together: entries 0 and 4 sit just 0.2 columns apart and
-// overlap by ~85%, so they must never be airborne at the same moment.
-const LAYOUT: { factor: number, speed: number, depth: 'front' | 'back' }[] = [
-  { factor: -0.95, speed: 1.1, depth: 'front' },
-  { factor: 1.6, speed: 0.75, depth: 'back' },
-  { factor: -1.75, speed: 1.05, depth: 'front' },
-  { factor: 0.9, speed: 0.7, depth: 'back' },
-  { factor: -0.75, speed: 1.12, depth: 'front' },
-  { factor: 1.3, speed: 0.8, depth: 'front' },
-]
-const MAX_FACTOR = Math.max(...LAYOUT.map(l => Math.abs(l.factor)))
+// Copies of the list laid end to end. Position starts a couple of copies in
+// and wraps every copy width as it's dragged, so the window it can sweep
+// always has content past both screen edges. Left at a fixed count this
+// breaks on wide screens, where the card width clamp stops one copy from
+// growing with the viewport.
+const MIN_COPIES = 3
+const copies = ref(MIN_COPIES)
+const loopImages = computed(() => Array.from({ length: copies.value }, () => IMAGES).flat())
 
-const smiles = Array.from({ length: COUNT }, (_, i) => ({
-  id: i,
-  factor: LAYOUT[i % LAYOUT.length]!.factor,
-  speed: LAYOUT[i % LAYOUT.length]!.speed,
-  depth: LAYOUT[i % LAYOUT.length]!.depth,
-  src: images[i % images.length],
-}))
-
-const EDGE_MARGIN = 24 // px, minimum clearance between a smile's outer edge and the viewport edge
-
-// Horizontal offset from centre, in units of column spacing. Spacing is the
-// smaller of the ideal (width + gap) and whatever keeps the widest-set smile
-// (MAX_FACTOR) from clipping past the viewport edge — otherwise, on a narrow
-// viewport, the outermost smiles would be pushed off-screen. Each smile is
-// centred on this point via GSAP's xPercent: -50 (see playSmiles).
-function smileLeft(factor: number) {
-  const sign = factor < 0 ? '-' : '+'
-  const idealSpacing = `(var(--smile-w) + ${COLUMN_GAP}px)`
-  const maxSpacing = `((50% - ${EDGE_MARGIN}px - (var(--smile-w) / 2)) / ${MAX_FACTOR})`
-  const spacing = `min(${idealSpacing}, ${maxSpacing})`
-  return `calc(50% ${sign} ${Math.abs(factor)} * ${spacing})`
-}
-
-const prefersReducedMotion = ref(false)
-let motionQuery: MediaQueryList | undefined
-
-function onMotionPreferenceChange(e: MediaQueryListEvent) {
-  prefersReducedMotion.value = e.matches
-}
-
-// First-load choreography for the wordmark: a single unhurried rise of the
-// logo. Reduced-motion visitors never enter here — the anti-FOUC style that
-// hides the logo only applies under no-preference, so for them it's simply
-// visible at first paint with no JS involved.
-const intro = ref<HTMLElement | null>(null)
-let introCtx: gsap.Context | undefined
-
-function playIntro() {
-  const el = intro.value
-  if (!el || prefersReducedMotion.value) return
-
-  introCtx = gsap.context(() => {
-    gsap.fromTo('.intro-logo', { autoAlpha: 0, y: 30 }, { autoAlpha: 1, y: 0, duration: 1.15, ease: 'expo.out' })
-  }, el)
-}
-
-// The smiles' one entrance. They rise the moment the hero mounts, staggered,
-// from fully below the fold (y: +vh) to fully above it (y: -vh), each in its
-// own horizontal lane so the cascade never collides. Purely time-driven; when
-// it's done the smiles have cleared the top and the name stands alone.
-// Reduced-motion visitors get none of this — the CSS below keeps the smiles
-// hidden.
+// Ring model — the viewer stands at the centre of a cylinder of cards and the
+// row is the far wall sweeping past. A card's layout position maps linearly to
+// a viewing angle ψ (±EDGE_ANGLE at the screen edges — constant marquee speed
+// therefore means constant *angular* speed), and everything else falls out of
+// the circle's geometry:
 //
-// Gap between one smile launching and the next. Load-bearing, not decorative:
-// several of the hand-placed horizontal offsets overlap in x, and the cascade
-// is what keeps an overlapping pair from ever being airborne together. Five
-// smiles at ~389px would need 1945px laid side by side and a 1440px screen
-// hasn't got it, so they can only be separated in time, not in space. Don't
-// collapse this toward zero without narrowing the smiles to match.
-const SMILE_STAGGER = 0.55
+//   position — a tangent projection, blended with the flat layout by
+//     TAN_BLEND. Pure tan is what a camera at the ring's centre actually
+//     sees, but at these angles it starves the edges of cards; the blend
+//     keeps the signature of circular motion — cards sweep fastest at the
+//     edges (nearest the viewer) and slowest across the centre (far wall) —
+//     at a strength the composition survives.
+//   depth — from s(ψ) = cos(EDGE_ANGLE)/cos(ψ), the true size ratio for
+//     points on a circle around the viewer projected to a flat screen —
+//     deepest at the centre, surfacing to the natural plane at the edges —
+//     then damped by DEPTH_STRENGTH: the optically exact shrink opens the
+//     gaps between centre cards wider than the composition wants.
+//   yaw — the viewing angle itself, damped by YAW_RATIO so edge cards read
+//     as turning to face the centre without foreshortening into slivers.
+//
+// Past ±ARC_LIMIT a card keeps circling: depth goes negative (toward the
+// viewer, growing) and the position mapping continues on the limit tangent's
+// slope, so exits accelerate off rather than freezing at the edge pose.
+const PERSPECTIVE = 1200
+const EDGE_ANGLE = (50 * Math.PI) / 180
+const TAN_BLEND = 0.18
+const DEPTH_STRENGTH = 0.55
+const YAW_RATIO = 0.7
+const ARC_LIMIT = 1.1
 
-// Pause before the first smile starts to rise.
-const SMILE_LEAD_IN = 0.5
+// Position mapping t → screen (both in half-viewport units) and its slope.
+const TAN_E = Math.tan(EDGE_ANGLE)
+function ringMap(t: number) {
+  return (1 - TAN_BLEND) * t + (TAN_BLEND * Math.tan(t * EDGE_ANGLE)) / TAN_E
+}
+function ringSlope(t: number) {
+  const sec = 1 / Math.cos(t * EDGE_ANGLE)
+  return 1 - TAN_BLEND + (TAN_BLEND * EDGE_ANGLE * sec * sec) / TAN_E
+}
 
-// Extra px past the fold a smile parks at, so it is provably off screen at
-// rest rather than flush to the edge by a subpixel.
-const FOLD_CLEARANCE = 8
 const heroRoot = ref<HTMLElement | null>(null)
-let smileCtx: gsap.Context | undefined
+const viewport = ref<HTMLElement | null>(null)
+const track = ref<HTMLElement | null>(null)
+const cardEls = ref<HTMLElement[]>([])
 
-function playSmiles() {
-  const root = heroRoot.value
-  if (!root || prefersReducedMotion.value) return
+let ctx: gsap.Context | undefined
+let motionQuery: MediaQueryList | undefined
+let observer: Observer | undefined
 
-  const vh = window.innerHeight
+// The row's single source of truth. A repeating tween can't absorb a drag
+// (the drag and the tween would fight over the same x), so position is
+// advanced by hand each frame instead: drift, drag delta and release inertia
+// all just add into `pos`, and it wraps by one copy width to loop.
+let pos = 0
+let velocity = 0
+let dragging = false
+let copySpan = 0
+let posMax = 0
 
-  smileCtx = gsap.context(() => {
-    const els = gsap.utils.toArray<HTMLElement>('.smile')
+// Per-second decay applied to release inertia — 0.06 leaves ~6% of the throw
+// speed after a second, a firm glide rather than a long coast.
+const FRICTION = 0.06
+const MAX_THROW = 4000
 
-    // A short beat before the first smile moves. Deliberate, and distinct
-    // from the 1.6s lag this used to have: that came from the tween starting
-    // a whole viewport below the fold, so nothing was on screen long after
-    // it had begun. Now the motion is visible the moment it starts, and this
-    // is simply the pause in front of it. Applied to the timeline, so all
-    // five shift together and the cascade spacing is unaffected.
-    const tl = gsap.timeline({ delay: SMILE_LEAD_IN })
-    els.forEach((el, i) => {
-      const smile = smiles[i]!
-      // Back-layer smiles start smaller so, with their slower speed and the
-      // wordmark occluding them, they read as set further back.
-      const scale = smile.depth === 'back' ? 0.8 : 1
+// Measured once per layout rather than per frame: applyArc derives every card's
+// position arithmetically from these, so the ticker never reads back from the
+// DOM and never forces a layout.
+let step = 0
+let cardW = 0
+let gapW = 0
+let viewW = 0
 
-      // Park each smile exactly one edge past the fold, not a whole viewport
-      // beyond it. `.smile` sits at top:50% with yPercent:-50, so its centre
-      // rests at mid-screen and this offset is half a viewport plus half the
-      // smile — the least that still hides it completely. The previous ±vh
-      // buried 320px of dead travel at each end, and since power2.inOut is at
-      // its slowest there, the first smile spent 1.6s crawling up through
-      // off-screen space before a single pixel showed.
-      const offscreen = vh / 2 + (el.offsetHeight * scale) / 2 + FOLD_CLEARANCE
-      gsap.set(el, { xPercent: -50, yPercent: -50, y: offscreen, scale, autoAlpha: 1 })
+function measure() {
+  const first = cardEls.value[0]
+  if (!first || !track.value || !viewport.value) return false
+  cardW = first.offsetWidth
+  gapW = Number.parseFloat(getComputedStyle(track.value).columnGap) || 0
+  step = cardW + gapW
+  viewW = viewport.value.clientWidth
+  return step > 0 && viewW > 0
+}
 
-      // Linear, because the start and end are now only just out of frame:
-      // an ease-in would spend its slow phase on screen and read as a crawl,
-      // where before that phase was hidden. Nothing abrupt is exposed by it —
-      // both ends of the tween still happen past the fold.
-      // The duration is rescaled to suit the shorter distance so the time a
-      // smile actually spends crossing the screen is unchanged.
-      tl.to(el, { y: -offscreen, duration: 2.5 / smile.speed, ease: 'none' }, i * SMILE_STAGGER)
-    })
-  }, root)
+function wrapPos() {
+  if (copySpan <= 0) return
+  while (pos > posMax) pos -= copySpan
+  while (pos <= posMax - copySpan) pos += copySpan
+}
+
+// Inertia and drag resolve here, once per frame. There is no ambient drift —
+// the row holds still until it's dragged, then a release glides out on its
+// throw velocity and settles.
+function tick(_time: number, deltaMs: number) {
+  if (!track.value || step === 0) return
+  // Cap dt so a backgrounded tab doesn't resume with one enormous jump.
+  const dt = Math.min(deltaMs, 50) / 1000
+
+  if (!dragging) {
+    // At rest: nothing to advance, nothing to redraw.
+    if (Math.abs(velocity) <= 2) {
+      velocity = 0
+      return
+    }
+    pos += velocity * dt
+    velocity *= FRICTION ** dt
+  }
+
+  wrapPos()
+  gsap.set(track.value, { x: pos })
+  applyArc()
+}
+
+function applyArc() {
+  if (!track.value || step === 0) return
+  const x = pos
+  const half = viewW / 2
+  const els = cardEls.value
+  const n = els.length
+
+  for (let i = 0; i < n; i++) {
+    const centre = x + i * step + cardW / 2
+    const raw = (centre - half) / half
+    const t = gsap.utils.clamp(-ARC_LIMIT, ARC_LIMIT, raw)
+    const psi = t * EDGE_ANGLE
+
+    // Beyond the limit the mapping continues linearly on the limit tangent's
+    // slope — cards keep their exit velocity instead of stalling off screen.
+    const mapped
+      = Math.abs(raw) <= ARC_LIMIT
+        ? ringMap(raw)
+        : Math.sign(raw) * (ringMap(ARC_LIMIT) + ringSlope(ARC_LIMIT) * (Math.abs(raw) - ARC_LIMIT))
+
+    // Damped scale first, then back to the translateZ that produces it.
+    const sFull = Math.cos(EDGE_ANGLE) / Math.cos(psi)
+    const scale = 1 - DEPTH_STRENGTH * (1 - sFull)
+    const depth = PERSPECTIVE * (1 / scale - 1)
+    const yaw = (-t * EDGE_ANGLE * YAW_RATIO * 180) / Math.PI
+
+    // Screen-space placement rides the CSS `translate` property, which
+    // composes *outside* `transform`; inside it (as a translateX) the shift
+    // would project through the perspective and squash yawed cards.
+    els[i]!.style.translate = `${half + half * mapped - centre}px`
+    els[i]!.style.transform = `perspective(${PERSPECTIVE}px) translateZ(${-depth}px) rotateY(${yaw}deg)`
+  }
+}
+
+// Resize fires in bursts, and this function yields at nextTick — without a
+// token the build that started first can resume after a later one has already
+// installed its tween, leaving two running at once.
+let buildId = 0
+
+async function buildMarquee() {
+  const id = ++buildId
+  if (!measure()) return
+
+  const copyW = step * IMAGES.length
+
+  // The ring mapping only ever moves a card *outward* from its layout slot
+  // (|ringMap(t)| ≥ (1 - TAN_BLEND)|t| and = |t| at the edges), so plain
+  // copy margins cover the bleed: a two-copy lead-in on the left, the same
+  // again plus the travel distance on the right.
+  const startCopies = 2
+  const need = Math.max(
+    MIN_COPIES,
+    startCopies + 2 + Math.ceil(viewW / copyW),
+  )
+  if (need !== copies.value) {
+    copies.value = need
+    await nextTick()
+    if (id !== buildId || !measure()) return
+  }
+
+  // Park startCopies in, and let pos roam one copy width either side of that
+  // before wrapping — the content repeats every copyW, so the wrap is
+  // pixel-identical and invisible in both directions.
+  copySpan = copyW
+  posMax = -startCopies * copyW
+  pos = posMax
+  velocity = 0
+  gsap.set(track.value, { x: pos })
+  applyArc()
+}
+
+function prefersReducedMotion() {
+  return !!motionQuery?.matches
+}
+
+function onResize() {
+  buildMarquee()
+}
+
+// First-load entrance: the stack rises in source order. Reduced-motion
+// visitors never enter here — the anti-FOUC rule below only hides these
+// elements under no-preference, so for them everything is up at first paint.
+function playIntro() {
+  const el = heroRoot.value
+  if (!el || prefersReducedMotion()) return
+
+  ctx = gsap.context(() => {
+    gsap.fromTo(
+      '.hero-rise',
+      { autoAlpha: 0, y: 26 },
+      { autoAlpha: 1, y: 0, duration: 1.05, ease: 'expo.out', stagger: 0.09 },
+    )
+  }, el)
 }
 
 onMounted(() => {
   motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-  prefersReducedMotion.value = motionQuery.matches
-  motionQuery.addEventListener('change', onMotionPreferenceChange)
+  motionQuery.addEventListener('change', onResize)
+  window.addEventListener('resize', onResize)
+
+  buildMarquee()
+  gsap.ticker.add(tick)
   playIntro()
-  playSmiles()
+
+  // Drag, on pointer and touch alike. Vertical gestures are left alone
+  // (lockAxis + tolerance) so a thumb swiping down the page still scrolls
+  // instead of snagging on the row.
+  gsap.registerPlugin(Observer)
+  observer = Observer.create({
+    target: viewport.value,
+    type: 'touch,pointer',
+    dragMinimum: 3,
+    tolerance: 10,
+    lockAxis: true,
+    onPress: () => {
+      dragging = true
+      velocity = 0
+    },
+    onDrag: (self) => {
+      if (self.isDragging) pos += self.deltaX
+    },
+    onDragEnd: (self) => {
+      dragging = false
+      velocity = gsap.utils.clamp(-MAX_THROW, MAX_THROW, self.velocityX || 0)
+    },
+    onRelease: () => {
+      dragging = false
+    },
+  })
+
+  // Card widths are in vw, but the webfont landing can still reflow the column
+  // above and shift the row; re-measure once it has.
+  document.fonts?.ready.then(buildMarquee)
 })
 
 onUnmounted(() => {
-  motionQuery?.removeEventListener('change', onMotionPreferenceChange)
-  introCtx?.revert()
-  smileCtx?.revert()
+  gsap.ticker.remove(tick)
+  observer?.kill()
+  ctx?.revert()
+  motionQuery?.removeEventListener('change', onResize)
+  window.removeEventListener('resize', onResize)
 })
 </script>
 
 <style scoped>
-.smile {
-  /* Hidden until GSAP takes over; reduced-motion visitors keep this and so
-     never see the smiles at all — matching the animation's cleared end state. */
-  opacity: 0;
-  will-change: transform, opacity;
+/* The native HTML5 image drag fires on pointerdown and swallows the gesture
+   before Observer's drag ever starts — the row simply wouldn't move. */
+.hero-card img {
+  -webkit-user-drag: none;
+  user-select: none;
 }
 
-/* Entrance start state — only where we'll animate. Reduced-motion visitors
-   get the logo fully visible from first paint, no JS required. */
+.hero-card {
+  /* Set once here rather than per-frame in applyArc — the transform string it
+     writes carries no origin, and centre is what makes the arc symmetric. */
+  transform-origin: center center;
+  will-change: transform;
+}
+
+/* Entrance start state — only where we'll animate. Reduced-motion visitors get
+   the full stack at first paint, no JS required. */
 @media (prefers-reduced-motion: no-preference) {
-  .intro-logo {
+  .hero-rise {
     opacity: 0;
   }
 }
