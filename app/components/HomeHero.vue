@@ -6,7 +6,7 @@
          entrance: a single unhurried rise. -->
     <h1 ref="intro" class="intro-title pointer-events-none absolute inset-0 z-10 m-0 flex items-center justify-center">
       <NuxtImg
-        src="/images/logo/dr-deesha-logo.png"
+        src="/images/logo/dr-deesha-logo.webp"
         alt="Dr Deesha Dental"
         preload
         class="intro-logo h-auto"
@@ -37,11 +37,11 @@
 import gsap from 'gsap'
 
 const images = [
-  '/images/hero/smile-1.jpeg',
-  '/images/hero/smile-2.jpeg',
-  '/images/hero/smile-3.png',
-  '/images/hero/smile-4.png',
-  '/images/hero/smile-5.png',
+  '/images/hero/smile-1.webp',
+  '/images/hero/smile-2.webp',
+  '/images/hero/smile-3.webp',
+  '/images/hero/smile-4.webp',
+  '/images/hero/smile-5.webp',
 ]
 
 const COLUMN_GAP = 20 // fixed px gap between adjacent smile columns, at any viewport size

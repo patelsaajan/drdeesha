@@ -66,7 +66,7 @@
                this primary ground rather than shipping a second asset. -->
           <div class="reveal">
             <NuxtImg
-              src="/images/logo/dr-deesha-logo.png"
+              src="/images/logo/dr-deesha-logo.webp"
               alt="Dr Deesha Dental"
               width="288"
               height="108"

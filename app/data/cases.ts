@@ -19,13 +19,13 @@ export interface CaseStudy {
 }
 
 // Every case owns a numbered before/after pair under the same convention:
-//   /images/cases/case-<n>-before.jpg   /images/cases/case-<n>-after.jpg
+//   /images/cases/case-<n>-before.webp   /images/cases/case-<n>-after.webp
 // Both halves of a pair are pre-cropped to the same 3:2 window on the same
 // anatomy — registered against each other rather than centred independently —
 // so dragging the slider moves the split line without the face jumping. Swap
 // a photo and the crop has to be redone as a pair, not per file; the
 // full-resolution sources live in /case-originals (gitignored).
-const shot = (n: number, phase: 'before' | 'after') => `/images/cases/case-${n}-${phase}.jpg`
+const shot = (n: number, phase: 'before' | 'after') => `/images/cases/case-${n}-${phase}.webp`
 
 // PLACEHOLDER COPY. The photography is real; every word below is invented to
 // dress the layout. Treatment names, timelines and outcome claims must be
