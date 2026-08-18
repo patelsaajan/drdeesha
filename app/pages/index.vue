@@ -3,6 +3,7 @@
     <SiteNav />
     <SiteScrollProgress />
     <HomeHero />
+    <MeetSection />
     <AboutSection />
     <ProcessVideo />
     <CaseStudies />

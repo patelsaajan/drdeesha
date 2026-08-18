@@ -4,6 +4,10 @@
        it's dragged; each card is scaled and tilted by its distance from the
        viewport's centre line so the row reads as bending around a cylinder
        rather than sliding flat. -->
+  <!-- Sticky at z-0 so the section below can slide up over it as a curtain,
+       the same layering trick the footer uses over the testimonials. It stays
+       stuck for the rest of the page rather than unsticking, but every later
+       section is opaque and paints above it, so it's only ever visible here. -->
   <!-- --card-w is capped by height as well as width: on the vw term alone the
        row grows tall enough on a short laptop (1440x800) to push the CTA
        below the fold, so the dvh term caps the card's own height (~39dvh via
@@ -11,7 +15,7 @@
   <section
     id="home"
     ref="heroRoot"
-    class="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden bg-background pb-28 lg:pb-10"
+    class="sticky top-0 z-0 flex min-h-dvh flex-col items-center justify-center overflow-hidden bg-background pb-28 lg:pb-10"
     style="--card-w: clamp(10.5rem, min(20vw, 29dvh), 32rem); padding-top: clamp(4rem, 9dvh, 6rem)"
   >
     <div class="flex w-full flex-col items-center px-6 text-center">
