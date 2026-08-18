@@ -1,8 +1,8 @@
 <template>
   <div class="min-h-dvh bg-background">
     <SiteNav />
-    <SiteScrollProgress />
     <HomeHero />
+    <MeetSection />
     <AboutSection />
     <ProcessVideo />
     <CaseStudies />

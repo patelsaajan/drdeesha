@@ -1,4 +1,25 @@
 <template>
+  <!-- Brand mark. The nav pill is pinned hard against the right edge, so the
+       wordmark takes the opposite corner and gives the page its top-left
+       anchor. Bare rather than shelled in the nav's frosted pill, so the
+       wordmark reads as the mark itself and not as another control. Doubles
+       as the jump home. Desktop only: on a phone it sits over the hero's
+       first card and crowds a screen that has the bottom bar for navigation
+       already. -->
+  <button
+    type="button"
+    aria-label="Dr Deesha Dental — back to top"
+    class="fixed top-6 left-6 z-40 hidden cursor-pointer items-center rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4 lg:flex"
+    @click="jumpTo('home')"
+  >
+    <NuxtImg
+      src="/images/logo/dr-deesha-logo.webp"
+      alt="Dr Deesha Dental"
+      preload
+      class="h-auto w-28 lg:w-36"
+    />
+  </button>
+
   <!-- Light frosted pill, anchored to the right edge. Two-part rhythm:
        - Rest: one stationary chip sits directly left of a fixed Book Now
          button. Neither ever moves or restyles as you scroll — a section
@@ -87,9 +108,10 @@
   </nav>
 
   <!-- Mobile: the same frosted pill, docked along the bottom edge where the
-       thumb actually is. Book Now keeps its permanent right-edge anchor;
-       tapping Menu unfolds the section list upward out of the bar, items
-       cascading in bottom-first — the vertical cousin of the desktop unfurl. -->
+       thumb actually is. Menu holds the left edge and Book Now takes the
+       width to its right; tapping Menu unfolds the section list upward out of the bar,
+       items cascading in bottom-first — the vertical cousin of the desktop
+       unfurl. -->
   <div
     v-if="menuOpen"
     class="fixed inset-0 z-30 lg:hidden"
@@ -121,10 +143,14 @@
       </div>
     </div>
 
-    <div class="flex h-12 items-stretch overflow-hidden rounded-lg border border-black/8 bg-white/55 text-foreground shadow-lift backdrop-blur-md">
+    <!-- Menu is a compact control on the left; Book Now takes the rest of the
+         bar on the right. Booking is the page's one job and the hero's own
+         CTA is desktop-only, so on a phone this button carries the width
+         rather than sitting as an equal sibling to navigation. -->
+    <div class="flex h-13 items-stretch overflow-hidden rounded-lg border border-black/8 bg-white/55 text-foreground shadow-lift backdrop-blur-md">
       <button
         type="button"
-        class="flex min-w-0 flex-1 cursor-pointer items-center gap-3 px-5 font-display text-2xs font-semibold uppercase tracking-label text-foreground"
+        class="flex shrink-0 cursor-pointer items-center gap-3 px-5 font-display text-2xs font-semibold uppercase tracking-label text-foreground"
         :aria-expanded="menuOpen"
         aria-controls="mobile-menu"
         @click="menuOpen = !menuOpen"
@@ -137,7 +163,7 @@
         :href="practice.bookingHref"
         variant="solid"
         color="primary"
-        class="site-nav-book h-full shrink-0 cursor-pointer rounded-l-none rounded-r-lg border-l border-black/8 bg-primary! px-6 text-white! transition-colors duration-200 hover:bg-accent! hover:text-primary!"
+        class="site-nav-book h-full min-w-0 flex-1 cursor-pointer justify-center rounded-l-none rounded-r-lg border-l border-black/8 bg-primary! px-6 text-sm! font-semibold text-white! transition-colors duration-200 hover:bg-accent! hover:text-primary!"
       >
         Book Now
       </UButton>

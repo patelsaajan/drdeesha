@@ -14,7 +14,7 @@ export default defineNuxtConfig({
         { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' }
       ],
       link: [
-        { rel: 'icon', type: 'image/png', href: '/favicon.png' }
+        { rel: 'icon', type: 'image/png', href: '/favicon.ico' }
       ]
     },
 },
@@ -26,4 +26,12 @@ export default defineNuxtConfig({
   ],
 
   css: ['~/assets/css/main.css'],
+
+  // Retina candidates. Without this the hero row's srcset topped out at the
+  // 1x width and 2x screens upscaled it, which read as a soft, low-quality
+  // image next to the crisp source file.
+  image: {
+    densities: [1, 2],
+    quality: 82,
+  },
 })
