@@ -1,13 +1,15 @@
 <template>
   <div class="min-h-dvh bg-background">
     <SiteNav />
-    <HomeHero />
-    <MeetSection />
-    <AboutSection />
-    <ProcessVideo />
-    <CaseStudies />
-    <CareerTimeline />
-    <TestimonialsSection />
+    <main>
+      <HomeHero />
+      <MeetSection />
+      <AboutSection />
+      <ProcessVideo />
+      <CaseStudies />
+      <CareerTimeline />
+      <TestimonialsSection />
+    </main>
     <SiteFooter />
   </div>
 </template>
