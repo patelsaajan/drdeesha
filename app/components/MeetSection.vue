@@ -7,7 +7,8 @@
 
        Full-viewport introduction directly under the hero: the studio portrait
        claims the left third, and the remaining two thirds carry the name, the
-       qualification lockup, and a short bio. The ground is primary cut with
+       qualification lockup, a short bio and her pull-quote. The ground is
+       primary cut with
        20% white (usePrimaryTint(80)) — the same tinting device the About
        panel and footer use, so the two sections read as one family. White
        body copy sits at ~9:1 on it; the eyebrow is white/70 rather than
@@ -58,6 +59,18 @@
         in years or a routine check-up, you'll get unhurried care, plain
         explanations, and a plan that moves at your pace.
       </p>
+
+      <!-- Closing beat: the pull-quote that used to sit as one tile among
+           many in the About mosaic. Given here as an actual blockquote under
+           her own bio, it reads as Dr Deesha's words rather than decoration.
+           Sized well above the body copy so it lands as the section's last
+           word; the accent rule replaces quotation marks, which at this size
+           would sit awkwardly against the serif. -->
+      <blockquote class="m-0 mt-2 border-l-2 border-accent pl-6 lg:pl-8">
+        <p class="m-0 max-w-2xl font-serif font-normal leading-quote tracking-heading text-white" style="font-size: clamp(1.75rem, 3.2vw, 2.75rem)">
+          Good dentistry is quiet work. Gentle, plain, lasting.
+        </p>
+      </blockquote>
     </div>
   </section>
 </template>

@@ -72,11 +72,11 @@
                big-enough candidate generated and picked. -->
           <NuxtImg
             :src="src"
-            :alt="i === 0 ? HERO_ALT : ''"
+            :alt="i < IMAGES.length ? HERO_ALTS[i] : ''"
             sizes="22rem md:40vw"
             quality="82"
             draggable="false"
-            :loading="i === 0 ? 'eager' : 'lazy'"
+            :loading="i < IMAGES.length ? 'eager' : 'lazy'"
             class="pointer-events-none h-full w-full object-cover"
           />
         </div>
@@ -99,17 +99,24 @@ import gsap from 'gsap'
 import { Observer } from 'gsap/Observer'
 import { practice } from '../data/contact'
 
-// One photograph, repeated across every card. The row is a texture rather than
-// a gallery, so a single strong image reads more deliberately than a mixed set
-// — and this one carries the whole proposition on its own: Dr Deesha and a
-// patient, both relaxed, mid-appointment.
+// Two photographs alternating along the row: Dr Deesha with a patient, and
+// the wider chairside frame of a treatment in progress. The row is a texture
+// rather than a gallery, so the pair repeats — and because the loop wraps on
+// one copy of IMAGES, a two-image list keeps the alternation unbroken across
+// the seam. chairside is a 16:9 original and crops hard to the 3/4 card; it
+// centres on the treatment itself, which is the part worth keeping.
 const IMAGES = [
   '/images/hero/consultation.webp',
+  '/images/about/chairside.webp',
 ]
 
-// Only the first card is described. The rest are the same photograph repeating
-// as decoration, and announcing it once per copy would be noise.
-const HERO_ALT = 'Dr Deesha with a smiling patient in the treatment chair at Smart Smiles'
+// Only the first instance of each photograph is described. Beyond that the
+// same two images repeat as decoration, and announcing them once per copy
+// would be noise.
+const HERO_ALTS = [
+  'Dr Deesha with a smiling patient in the treatment chair at Smart Smiles',
+  'Dr Deesha treating a patient chairside, with a dental nurse assisting',
+]
 
 // Copies of the list laid end to end. Position starts a couple of copies in
 // and wraps every copy width as it's dragged, so the window it can sweep
