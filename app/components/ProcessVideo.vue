@@ -1,5 +1,8 @@
 <template>
-  <section id="process" ref="root" class="relative z-20 bg-background text-foreground">
+  <!-- Desktop only. Hiding it below lg also spares the download: the <video>
+       is mounted by an IntersectionObserver when the section nears the
+       viewport, and a display:none section never intersects. -->
+  <section id="process" ref="root" class="relative z-20 hidden bg-background text-foreground lg:block">
     <div class="mx-auto max-w-6xl px-4 py-24 sm:px-6 lg:py-28">
       <!-- Pin anchor: reserves the section's normal contained footprint and
            drives the scroll timing. GSAP's `pin` locks a `max-width`/

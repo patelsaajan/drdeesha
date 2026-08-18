@@ -17,7 +17,7 @@
   <section
     id="home"
     ref="heroRoot"
-    class="hero-root sticky top-0 z-0 flex min-h-dvh flex-col items-center gap-6 overflow-hidden bg-background pb-28 lg:gap-8 lg:pb-10"
+    class="hero-root sticky top-0 z-0 flex min-h-dvh flex-col items-center gap-6 overflow-hidden bg-background pb-28 lg:gap-8 lg:pb-8"
     style="padding-top: clamp(4rem, 9dvh, 6rem)"
   >
     <div class="flex w-full shrink-0 flex-col items-center gap-5 px-6 text-center">
@@ -57,7 +57,7 @@
       class="hero-rise flex w-full flex-1 items-center overflow-hidden cursor-grab active:cursor-grabbing"
       style="padding-block: calc(var(--card-w) * 0.045)"
     >
-      <div ref="track" class="flex w-max items-start gap-[9px] will-change-transform lg:gap-1" :style="{ marginBottom: `${-deadSpace}px` }">
+      <div ref="track" class="flex w-max items-start gap-[9px] will-change-transform lg:gap-3" :style="{ marginBottom: `${-deadSpace}px` }">
         <!-- One photograph per card, chosen by its slot in PATTERN — each
              slot owns one photograph. Because the assignment is fixed rather
              than recomputed against the screen, no card ever swaps image and
@@ -113,8 +113,9 @@ import { Observer } from 'gsap/Observer'
 import { practice } from '../data/contact'
 
 // The smile arch, as a fixed repeating pattern of six card slots, each with
-// its own photograph. Dental anatomy, roughly: central incisors longest,
-// laterals beside them shorter, canines longer again. `k` is the card's
+// its own photograph. From the centre outward the heights run tall, short,
+// normal — the tall centrals flanked by a dipped pair, with the outermost
+// pair back at an in-between height. `k` is the card's
 // rendered height as a multiple of its width. The consultation portrait
 // holds both centrals — the photograph that carries the proposition sits
 // where the eye already is — and the practice's other moments fill the arch
@@ -130,12 +131,12 @@ import { practice } from '../data/contact'
 // where the last slot sits beside the first. Alts live here too, described
 // once per photograph on the first copy; later copies repeat as decoration.
 const PATTERN = [
-  { k: 1.09, src: '/images/hero/treatment-in-progress.webp', alt: 'Dr Deesha in loupes and mask, working on a reclined patient' }, // canine — square but a little taller
-  { k: 1.02, src: '/images/hero/treatment-room.webp', alt: 'The treatment room mid-appointment, Dr Deesha and a nurse at work' }, // lateral — square
-  { k: 1.12, src: '/images/hero/deesha-with-patient.webp', alt: 'Dr Deesha with a smiling patient in the treatment chair at Smart Smiles' }, // central — tall
-  { k: 1.12, src: '/images/hero/whitening-collection.webp', alt: 'A patient at the surgery door collecting a whitening kit' }, // central — tall
-  { k: 1.02, src: '/images/hero/patient-thumbs-up.webp', alt: 'A patient giving a thumbs up from the chair, Dr Deesha beside him' }, // lateral — square
-  { k: 1.09, src: '/images/hero/smiling-patient.webp', alt: 'Dr Deesha and a patient grinning side by side in the surgery' }, // canine
+  { k: 1.08, src: '/images/hero/treatment-in-progress.webp', alt: 'Dr Deesha in loupes and mask, working on a reclined patient' }, // outermost — normal
+  { k: 0.95, src: '/images/hero/treatment-room.webp', alt: 'The treatment room mid-appointment, Dr Deesha and a nurse at work' }, // next to centre — shortest
+  { k: 1.34, src: '/images/hero/deesha-with-patient.webp', alt: 'Dr Deesha with a smiling patient in the treatment chair at Smart Smiles' }, // central — tall
+  { k: 1.34, src: '/images/hero/whitening-collection.webp', alt: 'A patient at the surgery door collecting a whitening kit' }, // central — tall
+  { k: 0.95, src: '/images/hero/patient-thumbs-up.webp', alt: 'A patient giving a thumbs up from the chair, Dr Deesha beside him' }, // next to centre — shortest
+  { k: 1.08, src: '/images/hero/smiling-patient.webp', alt: 'Dr Deesha and a patient grinning side by side in the surgery' }, // outermost — normal
 ]
 const SLOTS_PER_COPY = PATTERN.length
 
@@ -177,50 +178,37 @@ const MOBILE_K = 1.25
 const isDesktop = useIsDesktop()
 const slotK = (i: number) => (isDesktop.value ? PATTERN[i]!.k : MOBILE_K)
 
-// Ring model — the viewer stands at the centre of a cylinder of cards and the
-// row is the far wall sweeping past. A card's layout position maps linearly to
-// a viewing angle ψ (±EDGE_ANGLE at the screen edges — constant marquee speed
-// therefore means constant *angular* speed), and everything else falls out of
-// the circle's geometry:
+// Ring model — the viewer faces a ring of cards from outside it, the way you
+// face a smile. A card's layout position maps linearly to a viewing angle ψ
+// (±EDGE_ANGLE at the screen edges), and the rest is the geometry of a convex
+// arc bowing toward the viewer:
 //
-//   position — a tangent projection, blended with the flat layout by
-//     TAN_BLEND. Pure tan is what a camera at the ring's centre actually
-//     sees, but at these angles it starves the edges of cards; the blend
-//     keeps the signature of circular motion — cards sweep fastest at the
-//     edges (nearest the viewer) and slowest across the centre (far wall) —
-//     at a strength the composition survives.
-//   depth — from s(ψ) = cos(EDGE_ANGLE)/cos(ψ), the true size ratio for
-//     points on a circle around the viewer projected to a flat screen —
-//     deepest at the centre, surfacing to the natural plane at the edges —
-//     then damped by DEPTH_STRENGTH: the optically exact shrink opens the
-//     gaps between centre cards wider than the composition wants.
-//   yaw — the viewing angle itself, damped by YAW_RATIO so edge cards read
-//     as turning to face the centre without foreshortening into slivers.
+//   depth — nearest at the centre and receding toward the edges, so the
+//     middle of the row is the part closest to you. This is the whole
+//     inversion: an inside-the-ring view does the opposite, hollowing the
+//     centre away and bringing the edges forward.
+//   yaw — each card turns to face the viewer, hinging outward from the
+//     centre card. Opposite sign to the concave version, where they faced
+//     inward toward the ring's axis.
 //
-// Past ±ARC_LIMIT a card keeps circling: depth goes negative (toward the
-// viewer, growing) and the position mapping continues on the limit tangent's
-// slope, so exits accelerate off rather than freezing at the edge pose.
+// Position is not projected at all: cards are laid out on screen by a
+// cumulative chain that gives every pair of neighbours exactly the layout
+// gap, whatever size their poses draw them at — so the gaps hold constant
+// while the row moves. The curve lives entirely in depth, yaw and the
+// arch heights. Past ±ARC_LIMIT a card holds its edge pose.
 const PERSPECTIVE = 1200
 const EDGE_ANGLE = (50 * Math.PI) / 180
-const TAN_BLEND = 0.1
-const DEPTH_STRENGTH = 0.32
-const YAW_RATIO = 0.7
+const DEPTH_STRENGTH = 0.2
+const YAW_RATIO = 0.5
+
+// The ring's own scaling at a viewing angle, damped. cos(ψ) peaks at the
+// centre and falls toward the edges, so the centre card is drawn at full
+// size and the row recedes outward from it.
+function ringScale(psi: number) {
+  return 1 - DEPTH_STRENGTH * (1 - Math.cos(psi))
+}
 const ARC_LIMIT = 1.1
 
-// Position mapping t → screen (both in half-viewport units) and its slope.
-const TAN_E = Math.tan(EDGE_ANGLE)
-function ringMap(t: number) {
-  return (1 - TAN_BLEND) * t + (TAN_BLEND * Math.tan(t * EDGE_ANGLE)) / TAN_E
-}
-// The ring's own scaling at a viewing angle: the exact cos ratio, damped.
-function ringScale(psi: number) {
-  return 1 - DEPTH_STRENGTH * (1 - Math.cos(EDGE_ANGLE) / Math.cos(psi))
-}
-
-function ringSlope(t: number) {
-  const sec = 1 / Math.cos(t * EDGE_ANGLE)
-  return 1 - TAN_BLEND + (TAN_BLEND * EDGE_ANGLE * sec * sec) / TAN_E
-}
 
 const heroRoot = ref<HTMLElement | null>(null)
 const viewport = ref<HTMLElement | null>(null)
@@ -299,41 +287,61 @@ function applyArc() {
   const half = viewW / 2
   const els = cardEls.value
   const n = els.length
-  const flat = !isDesktop.value
 
+  // Mobile is a plain filmstrip: one card holding the frame with its
+  // neighbours peeking in. The ring's yaw and depth read as distortion
+  // rather than curvature at this size.
+  if (!isDesktop.value) {
+    for (let i = 0; i < n; i++) {
+      els[i]!.style.translate = '0px'
+      els[i]!.style.transform = 'none'
+    }
+    return
+  }
+
+  // Pass 1 — pose per card, and the half-width it will actually be drawn at
+  // (depth shrinks it by the ring scale, yaw by roughly cos). All arithmetic
+  // from layout position; the ticker never reads the DOM back.
+  const scales = new Array<number>(n)
+  const yaws = new Array<number>(n)
+  const depths = new Array<number>(n)
+  const halfWs = new Array<number>(n)
   for (let i = 0; i < n; i++) {
     const centre = x + i * step + cardW / 2
-    const raw = (centre - half) / half
-    const t = gsap.utils.clamp(-ARC_LIMIT, ARC_LIMIT, raw)
+    const t = gsap.utils.clamp(-ARC_LIMIT, ARC_LIMIT, (centre - half) / half)
     const psi = t * EDGE_ANGLE
+    scales[i] = ringScale(psi)
+    depths[i] = PERSPECTIVE * (1 / scales[i]! - 1)
+    yaws[i] = (t * EDGE_ANGLE * YAW_RATIO * 180) / Math.PI
+    halfWs[i] = (cardW / 2) * scales[i]! * Math.cos(psi * YAW_RATIO)
+  }
 
-    // Beyond the limit the mapping continues linearly on the limit tangent's
-    // slope — cards keep their exit velocity instead of stalling off screen.
-    const mapped
-      = Math.abs(raw) <= ARC_LIMIT
-        ? ringMap(raw)
-        : Math.sign(raw) * (ringMap(ARC_LIMIT) + ringSlope(ARC_LIMIT) * (Math.abs(raw) - ARC_LIMIT))
+  // Pass 2 — visual centres laid out cumulatively, so every on-screen gap is
+  // exactly the layout gap whatever each card is drawn at. This is what
+  // keeps the gaps constant while the row moves: the chain re-derives
+  // positions from the drawn widths every frame, so a card growing as it
+  // approaches the centre pushes its neighbours out rather than eating the
+  // gap.
+  const vis = new Array<number>(n)
+  vis[0] = 0
+  for (let i = 1; i < n; i++) vis[i] = vis[i - 1]! + halfWs[i - 1]! + gapW + halfWs[i]!
 
-    // Damped scale first, then back to the translateZ that produces it.
-    const depth = PERSPECTIVE * (1 / ringScale(psi) - 1)
-    const yaw = (-t * EDGE_ANGLE * YAW_RATIO * 180) / Math.PI
+  // Pass 3 — anchor. The chain fixes spacing but not position; pin it where
+  // it can't jitter — the fractional card index at the viewport's centre
+  // line maps to the centre line. When the loop wraps by one copy the
+  // pattern shifts by SLOTS_PER_COPY indices and this anchor lands
+  // identically, keeping the wrap invisible.
+  const f = gsap.utils.clamp(0, n - 1.001, (half - x - cardW / 2) / step)
+  const k = Math.floor(f)
+  const visAtF = vis[k]! + (f - k) * (vis[k + 1]! - vis[k]!)
+  const offset = half - visAtF
 
+  for (let i = 0; i < n; i++) {
     // Screen-space placement rides the CSS `translate` property, which
     // composes *outside* `transform`; inside it (as a translateX) the shift
     // would project through the perspective and squash yawed cards.
-    if (flat) {
-      // Mobile is a plain filmstrip: one card holding the frame with its
-      // neighbours peeking in. The ring's spread would throw those
-      // neighbours clean off a 390px screen, and its yaw and depth read as
-      // distortion rather than curvature at this size.
-      els[i]!.style.translate = '0px'
-      els[i]!.style.transform = 'none'
-      continue
-    }
-
-    els[i]!.style.translate = `${half + half * mapped - centre}px`
-    els[i]!.style.transform = `perspective(${PERSPECTIVE}px) translateZ(${-depth}px) rotateY(${yaw}deg)`
-
+    els[i]!.style.translate = `${vis[i]! + offset - (x + i * step + cardW / 2)}px`
+    els[i]!.style.transform = `perspective(${PERSPECTIVE}px) translateZ(${-depths[i]!}px) rotateY(${yaws[i]!}deg)`
   }
 }
 
@@ -349,10 +357,10 @@ async function buildMarquee() {
   const copyW = step * SLOTS_PER_COPY
   const half = viewW / 2
 
-  // The ring mapping only ever moves a card *outward* from its layout slot
-  // (|ringMap(t)| ≥ (1 - TAN_BLEND)|t| and = |t| at the edges), so plain
-  // copy margins cover the bleed: a two-copy lead-in on the left, the same
-  // again plus the travel distance on the right.
+  // The chain can pull the row's flanks inward by the width the shrinking
+  // edge cards give up — a few tens of pixels a side — and the two-copy
+  // lead-in is twelve cards, orders of magnitude more than that. Plain copy
+  // margins cover the bleed on both sides.
   const startCopies = 2
   const need = Math.max(
     MIN_COPIES,
