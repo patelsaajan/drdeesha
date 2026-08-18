@@ -78,8 +78,8 @@
         >
           <div :ref="(el) => setRowRef(el, i)" class="flex w-max gap-5">
             <article
-              v-for="item in row"
-              :key="item.id"
+              v-for="(item, j) in row"
+              :key="`${item.id}-${j}`"
               class="testimonial-card flex min-h-53 shrink-0 flex-col justify-between gap-2 overflow-hidden rounded-xl border border-foreground/10 bg-background p-6 transition-all duration-300 hover:border-primary/20 hover:bg-primary/5 hover:shadow-card"
             >
               <blockquote class="m-0 line-clamp-5 font-serif text-lg leading-snug text-foreground">
@@ -101,16 +101,10 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { testimonials } from '../data/testimonials'
 
-// No review is ever shown twice. Repeating the set to pad short rows doesn't
-// work here: every row is on screen simultaneously, so a copy sits in plain
-// sight next to its twin no matter how far apart the two are placed in the
-// array — spacing them only controls which row they land in, not whether
-// both are visible.
-//
-// So the row count follows the data instead. A row needs roughly five 408px
-// cards to out-measure the viewport and have any distance left to scrub, so
-// the set is spread over as many rows as it can genuinely fill, capped at
-// the design's three. At 10 reviews that is 2 rows of 5; it becomes 3 rows
+// The row count follows the data. A row needs roughly five 28vw cards to
+// out-measure the viewport and have any distance left to scrub, so the set
+// is spread over as many rows as it can genuinely fill, capped at the
+// design's three. At 10 reviews that is 2 rows of 5; it becomes 3 rows
 // at 15, which is the count the three-band layout really wants.
 const MIN_PER_ROW = 5
 const ROW_COUNT = Math.max(1, Math.min(3, Math.floor(testimonials.length / MIN_PER_ROW)))
@@ -120,10 +114,22 @@ const ROW_COUNT = Math.max(1, Math.min(3, Math.floor(testimonials.length / MIN_P
 // 16 reviews would go 6/6/4 — and since the SHORTEST row is what decides
 // whether a band has room to scrub, that runt row is exactly what stalls.
 // Proportional boundaries even it out to 6/5/5 instead.
-const rows = Array.from({ length: ROW_COUNT }, (_, i) => testimonials.slice(
+const baseRows = Array.from({ length: ROW_COUNT }, (_, i) => testimonials.slice(
   Math.floor((i * testimonials.length) / ROW_COUNT),
   Math.floor(((i + 1) * testimonials.length) / ROW_COUNT),
 ))
+
+// Each row then repeats its own first few reviews at its tail, stretching the
+// strip so the scrub has real distance to cover. Repeating WITHIN the row is
+// the only safe direction: all rows are on screen at once, so borrowing a
+// review from another row would put the copy in plain sight beside its twin.
+// In-row, a card and its repeat are a full base row apart — at least five
+// 28vw cards, ~140vw — wider than the 100vw window, so the pair is never
+// visible together at any scrub position. (That guarantee is why REPEAT_EXTRA
+// must stay ≤ MIN_PER_ROW's separation: the repeats never wrap far enough to
+// close the gap.)
+const REPEAT_EXTRA = 3
+const rows = baseRows.map(row => [...row, ...row.slice(0, REPEAT_EXTRA)])
 
 // Mobile shows a short loop of the real set — never the padded one, since a
 // carousel you swipe through would make the repeats obvious. Eight swipes is
@@ -144,15 +150,16 @@ let ctx: gsap.Context | undefined
 let mm: gsap.MatchMedia | undefined
 let observer: IntersectionObserver | undefined
 
-// How far a row's content shifts during the scrub. Capped well short of
-// the row's actual overflow — this is a drift to sell the reveal, not a
-// filmstrip scroll through every card.
-const ROW_SHIFT_MAX = 200
-
+// How far a row's content shifts during the scrub: its full overflow, so the
+// repeated tail cards each get their moment before the footer curtain rises.
+// With the padded rows that lands around 1.2–1.4 viewport widths of travel
+// spread over 2.8 viewport heights of scroll — a proper glide rather than
+// the old 200px drift, still front-loaded by the ease so the rows are
+// creeping by the time the footer crosses in.
 function rowExtra(rowEl: HTMLElement) {
   const clip = rowEl.parentElement
   if (!clip) return 0
-  return Math.min(ROW_SHIFT_MAX, Math.max(0, rowEl.scrollWidth - clip.clientWidth))
+  return Math.max(0, rowEl.scrollWidth - clip.clientWidth)
 }
 
 onMounted(() => {
