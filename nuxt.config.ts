@@ -27,6 +27,13 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  // One static page, no per-request data: bake the HTML at build time so a
+  // server deploy answers from the prerender cache instead of running SSR on
+  // every request (and a static host just serves the file).
+  routeRules: {
+    '/': { prerender: true },
+  },
+
   // Retina candidates. Without this the hero row's srcset topped out at the
   // 1x width and 2x screens upscaled it, which read as a soft, low-quality
   // image next to the crisp source file.
