@@ -36,12 +36,6 @@
         General and cosmetic dentistry from Dr Deesha at {{ practice.name }} in
         {{ practice.location }}, delivered calmly, carefully, and at your pace.
       </p>
-
-      <!-- Same qualification lockup as the About portrait's caption, retinted
-           for the light ground. -->
-      <p class="hero-rise m-0 mt-4 font-display text-3xs font-semibold uppercase tracking-label text-foreground/55 sm:text-2xs">
-        BChD<span class="mx-1.5 text-accent">·</span>MChD<span class="mx-1.5 text-accent">·</span>BSc<span class="mx-1.5 text-accent">·</span>PgDip
-      </p>
     </div>
 
     <!-- Full-bleed: sits outside the padded column above so the row runs off

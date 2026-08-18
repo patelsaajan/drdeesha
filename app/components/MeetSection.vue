@@ -65,9 +65,11 @@
            her own bio, it reads as Dr Deesha's words rather than decoration.
            Sized well above the body copy so it lands as the section's last
            word; the accent rule replaces quotation marks, which at this size
-           would sit awkwardly against the serif. -->
-      <blockquote class="m-0 mt-2 border-l-2 border-accent pl-6 lg:pl-8">
-        <p class="m-0 max-w-2xl font-serif font-normal leading-quote tracking-heading text-white" style="font-size: clamp(1.75rem, 3.2vw, 2.75rem)">
+           would sit awkwardly against the serif. Italic and set apart from the
+           bio above by a wider gap than the stack's own, so it reads as a
+           separate beat rather than another paragraph. -->
+      <blockquote class="m-0 mt-6 border-l-2 border-accent pl-6 lg:mt-10 lg:pl-8">
+        <p class="m-0 max-w-2xl font-serif font-normal italic leading-quote tracking-heading text-white" style="font-size: clamp(1.75rem, 3.2vw, 2.75rem)">
           Good dentistry is quiet work. Gentle, plain, lasting.
         </p>
       </blockquote>
