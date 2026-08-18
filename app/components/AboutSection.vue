@@ -15,18 +15,23 @@
       :style="{ height: `calc(100dvh + ${aboutTopics.length * STEP_DVH}dvh)` }"
     >
       <div class="sticky top-0 flex h-dvh items-center overflow-hidden">
-        <div class="mx-auto grid w-full max-w-6xl grid-cols-[minmax(0,2fr)_minmax(0,3fr)] items-center gap-x-16 px-6">
+        <div class="mx-auto w-full max-w-6xl px-6">
 
-          <!-- Rail -->
-          <div>
+          <!-- Title row — the header owns the full width on its own. -->
+          <header>
             <p class="m-0 font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
               About
             </p>
-            <h2 class="m-0 mt-5 max-w-md font-serif font-normal leading-heading tracking-heading" style="font-size: clamp(2rem, 3vw, 2.75rem)">
+            <h2 class="m-0 mt-5 max-w-xl font-serif font-normal leading-heading tracking-heading" style="font-size: clamp(2rem, 3vw, 2.75rem)">
               The details, if you want them.
             </h2>
+          </header>
 
-            <nav aria-label="About topics" class="mt-12">
+          <div class="mt-12 grid grid-cols-[minmax(0,2fr)_minmax(0,3fr)] items-start gap-x-16">
+
+          <!-- Rail -->
+          <div>
+            <nav aria-label="About topics">
               <button
                 v-for="(topic, i) in aboutTopics"
                 :key="topic.id"
@@ -50,17 +55,6 @@
                 </span>
               </button>
             </nav>
-
-            <!-- A booking action lives inside the pinned frame too — the
-                 closing banner below only arrives once the ride ends, and
-                 this screen is on stage for several viewports of scroll. -->
-            <a
-              :href="practice.bookingHref"
-              class="group mt-10 inline-flex w-fit items-center gap-2 rounded-full bg-primary px-7 py-3 font-display text-sm font-semibold uppercase tracking-label text-white outline-none transition-colors duration-250 ease-out hover:bg-accent hover:text-primary focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
-            >
-              Book an appointment
-              <span aria-hidden="true" class="inline-block text-accent transition-all duration-250 ease-out group-hover:translate-x-0.5 group-hover:text-primary">↗</span>
-            </a>
           </div>
 
           <!-- Panel — topics stacked in one grid cell; the active one fades
@@ -90,6 +84,20 @@
               </p>
             </div>
           </div>
+          </div>
+
+          <!-- Below the content but inside the pinned frame, so it stays on
+               screen for the whole ride rather than waiting for the release.
+               Left-aligned, so it hangs from the same edge as the heading and
+               the topic rail above it. -->
+          <div class="mt-12 flex justify-start">
+            <a
+              :href="practice.bookingHref"
+              class="inline-flex w-fit items-center rounded-lg bg-primary px-8 py-3.5 font-display text-sm font-semibold uppercase tracking-label text-white outline-none transition-colors duration-250 ease-out hover:bg-accent hover:text-primary focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+            >
+              Book an appointment
+            </a>
+          </div>
 
         </div>
       </div>
@@ -98,7 +106,7 @@
     <!-- Below lg: the open editorial stack. A pinned scroll-jack on a phone
          is friction, not choreography, so the same content simply reads top
          to bottom. -->
-    <div class="mx-auto max-w-5xl px-4 pt-24 sm:px-6 lg:hidden">
+    <div class="mx-auto max-w-5xl px-4 py-24 sm:px-6 lg:hidden">
       <header class="reveal max-w-2xl">
         <p class="m-0 font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
           About
@@ -138,22 +146,6 @@
       </div>
     </div>
 
-    <!-- The booking prompt closes the section on an action for both layouts —
-         it sits in normal flow, so on desktop it arrives as the pin releases. -->
-    <div class="mx-auto max-w-6xl px-4 pt-4 pb-24 sm:px-6 lg:px-6 lg:pt-0 lg:pb-28">
-      <a
-        :href="practice.bookingHref"
-        class="reveal group flex flex-col justify-center gap-4 rounded-2xl bg-primary p-6 text-white outline-none transition-colors duration-250 ease-out hover:bg-accent hover:text-primary focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 sm:flex-row sm:items-center sm:justify-between sm:p-8"
-      >
-        <span class="max-w-2xl font-serif font-normal leading-snug tracking-heading transition-colors" style="font-size: clamp(1.15rem, 1.7vw, 1.55rem)">
-          New patients welcome, and you won't get a lecture.
-        </span>
-        <span class="flex shrink-0 items-center gap-2 font-display text-sm font-semibold uppercase tracking-label text-white transition-colors group-hover:text-primary">
-          Book an appointment
-          <span aria-hidden="true" class="inline-block text-accent transition-all duration-250 ease-out group-hover:translate-x-0.5 group-hover:text-primary">↗</span>
-        </span>
-      </a>
-    </div>
 
   </section>
 </template>

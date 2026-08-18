@@ -17,24 +17,24 @@
   <section
     id="home"
     ref="heroRoot"
-    class="sticky top-0 z-0 flex min-h-dvh flex-col items-center justify-center overflow-hidden bg-background pb-28 lg:pb-10"
-    style="--card-w: clamp(7.5rem, min(20vw, 26dvh), 32rem); padding-top: clamp(4rem, 9dvh, 6rem)"
+    class="hero-root sticky top-0 z-0 flex min-h-dvh flex-col items-center gap-6 overflow-hidden bg-background pb-28 lg:gap-8 lg:pb-10"
+    style="padding-top: clamp(4rem, 9dvh, 6rem)"
   >
-    <div class="flex w-full flex-col items-center px-6 text-center">
+    <div class="flex w-full shrink-0 flex-col items-center gap-5 px-6 text-center">
       <!-- Accent pill. Text is primary, not white: accent sits at ~2:1 against
            white and fails AA, where primary on accent is ~7.6:1. -->
-      <p class="hero-rise m-0 rounded-full bg-accent/70 px-4 py-1.5 font-display text-2xs font-semibold uppercase tracking-label text-primary">
+      <p class="hero-rise m-0 shrink-0 rounded-lg bg-accent/70 px-4 py-1.5 font-display text-2xs font-semibold uppercase tracking-label text-primary">
         New patients welcome
       </p>
 
       <h1
-        class="hero-rise m-0 mt-5 max-w-3xl font-display font-semibold leading-heading tracking-heading text-foreground"
-        style="font-size: clamp(2.25rem, min(5vw, 7.5dvh), 4rem)"
+        class="hero-rise m-0 max-w-3xl shrink-0 font-serif font-normal leading-heading tracking-heading text-foreground"
+        style="font-size: clamp(2rem, min(5vw, 7dvh), 4rem)"
       >
         Feel confident in your smile
       </h1>
 
-      <p class="hero-rise m-0 mt-4 max-w-xl font-serif text-base font-normal leading-relaxed text-foreground/70 lg:text-lg">
+      <p class="hero-rise m-0 max-w-xl shrink-0 font-serif text-base font-normal leading-relaxed text-foreground/70 lg:text-lg">
         General and cosmetic dentistry from Dr Deesha at {{ practice.name }} in
         {{ practice.location }}, delivered calmly, carefully, and at your pace.
       </p>
@@ -42,21 +42,26 @@
 
     <!-- Full-bleed: sits outside the padded column above so the row runs off
          both edges of the screen, as the arc needs it to. -->
-    <!-- A sliver of vertical padding: overflow-hidden clips both axes (CSS
-         won't let one be hidden and the other visible), and perspective makes
-         the near edge of a yawed card project a few percent taller than its
-         layout box, which this absorbs. -->
+    <!-- flex-1 so this band takes whatever height the stack has left over,
+         with items-center putting the row in the middle of it: the carousel
+         then sits centred between the bio above and the CTA below, rather
+         than hugging the bio with the slack pooling underneath.
+
+         Vertical padding is symmetric: overflow-hidden clips both axes (CSS
+         won't let one be hidden and the other visible), so this absorbs the
+         few percent that cards past the screen edge project beyond their
+         layout box. Equal top and bottom, or the padding itself would offset
+         the centring the flex-1 band is doing. -->
     <div
       ref="viewport"
-      class="hero-rise mt-3 w-full cursor-grab overflow-hidden active:cursor-grabbing"
-      style="padding-block: calc(var(--card-w) * 0.08)"
+      class="hero-rise flex w-full flex-1 items-center overflow-hidden cursor-grab active:cursor-grabbing"
+      style="padding-block: calc(var(--card-w) * 0.045)"
     >
-      <div ref="track" class="flex w-max items-start gap-3 will-change-transform">
-        <!-- One photograph per card, chosen by its slot in PATTERN — the two
-             centrals carry the consultation portrait, the rest the wider
-             chairside frame. Because the assignment is fixed rather than
-             recomputed against the screen, no card ever swaps image and a
-             single <img> each is enough.
+      <div ref="track" class="flex w-max items-start gap-[9px] will-change-transform lg:gap-1" :style="{ marginBottom: `${-deadSpace}px` }">
+        <!-- One photograph per card, chosen by its slot in PATTERN — each
+             slot owns one photograph. Because the assignment is fixed rather
+             than recomputed against the screen, no card ever swaps image and
+             a single <img> each is enough.
 
              `sizes` is set at 2x the card's true slot on purpose. @nuxt/image
              v2 derives srcset candidates from the vw breakpoints alone and
@@ -77,9 +82,9 @@
           }"
         >
           <NuxtImg
-            :src="slotImage((i - 1) % SLOTS_PER_COPY)"
-            :alt="i <= SLOTS_PER_COPY && FIRST_ALT_SLOTS.includes((i - 1) % SLOTS_PER_COPY) ? slotAlt((i - 1) % SLOTS_PER_COPY) : ''"
-            sizes="22rem md:40vw"
+            :src="PATTERN[(i - 1) % SLOTS_PER_COPY]!.src"
+            :alt="i <= SLOTS_PER_COPY ? PATTERN[(i - 1) % SLOTS_PER_COPY]!.alt : ''"
+            sizes="28rem md:52vw"
             quality="82"
             draggable="false"
             :loading="i <= SLOTS_PER_COPY ? 'eager' : 'lazy'"
@@ -90,10 +95,12 @@
     </div>
 
     <!-- Keeps the site's CTA convention — solid primary resolving to accent on
-         hover, same as every other booking prompt on the page. -->
+         hover, same as every other booking prompt on the page. Desktop only:
+         the mobile layout already docks a Book Now button at the bottom edge,
+         so a second one here is the same ask twice on a small screen. -->
     <a
       :href="practice.bookingHref"
-      class="hero-rise mt-5 rounded-full bg-primary px-8 py-3.5 font-display text-sm font-semibold uppercase tracking-label text-white outline-none transition-colors duration-250 ease-out hover:bg-accent hover:text-primary focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+      class="hero-rise hidden shrink-0 rounded-lg bg-primary px-8 py-3.5 lg:inline-block font-display text-sm font-semibold uppercase tracking-label text-white outline-none transition-colors duration-250 ease-out hover:bg-accent hover:text-primary focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
     >
       Book an appointment
     </a>
@@ -105,54 +112,36 @@ import gsap from 'gsap'
 import { Observer } from 'gsap/Observer'
 import { practice } from '../data/contact'
 
-// The row runs on the wider chairside frame, with the consultation portrait
-// surfacing on the two cards nearest the centre line — so the photograph
-// that carries the proposition sits where the eye already is, and the rest
-// of the row reads as the room around it. chairside is a 16:9 original and
-// crops hard to the 3/4 card; it centres on the treatment itself, which is
-// the part worth keeping.
-const CHAIRSIDE = '/images/about/chairside.webp'
-const CONSULTATION = '/images/hero/consultation.webp'
-
-// The smile arch, as a fixed repeating pattern of six card slots. Dental
-// anatomy, roughly: central incisors longest, laterals beside them shorter,
-// canines longer again. `k` is the card's rendered height as a multiple of
-// its width; the two centrals carry the consultation portrait and everything
-// else carries the wider chairside frame.
+// The smile arch, as a fixed repeating pattern of six card slots, each with
+// its own photograph. Dental anatomy, roughly: central incisors longest,
+// laterals beside them shorter, canines longer again. `k` is the card's
+// rendered height as a multiple of its width. The consultation portrait
+// holds both centrals — the photograph that carries the proposition sits
+// where the eye already is — and the practice's other moments fill the arch
+// around it.
 //
 // Fixed to the cards rather than recomputed against the screen each frame, so
 // the arch travels with the row when it's dragged instead of the cards
 // changing shape underneath it. That's also why the pattern has to *repeat*:
 // the loop wraps every SLOTS_PER_COPY cards, and a one-off arch would jump
 // at the seam. Repeating it means the wrap stays invisible and dragging
-// simply reveals the next set of teeth.
+// simply reveals the next set of teeth. Six slots, six distinct photographs,
+// ordered so no two neighbours share an image — including across the wrap,
+// where the last slot sits beside the first. Alts live here too, described
+// once per photograph on the first copy; later copies repeat as decoration.
 const PATTERN = [
-  { k: 1.16, focus: false }, // canine — square but a little taller
-  { k: 1.0, focus: false }, // lateral — square
-  { k: 1.34, focus: true }, // central — tall
-  { k: 1.34, focus: true }, // central — tall
-  { k: 1.0, focus: false }, // lateral — square
-  { k: 1.16, focus: false }, // canine
+  { k: 1.09, src: '/images/hero/treatment-in-progress.webp', alt: 'Dr Deesha in loupes and mask, working on a reclined patient' }, // canine — square but a little taller
+  { k: 1.02, src: '/images/hero/treatment-room.webp', alt: 'The treatment room mid-appointment, Dr Deesha and a nurse at work' }, // lateral — square
+  { k: 1.12, src: '/images/hero/deesha-with-patient.webp', alt: 'Dr Deesha with a smiling patient in the treatment chair at Smart Smiles' }, // central — tall
+  { k: 1.12, src: '/images/hero/whitening-collection.webp', alt: 'A patient at the surgery door collecting a whitening kit' }, // central — tall
+  { k: 1.02, src: '/images/hero/patient-thumbs-up.webp', alt: 'A patient giving a thumbs up from the chair, Dr Deesha beside him' }, // lateral — square
+  { k: 1.09, src: '/images/hero/smiling-patient.webp', alt: 'Dr Deesha and a patient grinning side by side in the surgery' }, // canine
 ]
 const SLOTS_PER_COPY = PATTERN.length
 
 // Slot 2|3 is the seam the arch is centred on, so a slot's distance from the
 // centre line, in card widths, is its offset from 2.5.
 const SLOT_U = PATTERN.map((_, i) => Math.abs(i - (SLOTS_PER_COPY - 1) / 2))
-// Only the first card describes its photographs. Beyond that the same two
-// images repeat as decoration, and announcing them once per card would be
-// noise.
-const CHAIRSIDE_ALT = 'Dr Deesha treating a patient chairside, with a dental nurse assisting'
-const CONSULTATION_ALT = 'Dr Deesha with a smiling patient in the treatment chair at Smart Smiles'
-
-// Slots 0 and 2 are the first to use each photograph; every other card is the
-// same two images repeating as decoration, and describing them once per card
-// would be noise.
-const FIRST_ALT_SLOTS = [0, 2]
-function slotAlt(slot: number) {
-  return PATTERN[slot]!.focus ? CONSULTATION_ALT : CHAIRSIDE_ALT
-}
-
 // Cards laid end to end. Every card is now identical in content (both
 // photographs, one revealed), so the repeating unit is a single card and the
 // loop wraps every card width. Position starts a couple of units in and
@@ -173,9 +162,20 @@ const cardCount = computed(() => copies.value * SLOTS_PER_COPY)
 // many cards fit across the viewport.
 const slotAspect = ref<number[]>(PATTERN.map(p => 1 / p.k))
 
-function slotImage(slot: number) {
-  return PATTERN[slot]!.focus ? CONSULTATION : CHAIRSIDE
-}
+// Layout height the tallest card claims but never fills. Cards project from
+// a top anchor and the ring shrinks them, so a card's drawn height is its
+// layout height times that scale — the difference is dead space hanging off
+// the bottom of the row's box. Carried as a negative margin on the track so
+// the box matches what's actually drawn, which is what lets the band centre
+// the row on what the eye sees rather than on empty layout.
+const deadSpace = ref(0)
+
+// Mobile runs one dominant card, so the arch's height variation has nothing
+// to play against — every slot takes this one ratio instead, and the row
+// centres on a card rather than on the seam between the two centrals.
+const MOBILE_K = 1.25
+const isDesktop = useIsDesktop()
+const slotK = (i: number) => (isDesktop.value ? PATTERN[i]!.k : MOBILE_K)
 
 // Ring model — the viewer stands at the centre of a cylinder of cards and the
 // row is the far wall sweeping past. A card's layout position maps linearly to
@@ -202,8 +202,8 @@ function slotImage(slot: number) {
 // slope, so exits accelerate off rather than freezing at the edge pose.
 const PERSPECTIVE = 1200
 const EDGE_ANGLE = (50 * Math.PI) / 180
-const TAN_BLEND = 0.18
-const DEPTH_STRENGTH = 0.55
+const TAN_BLEND = 0.1
+const DEPTH_STRENGTH = 0.32
 const YAW_RATIO = 0.7
 const ARC_LIMIT = 1.1
 
@@ -299,6 +299,7 @@ function applyArc() {
   const half = viewW / 2
   const els = cardEls.value
   const n = els.length
+  const flat = !isDesktop.value
 
   for (let i = 0; i < n; i++) {
     const centre = x + i * step + cardW / 2
@@ -320,6 +321,16 @@ function applyArc() {
     // Screen-space placement rides the CSS `translate` property, which
     // composes *outside* `transform`; inside it (as a translateX) the shift
     // would project through the perspective and squash yawed cards.
+    if (flat) {
+      // Mobile is a plain filmstrip: one card holding the frame with its
+      // neighbours peeking in. The ring's spread would throw those
+      // neighbours clean off a 390px screen, and its yaw and depth read as
+      // distortion rather than curvature at this size.
+      els[i]!.style.translate = '0px'
+      els[i]!.style.transform = 'none'
+      continue
+    }
+
     els[i]!.style.translate = `${half + half * mapped - centre}px`
     els[i]!.style.transform = `perspective(${PERSPECTIVE}px) translateZ(${-depth}px) rotateY(${yaw}deg)`
 
@@ -367,16 +378,29 @@ async function buildMarquee() {
   // outer cards come out tallest on screen despite the centre being tallest
   // in layout. Derived from the slot, never from a card's live position, so
   // every card sharing a slot is identical and the wrap stays seamless.
-  slotAspect.value = PATTERN.map((slot, i) => {
+  slotAspect.value = PATTERN.map((_, i) => {
+    if (!isDesktop.value) return 1 / slotK(i)
     const t = gsap.utils.clamp(-ARC_LIMIT, ARC_LIMIT, (SLOT_U[i]! * step) / half)
-    return ringScale(t * EDGE_ANGLE) / slot.k
+    return ringScale(t * EDGE_ANGLE) / slotK(i)
   })
+
+  // Tallest layout box vs tallest drawn card, from the same slot maths above.
+  const layoutH = PATTERN.map((_, i) => cardW / slotAspect.value[i]!)
+  const drawnH = PATTERN.map((_, i) => layoutH[i]! * (slotAspect.value[i]! * slotK(i)))
+  deadSpace.value = isDesktop.value
+    ? Math.max(0, Math.max(...layoutH) - Math.max(...drawnH))
+    : 0
 
   copySpan = copyW
   // Land the seam between the two centrals on the centre line, so the arch
   // sits symmetrically about it rather than one card dead centre.
   const base = -startCopies * copyW
-  const aligned = half - cardW / 2 - ((SLOTS_PER_COPY - 1) / 2) * step
+  // Desktop lands the seam between the two centrals on the centre line, so
+  // the arch sits symmetrically about it. Mobile lands a card's own centre
+  // there instead — with one card holding the frame, a seam would split the
+  // view between two half-cards.
+  const anchor = isDesktop.value ? (SLOTS_PER_COPY - 1) / 2 : Math.floor(SLOTS_PER_COPY / 2)
+  const aligned = half - cardW / 2 - anchor * step
   posMax = aligned - Math.round((aligned - base) / copyW) * copyW
   pos = posMax
   velocity = 0
@@ -412,6 +436,7 @@ onMounted(() => {
   motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
   motionQuery.addEventListener('change', onResize)
   window.addEventListener('resize', onResize)
+  watch(isDesktop, () => buildMarquee())
 
   buildMarquee()
   gsap.ticker.add(tick)
@@ -465,6 +490,20 @@ onUnmounted(() => {
   user-select: none;
 }
 
+/* Mobile shows one card holding most of the frame with its neighbours
+   peeking in either side — the arch needs six cards across to read, and a
+   phone can only fit two at a legible size. Desktop keeps the dvh-capped
+   clamp so the row can't outgrow a short laptop. */
+.hero-root {
+  --card-w: min(72vw, 46dvh);
+}
+
+@media (min-width: 1024px) {
+  .hero-root {
+    --card-w: clamp(9.5rem, min(26vw, 33dvh), 40rem);
+  }
+}
+
 .hero-card {
   /* Placeholder only — applyArc sets the real value on the first frame. It's
      updated continuously rather than transitioned: the profile is a smooth
@@ -472,6 +511,20 @@ onUnmounted(() => {
      transition on top would just lag it. Nothing recomputes while the row is
      at rest (tick returns early), so this costs nothing until a drag. */
   aspect-ratio: 1 / 1;
+}
+
+/* Mobile shows one card holding most of the frame with its neighbours
+   peeking in either side — the arch needs six cards across to read, and a
+   phone can only fit two at a legible size. Desktop keeps the dvh-capped
+   clamp so the row can't outgrow a short laptop. */
+.hero-root {
+  --card-w: min(72vw, 46dvh);
+}
+
+@media (min-width: 1024px) {
+  .hero-root {
+    --card-w: clamp(9.5rem, min(26vw, 33dvh), 40rem);
+  }
 }
 
 .hero-card {
