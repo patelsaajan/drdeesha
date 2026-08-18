@@ -30,8 +30,7 @@
         alt="Dr Deesha, smiling in a black roll-neck against a dark studio backdrop"
         sizes="100vw lg:40vw"
         loading="lazy"
-        class="absolute inset-0 h-full w-full object-cover"
-        style="object-position: 50% 20%"
+        class="absolute inset-0 h-full w-full object-cover object-[50%_20%]"
       />
     </figure>
 
@@ -41,8 +40,7 @@
       </p>
 
       <h2
-        class="m-0 font-serif font-normal leading-none tracking-heading text-white"
-        style="font-size: clamp(2.75rem, 6vw, 4.5rem)"
+        class="m-0 font-serif text-[clamp(2.75rem,6vw,4.5rem)] font-normal leading-none tracking-heading text-white"
       >
         Dr Deesha
       </h2>
@@ -69,7 +67,7 @@
            bio above by a wider gap than the stack's own, so it reads as a
            separate beat rather than another paragraph. -->
       <blockquote class="m-0 mt-6 border-l-2 border-accent pl-6 lg:mt-10 lg:pl-8">
-        <p class="m-0 max-w-2xl font-serif font-normal italic leading-quote tracking-heading text-white" style="font-size: clamp(1.75rem, 3.2vw, 2.75rem)">
+        <p class="m-0 max-w-2xl font-serif text-[clamp(1.75rem,3.2vw,2.75rem)] font-normal italic leading-quote tracking-heading text-white">
           Good dentistry is quiet work. Gentle, plain, lasting.
         </p>
       </blockquote>

@@ -4,8 +4,7 @@
   <figure class="m-0" data-vaul-no-drag>
     <div
       ref="containerRef"
-      class="relative cursor-ew-resize touch-none select-none overflow-hidden rounded-lg bg-foreground/5"
-      style="aspect-ratio: 3 / 2"
+      class="relative aspect-3/2 cursor-ew-resize touch-none select-none overflow-hidden rounded-lg bg-foreground/5"
       @pointerdown="onPointerDown"
       @pointermove="onPointerMove"
       @pointerup="onPointerUp"

@@ -6,7 +6,7 @@
         <p class="reveal font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
           Selected work
         </p>
-        <h2 class="reveal mt-5 font-serif font-normal leading-heading tracking-heading" style="font-size: clamp(2rem, 4vw, 3.25rem)">
+        <h2 class="reveal mt-5 font-serif text-[clamp(2rem,4vw,3.25rem)] font-normal leading-heading tracking-heading">
           Smiles, up close.
         </h2>
         <p class="reveal mt-4 font-display text-base font-light leading-relaxed text-foreground/65">
@@ -105,7 +105,7 @@
             <p class="font-display text-2xs font-semibold uppercase tracking-label text-primary">
               {{ selected.treatment }}
             </p>
-            <h3 class="mt-3 font-serif font-normal leading-heading tracking-heading" style="font-size: clamp(1.6rem, 3vw, 2.1rem)">
+            <h3 class="mt-3 font-serif text-[clamp(1.6rem,3vw,2.1rem)] font-normal leading-heading tracking-heading">
               {{ selected.title }}
             </h3>
           </div>
