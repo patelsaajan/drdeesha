@@ -35,7 +35,7 @@
 
         <div v-else class="relative h-full">
           <NuxtImg
-            src="/images/locations/smart-smiles.avif"
+            src="/images/locations/smart-smiles.webp"
             :alt="`The front of ${practice.name}, ${practice.location}`"
             sizes="40vw"
             loading="lazy"

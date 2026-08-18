@@ -72,7 +72,7 @@
           :style="{ backgroundColor: usePrimaryTint(50) }"
         >
           <NuxtImg
-            src="/images/about/chairside.png"
+            src="/images/about/chairside.webp"
             alt="Dr Deesha treating a patient chairside, with a dental nurse assisting"
             sizes="100vw lg:33vw"
             loading="lazy"
@@ -155,7 +155,7 @@
           :style="{ backgroundColor: usePrimaryTint(50) }"
         >
           <NuxtImg
-            src="/images/about/portrait.jpeg"
+            src="/images/about/portrait.webp"
             alt="Dr Deesha, smiling in a black roll-neck against a dark studio backdrop"
             sizes="100vw lg:33vw"
             preload
@@ -193,7 +193,7 @@
           :style="{ backgroundColor: usePrimaryTint(50) }"
         >
           <NuxtImg
-            src="/images/about/candid-1.jpg"
+            src="/images/about/candid-1.webp"
             alt="Dr Deesha beaming under a jacaranda tree in a glasshouse garden"
             sizes="50vw lg:33vw"
             loading="lazy"
@@ -219,7 +219,7 @@
         >
           <div class="candid-caption absolute inset-0 overflow-hidden rounded-xl">
             <NuxtImg
-              src="/images/about/candid-2.jpg"
+              src="/images/about/candid-2.webp"
               alt="Dr Deesha waving beside elephants bathing in a Chiang Mai river"
               sizes="100vw lg:33vw"
               loading="lazy"

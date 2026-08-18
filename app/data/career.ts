@@ -33,7 +33,7 @@ export const careerSteps: CareerStep[] = [
     location: 'Leeds',
     description:
       'Five years of foundations: anatomy, materials, and my first real patients. Leeds taught me that good dentistry is equal parts science and steadiness.',
-    image: '/images/career/graduation.jpg',
+    image: '/images/career/graduation.webp',
     focalPoint: 'object-[50%_40%]',
     mark: 'BDS',
   },
@@ -45,7 +45,7 @@ export const careerSteps: CareerStep[] = [
     location: 'Newark',
     description:
       'My first year in practice, treating a whole community from anxious first-timers to lifelong regulars. I learned to slow down and listen before I ever picked up a handpiece.',
-    image: '/images/career/newark.jpeg',
+    image: '/images/career/newark.webp',
     focalPoint: 'object-[72%_24%]',
     mark: 'DF1',
   },
@@ -57,7 +57,7 @@ export const careerSteps: CareerStep[] = [
     location: 'Birmingham',
     description:
       'A hospital year split between children and oral surgey. Treating nervous young patients made gentleness a habit, not an afterthought.',
-    image: '/images/career/bdh.jpeg',
+    image: '/images/career/bdh.webp',
     focalPoint: 'object-[50%_40%]',
     mark: 'DCT1',
   },
@@ -69,7 +69,7 @@ export const careerSteps: CareerStep[] = [
     location: 'Postgraduate',
     description:
       'PgDip restorative and aesthetics: a diploma spent obsessing over the details of a smile: proportion, shade, and the millimetre decisions that separate good from seamless.',
-    image: '/images/career/ta.jpg',
+    image: '/images/career/ta.webp',
     focalPoint: 'object-[50%_24%]',
     mark: 'PgDip',
   },
@@ -81,7 +81,7 @@ export const careerSteps: CareerStep[] = [
     location: 'Ystrad Mynach',
     description:
       'Where it all comes together. From routine check-ups to full smile makeovers, this is the unhurried, precise dentistry I set out to practise.',
-    image: '/images/career/smart-smiles.jpg',
+    image: '/images/career/smart-smiles.webp',
     focalPoint: 'object-[35%_20%]',
     mark: 'NOW',
     current: true,
