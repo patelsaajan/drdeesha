@@ -1,10 +1,9 @@
 // Site-wide SEO metadata — single source of truth for the head tags the
 // landing page emits (title, description, canonical, social cards).
 
-// PLACEHOLDER — the production domain isn't recorded anywhere in this repo
-// (no CNAME, no deploy config). Replace with the real origin (no trailing
-// slash) before the social/canonical tags go live.
-export const siteUrl = 'https://drdeesha.example.com'
+// Production origin (no trailing slash) — canonical/social URLs resolve
+// against this.
+export const siteUrl = 'https://drdeeshadental.com'
 
 export const site = {
   name: 'Dr Deesha Dental',
