@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- PLACEHOLDER DOMAIN: replace drdeesha.example.com with the production
+     origin before deploy (it isn't recorded anywhere in the repo). -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://drdeesha.example.com/</loc>
+  </url>
+</urlset>

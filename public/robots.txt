@@ -1,2 +1,5 @@
-User-Agent: *
+User-agent: *
 Disallow:
+
+# PLACEHOLDER DOMAIN: replace drdeesha.example.com with the production origin.
+Sitemap: https://drdeesha.example.com/sitemap.xml
