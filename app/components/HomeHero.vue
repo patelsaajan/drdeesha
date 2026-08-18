@@ -49,7 +49,7 @@
       class="hero-rise mt-3 w-full cursor-grab overflow-hidden active:cursor-grabbing"
       style="padding-block: calc(var(--card-w) * 0.08)"
     >
-      <div ref="track" class="flex w-max gap-0.5 will-change-transform">
+      <div ref="track" class="flex w-max items-start gap-0.5 will-change-transform">
         <!-- Every card carries both photographs, stacked; which one shows is
              decided per frame from the card's distance to the centre line
              (see applyArc), not from its index. That's what keeps the two
@@ -67,7 +67,7 @@
           v-for="i in cardCount"
           :key="i"
           ref="cardEls"
-          class="hero-card relative aspect-3/4 shrink-0 overflow-hidden rounded-2xl select-none"
+          class="hero-card relative shrink-0 overflow-hidden rounded-2xl select-none"
           draggable="false"
           :style="{ width: 'var(--card-w)', backgroundColor: usePrimaryTint(50) }"
         >
@@ -443,6 +443,25 @@ onUnmounted(() => {
 
 @media (prefers-reduced-motion: reduce) {
   .hero-focus {
+    transition: none;
+  }
+}
+
+/* Square while it carries the chairside frame — a 16:9 original that the 3/4
+   portrait crop cut to pieces — and 3/4 on the centre pair, where the
+   consultation portrait wants the height. The row is items-start, so the
+   taller centre cards hang below a shared top edge rather than growing in
+   both directions. */
+.hero-card {
+  aspect-ratio: 1 / 1;
+  transition: aspect-ratio 0.45s ease;
+}
+.hero-card.is-focus {
+  aspect-ratio: 3 / 4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-card {
     transition: none;
   }
 }
