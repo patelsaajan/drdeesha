@@ -50,6 +50,17 @@
                 </span>
               </button>
             </nav>
+
+            <!-- A booking action lives inside the pinned frame too — the
+                 closing banner below only arrives once the ride ends, and
+                 this screen is on stage for several viewports of scroll. -->
+            <a
+              :href="practice.bookingHref"
+              class="group mt-10 inline-flex w-fit items-center gap-2 rounded-full bg-primary px-7 py-3 font-display text-sm font-semibold uppercase tracking-label text-white outline-none transition-colors duration-250 ease-out hover:bg-accent hover:text-primary focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+            >
+              Book an appointment
+              <span aria-hidden="true" class="inline-block text-accent transition-all duration-250 ease-out group-hover:translate-x-0.5 group-hover:text-primary">↗</span>
+            </a>
           </div>
 
           <!-- Panel — topics stacked in one grid cell; the active one fades

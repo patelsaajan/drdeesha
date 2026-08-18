@@ -13,10 +13,9 @@ export interface AboutTopic {
   body: string[]
 }
 
-// The mosaic that used to fill this section, rewritten as five answers: the
-// bio, the open invitation, the lapsed-visit reassurance and the
-// life-outside candid copy, gathered under the question each was really
-// answering. The "quiet work" pull-quote is deliberately absent — it now
+// The mosaic that used to fill this section, rewritten as four answers: the
+// bio, the open invitation and the lapsed-visit reassurance, gathered under
+// the question each was really answering. The "quiet work" pull-quote is deliberately absent — it now
 // closes the Meet section, where it reads as Dr Deesha's own words rather
 // than one tile among many.
 export const aboutTopics: AboutTopic[] = [
@@ -58,16 +57,6 @@ export const aboutTopics: AboutTopic[] = [
     body: [
       'If it\'s been years since your last check-up, you won\'t get a lecture. Just a clear plan, and a bit of credit for showing up.',
       'We can go at whatever pace suits you: a look and a conversation first, treatment only once you\'re ready for it.',
-    ],
-  },
-  {
-    id: 'outside',
-    label: 'Outside the practice',
-    hint: 'Pilates, hikes and baking',
-    heading: 'Life beyond the surgery.',
-    body: [
-      'Outside of dentistry, you\'ll usually find me at Pilates, hiking somewhere with a good view, being an amateur nail tech, or trying out new baking recipes.',
-      'It\'s the same instinct as the day job, really: steady hands, and a lot of patience for getting the details right.',
     ],
   },
 ]
