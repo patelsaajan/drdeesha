@@ -55,16 +55,5 @@ export default defineAppConfig({
         },
       ],
     },
-    slider: {
-      slots: {
-        // Muted brand track; the filled range keeps the default primary.
-        track: 'bg-foreground/25',
-        // Larger, grabbable thumb that reads as a comparison handle.
-        thumb: 'bg-background cursor-grab active:cursor-grabbing shadow-sm',
-      },
-      defaultVariants: {
-        size: 'xl' as const,
-      },
-    },
   },
 })
