@@ -13,9 +13,10 @@ import gsap from 'gsap'
  *     .reveal { opacity: 0; }
  *   }
  *
- * Sections that orchestrate extra timeline work alongside their reveals
- * (AboutSection's portrait, TestimonialsSection's row scrub) keep their own
- * bespoke setup instead of this.
+ * Sections with extra scroll choreography (AboutSection's spotlight,
+ * TestimonialsSection's row scrub) run it independently alongside this;
+ * only sections whose entrance is itself bespoke (HomeHero's rise-in,
+ * ProcessVideo's grow-into-pin) skip the composable entirely.
  */
 export function useSectionReveal(
   root: Ref<HTMLElement | null>,
