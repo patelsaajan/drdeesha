@@ -8,10 +8,9 @@ export interface AboutTopic {
   hint: string
   /** Panel heading on the right */
   heading: string
-  /** Panel body. Two paragraphs is the house length: enough to answer the
-   *  row properly, short enough that nothing scrolls inside the card. */
+  /** Entry body. Two paragraphs is the house length: enough to answer the
+   *  label properly, short enough to hold the section's rhythm. */
   body: string[]
-  image?: { src: string, alt: string }
 }
 
 // The mosaic that used to fill this section, rewritten as five answers: the
@@ -30,10 +29,6 @@ export const aboutTopics: AboutTopic[] = [
       'I believe dentistry is about much more than teeth. Visiting the dentist can feel daunting, so I aim to create a calm, supportive experience from the moment you sit down.',
       'Whether it\'s a gentle aesthetic enhancement or getting you out of pain, your comfort always comes first, and nothing happens until you understand what it involves and why.',
     ],
-    image: {
-      src: '/images/about/chairside.webp',
-      alt: 'Dr Deesha treating a patient chairside, with a dental nurse assisting',
-    },
   },
   {
     id: 'practice',
