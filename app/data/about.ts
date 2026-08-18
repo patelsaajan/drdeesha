@@ -28,7 +28,7 @@ export const aboutTopics: AboutTopic[] = [
     heading: 'Comfort comes before anything else.',
     body: [
       'I believe dentistry is about much more than teeth. Visiting the dentist can feel daunting, so I aim to create a calm, supportive experience from the moment you sit down.',
-      'Whether it\'s a gentle aesthetic enhancement or getting you out of pain, your comfort always comes first — and nothing happens until you understand what it involves and why.',
+      'Whether it\'s a gentle aesthetic enhancement or getting you out of pain, your comfort always comes first, and nothing happens until you understand what it involves and why.',
     ],
     image: {
       src: '/images/about/chairside.webp',
@@ -42,7 +42,7 @@ export const aboutTopics: AboutTopic[] = [
     heading: 'General and cosmetic care, in one place.',
     body: [
       'I\'m a general dentist at the wonderful Smart Smiles in Ystrad Mynach, South Wales, providing a wide range of general and cosmetic dental treatments in a calm and welcoming environment.',
-      'That covers the everyday — check-ups, hygiene, fillings — through to whitening, bonding and alignment. I\'m passionate about helping patients feel confident in their smiles.',
+      'That covers the everyday, from check-ups, hygiene and fillings through to whitening, bonding and alignment. I\'m passionate about helping patients feel confident in their smiles.',
     ],
   },
   {
@@ -52,7 +52,7 @@ export const aboutTopics: AboutTopic[] = [
     heading: 'Bring the X-rays, the worries, the photo.',
     body: [
       'Questions are welcome, and so are second opinions. If you have images from another practice, a treatment plan you\'re unsure about, or a photo of the smile you\'re after, bring them along.',
-      'You\'ll get a straight answer on what\'s realistic, what it involves and what it costs — with no pressure to decide on the day.',
+      'You\'ll get a straight answer on what\'s realistic, what it involves and what it costs, with no pressure to decide on the day.',
     ],
   },
   {
@@ -62,7 +62,7 @@ export const aboutTopics: AboutTopic[] = [
     heading: 'You won\'t get a lecture here.',
     body: [
       'If it\'s been years since your last check-up, you won\'t get a lecture. Just a clear plan, and a bit of credit for showing up.',
-      'We can go at whatever pace suits you — a look and a conversation first, treatment only once you\'re ready for it.',
+      'We can go at whatever pace suits you: a look and a conversation first, treatment only once you\'re ready for it.',
     ],
   },
   {
@@ -72,7 +72,7 @@ export const aboutTopics: AboutTopic[] = [
     heading: 'Life beyond the surgery.',
     body: [
       'Outside of dentistry, you\'ll usually find me at Pilates, hiking somewhere with a good view, being an amateur nail tech, or trying out new baking recipes.',
-      'It\'s the same instinct as the day job, really — steady hands, and a lot of patience for getting the details right.',
+      'It\'s the same instinct as the day job, really: steady hands, and a lot of patience for getting the details right.',
     ],
   },
 ]

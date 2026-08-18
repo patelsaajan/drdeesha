@@ -475,9 +475,15 @@ onUnmounted(() => {
 }
 
 .hero-card {
-  /* Set once here rather than per-frame in applyArc — the transform string it
-     writes carries no origin, and centre is what makes the arc symmetric. */
-  transform-origin: center center;
+  /* Set once here rather than per-frame in applyArc — the transform string
+     it writes carries no origin. Top-anchored: the perspective projects a
+     card about its origin, so with a centre origin the deep middle cards
+     shrank equally up and down and their rendered top edges sagged below the
+     outer cards' despite items-start aligning the layout boxes. Anchoring at
+     the top makes every card project downward only, and the row's top edge
+     holds as one line. x stays 50% so yaw and the seam-centring math are
+     untouched. */
+  transform-origin: 50% 0;
   will-change: transform;
 }
 
