@@ -153,9 +153,9 @@ let observer: IntersectionObserver | undefined
 // How far a row's content shifts during the scrub: its full overflow, so the
 // repeated tail cards each get their moment before the footer curtain rises.
 // With the padded rows that lands around 1.2–1.4 viewport widths of travel
-// spread over 2.8 viewport heights of scroll — a proper glide rather than
-// the old 200px drift, still front-loaded by the ease so the rows are
-// creeping by the time the footer crosses in.
+// spread over 4.2 viewport heights of scroll — a little under a third of a
+// screen width per screen scrolled, slow enough that a single flick of the
+// wheel nudges the rows rather than throwing them across the band.
 function rowExtra(rowEl: HTMLElement) {
   const clip = rowEl.parentElement
   if (!clip) return 0
@@ -207,16 +207,23 @@ onMounted(() => {
     // and scrub each row horizontally over the extra scroll distance below.
     // Odd rows (top, bottom) start with their overflow hidden off the left
     // and slide right to reveal it; the middle row does the reverse.
-    // Over the 3-viewport pin the rows run eased (power2.out) for 1.4 of
-    // the 1.5-long timeline: quick out of the gate, decelerating so that
-    // by the 2-viewport mark (timeline 1.0) they're ~90% home and creeping
-    // — which is exactly where the footer's top edge crosses into view, so
-    // the curtain starts climbing while the cards are still drifting the
-    // last few pixels. The footer's flow position is pulled up by the
-    // deck's full MEASURED height — not 100dvh, because on shorter
-    // viewports the deck runs taller than one viewport and that difference
-    // opens a dead-scroll gap between rows and curtain. With margin
-    // -deskHeight and exactly 3 viewports of pin, the footer fully covers
+    // Over the 4.5-viewport pin the rows run eased (power1.out) for 1.4 of
+    // the 1.5-long timeline. Both numbers are what set the scrub's
+    // sensitivity — how far the cards slide per pixel of wheel — and both
+    // were dialled back: the pin was 3 viewports and the ease a cubic
+    // power2.out, which between them spent about a quarter of the travel
+    // in the first tenth of the scroll and read as twitchy. The longer pin
+    // stretches the same distance over half again as much scroll, and the
+    // gentler quadratic flattens the opening burst, while still
+    // decelerating into the finish: by the point the footer's top edge
+    // crosses into view the rows are ~97% home and creeping, so the
+    // curtain starts climbing while the cards drift the last few pixels.
+    // The footer's flow position is pulled up by the deck's full MEASURED
+    // height — not 100dvh, because on shorter viewports the deck runs
+    // taller than one viewport and that difference opens a dead-scroll gap
+    // between rows and curtain. With margin -deskHeight the footer's top
+    // lands one viewport below the screen bottom exactly one viewport
+    // before the pin ends, whatever the pin distance, so it fully covers
     // the screen at the moment the pin releases.
     const footerEl = document.getElementById('contact')
 
@@ -224,7 +231,7 @@ onMounted(() => {
       scrollTrigger: {
         trigger: deskEl,
         start: 'top top',
-        end: () => `+=${window.innerHeight * 3}`,
+        end: () => `+=${window.innerHeight * 4.5}`,
         scrub: 0.8,
         pin: true,
         pinSpacing: true,
@@ -244,15 +251,15 @@ onMounted(() => {
       const revealsRight = i % 2 === 0
       if (revealsRight) {
         gsap.set(rowEl, { x: () => -rowExtra(rowEl) })
-        tl.to(rowEl, { x: 0, ease: 'power2.out', duration: 1.4 }, 0)
+        tl.to(rowEl, { x: 0, ease: 'power1.out', duration: 1.4 }, 0)
       } else {
         gsap.set(rowEl, { x: 0 })
-        tl.to(rowEl, { x: () => -rowExtra(rowEl), ease: 'power2.out', duration: 1.4 }, 0)
+        tl.to(rowEl, { x: () => -rowExtra(rowEl), ease: 'power1.out', duration: 1.4 }, 0)
       }
     })
 
     // Dead tail to 1.5 — pads the timeline so the full pin distance stays
-    // 3 viewports and the rows' 1.4 lands at 2.8 viewports of scroll.
+    // 4.5 viewports and the rows' 1.4 lands at 4.2 viewports of scroll.
     tl.to({}, { duration: 0.5 }, 1)
 
     // Leaving lg: hand the footer its normal flow position back.
