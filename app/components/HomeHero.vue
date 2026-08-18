@@ -50,28 +50,44 @@
       style="padding-block: calc(var(--card-w) * 0.08)"
     >
       <div ref="track" class="flex w-max gap-0.5 will-change-transform">
+        <!-- Every card carries both photographs, stacked; which one shows is
+             decided per frame from the card's distance to the centre line
+             (see applyArc), not from its index. That's what keeps the two
+             centre cards on the consultation frame even while the row is
+             being dragged — an index-based arrangement would slide out of
+             position the moment it moved.
+
+             `sizes` is set at 2x the card's true slot on purpose. @nuxt/image
+             v2 derives srcset candidates from the vw breakpoints alone and
+             the `densities` option produced no 2x entries, so the widest
+             candidate was 276w — which Retina then upscaled into a soft
+             image. Overstating `sizes` is what gets a big-enough candidate
+             generated and picked. -->
         <div
-          v-for="(src, i) in loopImages"
+          v-for="i in cardCount"
           :key="i"
           ref="cardEls"
-          class="hero-card aspect-3/4 shrink-0 overflow-hidden rounded-2xl select-none"
+          class="hero-card relative aspect-3/4 shrink-0 overflow-hidden rounded-2xl select-none"
           draggable="false"
           :style="{ width: 'var(--card-w)', backgroundColor: usePrimaryTint(50) }"
         >
-          <!-- Sized at 2x the card's true slot (18vw) on purpose. @nuxt/image
-               v2 derives srcset candidates from the vw breakpoints alone and
-               the `densities` option produced no 2x entries, so the widest
-               candidate was 276w — which Retina then upscaled into the soft
-               image this replaced. Overstating `sizes` is what gets a
-               big-enough candidate generated and picked. -->
           <NuxtImg
-            :src="src"
-            :alt="i < IMAGES.length ? HERO_ALTS[i] : ''"
+            :src="CHAIRSIDE"
+            :alt="i === 1 ? CHAIRSIDE_ALT : ''"
             sizes="22rem md:40vw"
             quality="82"
             draggable="false"
-            :loading="i < IMAGES.length ? 'eager' : 'lazy'"
-            class="pointer-events-none h-full w-full object-cover"
+            :loading="i <= 2 ? 'eager' : 'lazy'"
+            class="pointer-events-none absolute inset-0 h-full w-full object-cover"
+          />
+          <NuxtImg
+            :src="CONSULTATION"
+            :alt="i === 1 ? CONSULTATION_ALT : ''"
+            sizes="22rem md:40vw"
+            quality="82"
+            draggable="false"
+            :loading="i <= 2 ? 'eager' : 'lazy'"
+            class="hero-focus pointer-events-none absolute inset-0 h-full w-full object-cover"
           />
         </div>
       </div>
@@ -93,33 +109,35 @@ import gsap from 'gsap'
 import { Observer } from 'gsap/Observer'
 import { practice } from '../data/contact'
 
-// Two photographs alternating along the row: Dr Deesha with a patient, and
-// the wider chairside frame of a treatment in progress. The row is a texture
-// rather than a gallery, so the pair repeats — and because the loop wraps on
-// one copy of IMAGES, a two-image list keeps the alternation unbroken across
-// the seam. chairside is a 16:9 original and crops hard to the 3/4 card; it
-// centres on the treatment itself, which is the part worth keeping.
-const IMAGES = [
-  '/images/hero/consultation.webp',
-  '/images/about/chairside.webp',
-]
+// The row runs on the wider chairside frame, with the consultation portrait
+// surfacing on the two cards nearest the centre line — so the photograph
+// that carries the proposition sits where the eye already is, and the rest
+// of the row reads as the room around it. chairside is a 16:9 original and
+// crops hard to the 3/4 card; it centres on the treatment itself, which is
+// the part worth keeping.
+const CHAIRSIDE = '/images/about/chairside.webp'
+const CONSULTATION = '/images/hero/consultation.webp'
 
-// Only the first instance of each photograph is described. Beyond that the
-// same two images repeat as decoration, and announcing them once per copy
-// would be noise.
-const HERO_ALTS = [
-  'Dr Deesha with a smiling patient in the treatment chair at Smart Smiles',
-  'Dr Deesha treating a patient chairside, with a dental nurse assisting',
-]
+// How many cards hold the consultation frame at once, taken from the centre
+// outward.
+const FOCUS_CARDS = 2
 
-// Copies of the list laid end to end. Position starts a couple of copies in
-// and wraps every copy width as it's dragged, so the window it can sweep
-// always has content past both screen edges. Left at a fixed count this
-// breaks on wide screens, where the card width clamp stops one copy from
-// growing with the viewport.
+// Only the first card describes its photographs. Beyond that the same two
+// images repeat as decoration, and announcing them once per card would be
+// noise.
+const CHAIRSIDE_ALT = 'Dr Deesha treating a patient chairside, with a dental nurse assisting'
+const CONSULTATION_ALT = 'Dr Deesha with a smiling patient in the treatment chair at Smart Smiles'
+
+// Cards laid end to end. Every card is now identical in content (both
+// photographs, one revealed), so the repeating unit is a single card and the
+// loop wraps every card width. Position starts a couple of units in and
+// wraps as it's dragged, so the window it can sweep always has content past
+// both screen edges. Left at a fixed count this breaks on wide screens,
+// where the card width clamp stops a unit from growing with the viewport.
+const SLOTS_PER_COPY = 1
 const MIN_COPIES = 3
 const copies = ref(MIN_COPIES)
-const loopImages = computed(() => Array.from({ length: copies.value }, () => IMAGES).flat())
+const cardCount = computed(() => copies.value * SLOTS_PER_COPY)
 
 // Ring model — the viewer stands at the centre of a cylinder of cards and the
 // row is the far wall sweeping past. A card's layout position maps linearly to
@@ -263,7 +281,32 @@ function applyArc() {
     // would project through the perspective and squash yawed cards.
     els[i]!.style.translate = `${half + half * mapped - centre}px`
     els[i]!.style.transform = `perspective(${PERSPECTIVE}px) translateZ(${-depth}px) rotateY(${yaw}deg)`
+
+    dist[i] = Math.abs(raw)
   }
+
+  applyFocus(els)
+}
+
+// Distance from the centre line per card, refilled each frame by applyArc.
+let dist: number[] = []
+let focused: number[] = []
+
+// Reveal the consultation frame on the FOCUS_CARDS cards nearest the centre.
+// Recomputed every frame but only written to the DOM when the membership
+// actually changes — during a drag that's a handful of times, not 60/sec.
+function applyFocus(els: HTMLElement[]) {
+  const n = els.length
+  const next = Array.from({ length: n }, (_, i) => i)
+    .sort((a, b) => (dist[a] ?? Infinity) - (dist[b] ?? Infinity))
+    .slice(0, FOCUS_CARDS)
+    .sort((a, b) => a - b)
+
+  if (next.length === focused.length && next.every((v, i) => v === focused[i])) return
+
+  for (const i of focused) els[i]?.classList.remove('is-focus')
+  for (const i of next) els[i]?.classList.add('is-focus')
+  focused = next
 }
 
 // Resize fires in bursts, and this function yields at nextTick — without a
@@ -275,7 +318,7 @@ async function buildMarquee() {
   const id = ++buildId
   if (!measure()) return
 
-  const copyW = step * IMAGES.length
+  const copyW = step * SLOTS_PER_COPY
 
   // The ring mapping only ever moves a card *outward* from its layout slot
   // (|ringMap(t)| ≥ (1 - TAN_BLEND)|t| and = |t| at the edges), so plain
@@ -295,6 +338,8 @@ async function buildMarquee() {
   // Park startCopies in, and let pos roam one copy width either side of that
   // before wrapping — the content repeats every copyW, so the wrap is
   // pixel-identical and invisible in both directions.
+  dist = []
+  focused = []
   copySpan = copyW
   posMax = -startCopies * copyW
   pos = posMax
@@ -382,6 +427,24 @@ onUnmounted(() => {
 .hero-card img {
   -webkit-user-drag: none;
   user-select: none;
+}
+
+/* The consultation frame sits on top of the chairside one and is revealed
+   only on the centre cards. Crossfaded rather than swapped so the change
+   during a drag reads as a dissolve instead of a flicker; both images are
+   already decoded, so nothing loads at the moment of the swap. */
+.hero-focus {
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+.hero-card.is-focus .hero-focus {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-focus {
+    transition: none;
+  }
 }
 
 .hero-card {
