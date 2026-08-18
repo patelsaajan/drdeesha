@@ -97,6 +97,7 @@
 </template>
 
 <script setup lang="ts">
+import type { ComponentPublicInstance } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { testimonials } from '../data/testimonials'
@@ -142,8 +143,8 @@ const slide = ref(0)
 const root = ref<HTMLElement | null>(null)
 const desk = ref<HTMLElement | null>(null)
 const rowRefs: (HTMLElement | null)[] = []
-function setRowRef(el: Element | null, i: number) {
-  rowRefs[i] = el as HTMLElement | null
+function setRowRef(el: Element | ComponentPublicInstance | null, i: number) {
+  rowRefs[i] = el instanceof HTMLElement ? el : null
 }
 
 let ctx: gsap.Context | undefined
