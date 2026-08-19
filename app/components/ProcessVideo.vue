@@ -11,7 +11,7 @@
            past its resting size — so the box that actually grows (`frame`)
            is a separate, absolutely positioned child instead of the pin
            target itself. -->
-      <div ref="pinAnchor" class="relative w-full" style="aspect-ratio: 16 / 9">
+      <div ref="pinAnchor" class="relative aspect-video w-full">
         <div
           ref="frame"
           class="reveal absolute inset-0 z-30 overflow-hidden rounded-xl bg-foreground"

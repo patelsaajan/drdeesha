@@ -12,9 +12,15 @@
     class="fixed top-6 left-6 z-40 hidden cursor-pointer items-center rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4 lg:flex"
     @click="jumpTo('home')"
   >
+    <!-- width caps the served variants (288w/576w for 1x/2x — the footer's
+         lockup uses the same pair, so the two share one cached file) instead
+         of preloading the full 1255px original, which was ~3x the bytes the
+         144px slot can ever show. -->
     <NuxtImg
       src="/images/logo/dr-deesha-logo.webp"
       alt="Dr Deesha Dental"
+      width="288"
+      height="108"
       preload
       class="h-auto w-28 lg:w-36"
     />
@@ -121,8 +127,7 @@
 
   <nav
     aria-label="Sections"
-    class="fixed inset-x-4 z-40 lg:hidden"
-    style="bottom: calc(1rem + env(safe-area-inset-bottom, 0px))"
+    class="fixed inset-x-4 bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] z-40 lg:hidden"
   >
     <div class="menu-fold grid" :class="menuOpen && 'is-open'">
       <div class="min-h-0 overflow-hidden">

@@ -17,8 +17,7 @@
   <section
     id="home"
     ref="heroRoot"
-    class="hero-root sticky top-0 z-0 flex min-h-dvh flex-col items-center gap-6 overflow-hidden bg-background pb-28 lg:gap-8 lg:pb-8"
-    style="padding-top: clamp(4rem, 9dvh, 6rem)"
+    class="hero-root sticky top-0 z-0 flex min-h-dvh flex-col items-center gap-6 overflow-hidden bg-background pt-[clamp(4rem,9dvh,6rem)] pb-28 lg:gap-8 lg:pb-8"
   >
     <div class="flex w-full shrink-0 flex-col items-center gap-5 px-6 text-center">
       <!-- Accent pill. Text is primary, not white: accent sits at ~2:1 against
@@ -28,8 +27,7 @@
       </p>
 
       <h1
-        class="hero-rise m-0 max-w-3xl shrink-0 font-serif font-normal leading-heading tracking-heading text-foreground"
-        style="font-size: clamp(2rem, min(5vw, 7dvh), 4rem)"
+        class="hero-rise m-0 max-w-3xl shrink-0 font-serif text-[clamp(2rem,min(5vw,7dvh),4rem)] font-normal leading-heading tracking-heading text-foreground"
       >
         Feel confident in your smile
       </h1>
@@ -54,8 +52,7 @@
          the centring the flex-1 band is doing. -->
     <div
       ref="viewport"
-      class="hero-rise flex w-full flex-1 items-center overflow-hidden cursor-grab active:cursor-grabbing"
-      style="padding-block: calc(var(--card-w) * 0.045)"
+      class="hero-rise flex w-full flex-1 items-center overflow-hidden py-[calc(var(--card-w)*0.045)] cursor-grab active:cursor-grabbing"
     >
       <div ref="track" class="flex w-max items-start gap-[9px] will-change-transform lg:gap-3" :style="{ marginBottom: `${-deadSpace}px` }">
         <!-- One photograph per card, chosen by its slot in PATTERN — each
@@ -88,6 +85,7 @@
             quality="82"
             draggable="false"
             :loading="i <= SLOTS_PER_COPY ? 'eager' : 'lazy'"
+            :fetchpriority="LCP_CARDS.has(i) ? 'high' : undefined"
             class="pointer-events-none absolute inset-0 h-full w-full object-cover"
           />
         </div>
@@ -139,6 +137,15 @@ const PATTERN = [
   { k: 1.08, src: '/images/hero/smiling-patient.webp', alt: 'Dr Deesha and a patient grinning side by side in the surgery' }, // outermost — normal
 ]
 const SLOTS_PER_COPY = PATTERN.length
+
+// First-copy cards whose photograph can be the LCP element, marked
+// fetchpriority=high so the browser fetches them ahead of the rest of the
+// eager set instead of at default image priority. Card 1 (slot 0) is what a
+// phone shows at first paint before the row is re-parked; cards 3 and 4 are
+// the tall centrals — the largest cards on desktop, and slot 3 is also the
+// card mobile anchors on once buildMarquee runs. Every later copy repeats
+// these same six URLs, so boosting the first copy covers them all.
+const LCP_CARDS = new Set([1, 3, 4])
 
 // Slot 2|3 is the seam the arch is centred on, so a slot's distance from the
 // centre line, in card widths, is its offset from 2.5.
@@ -519,23 +526,7 @@ onUnmounted(() => {
      transition on top would just lag it. Nothing recomputes while the row is
      at rest (tick returns early), so this costs nothing until a drag. */
   aspect-ratio: 1 / 1;
-}
 
-/* Mobile shows one card holding most of the frame with its neighbours
-   peeking in either side — the arch needs six cards across to read, and a
-   phone can only fit two at a legible size. Desktop keeps the dvh-capped
-   clamp so the row can't outgrow a short laptop. */
-.hero-root {
-  --card-w: min(72vw, 46dvh);
-}
-
-@media (min-width: 1024px) {
-  .hero-root {
-    --card-w: clamp(9.5rem, min(26vw, 33dvh), 40rem);
-  }
-}
-
-.hero-card {
   /* Set once here rather than per-frame in applyArc — the transform string
      it writes carries no origin. Top-anchored: the perspective projects a
      card about its origin, so with a centre origin the deep middle cards

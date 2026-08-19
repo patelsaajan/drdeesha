@@ -14,7 +14,10 @@ export default defineNuxtConfig({
         { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' }
       ],
       link: [
-        { rel: 'icon', type: 'image/png', href: '/favicon.ico' }
+        // favicon.ico is a real ICO container (16px + 32px members), so
+        // the declared type must match — image/png here made compliant
+        // browsers free to skip the icon.
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
       ]
     },
 },
@@ -26,6 +29,13 @@ export default defineNuxtConfig({
   ],
 
   css: ['~/assets/css/main.css'],
+
+  // One static page, no per-request data: bake the HTML at build time so a
+  // server deploy answers from the prerender cache instead of running SSR on
+  // every request (and a static host just serves the file).
+  routeRules: {
+    '/': { prerender: true },
+  },
 
   // Retina candidates. Without this the hero row's srcset topped out at the
   // 1x width and 2x screens upscaled it, which read as a soft, low-quality

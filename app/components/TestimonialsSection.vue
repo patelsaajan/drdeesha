@@ -8,7 +8,7 @@
       <p class="reveal font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
         Kind words
       </p>
-      <h2 class="reveal mt-4 font-serif font-normal leading-heading tracking-heading" style="font-size: clamp(2rem, 4vw, 3.25rem)">
+      <h2 class="reveal mt-4 font-serif text-[clamp(2rem,4vw,3.25rem)] font-normal leading-heading tracking-heading">
         What patients say about me.
       </h2>
 
@@ -59,7 +59,7 @@
           <p class="reveal font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
             Kind words
           </p>
-          <h2 class="reveal mt-4 font-serif font-normal leading-heading tracking-heading" style="font-size: clamp(2rem, 4vw, 3.25rem)">
+          <h2 class="reveal mt-4 font-serif text-[clamp(2rem,4vw,3.25rem)] font-normal leading-heading tracking-heading">
             What patients say about me.
           </h2>
         </div>
@@ -97,6 +97,7 @@
 </template>
 
 <script setup lang="ts">
+import type { ComponentPublicInstance } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { testimonials } from '../data/testimonials'
@@ -142,13 +143,15 @@ const slide = ref(0)
 const root = ref<HTMLElement | null>(null)
 const desk = ref<HTMLElement | null>(null)
 const rowRefs: (HTMLElement | null)[] = []
-function setRowRef(el: Element | null, i: number) {
-  rowRefs[i] = el as HTMLElement | null
+function setRowRef(el: Element | ComponentPublicInstance | null, i: number) {
+  rowRefs[i] = el instanceof HTMLElement ? el : null
 }
 
-let ctx: gsap.Context | undefined
 let mm: gsap.MatchMedia | undefined
-let observer: IntersectionObserver | undefined
+
+// Shared section entrance for the `.reveal` elements in both layouts; the
+// desktop row scrub below is its own, separate choreography.
+useSectionReveal(root)
 
 // How far a row's content shifts during the scrub: its full overflow, so the
 // repeated tail cards each get their moment before the footer curtain rises.
@@ -163,44 +166,18 @@ function rowExtra(rowEl: HTMLElement) {
 }
 
 onMounted(() => {
-  const el = root.value
   const deskEl = desk.value
-  if (!el) return
+  if (!deskEl) return
 
-  const reveals = gsap.utils.toArray<HTMLElement>(el.querySelectorAll('.reveal'))
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  // Reduced motion keeps the rows static — no pin, no scrub.
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
-  if (reduce) {
-    gsap.set(reveals, { autoAlpha: 1, y: 0 })
-    return
-  }
-
-  gsap.set(reveals, { autoAlpha: 0, y: 28 })
   gsap.registerPlugin(ScrollTrigger)
-
-  ctx = gsap.context(() => {
-    observer = new IntersectionObserver(
-      ([entry], obs) => {
-        if (!entry?.isIntersecting) return
-        obs.disconnect()
-
-        gsap.timeline({ defaults: { ease: 'expo.out' } }).to(reveals, {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.9,
-          stagger: 0.08,
-        })
-      },
-      { threshold: 0.15 },
-    )
-    observer.observe(el)
-  }, el)
 
   // The pin + row scrub is desktop-only (the mobile layout is the carousel
   // above, display:none'd out of lg). gsap.matchMedia builds it when the lg
   // query matches and reverts it — inline transforms included — when it
   // stops matching, so crossing the breakpoint by resize/rotation is safe.
-  if (!deskEl) return
   mm = gsap.matchMedia()
   mm.add('(min-width: 1024px)', () => {
     // Once the section fills the screen ('top top'), pin it (locking scroll)
@@ -270,9 +247,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  observer?.disconnect()
   mm?.revert()
-  ctx?.revert()
 })
 </script>
 

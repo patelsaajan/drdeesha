@@ -11,6 +11,12 @@ export const practice = {
   location: 'Ystrad Mynach',
   bookingHref: 'https://smartsmiles.portal.dental/',
   // 19 Bedwlwyn Rd, Ystrad Mynach, Hengoed CF82 7AA — via Nominatim/OSM.
+  address: {
+    street: '19 Bedwlwyn Road',
+    locality: 'Ystrad Mynach, Hengoed',
+    postcode: 'CF82 7AA',
+    country: 'GB',
+  },
   coordinates: { lat: 51.6419655, lng: -3.2360676 },
   hours: [
     { day: 'Monday', open: '09:00', close: '17:30' },
