@@ -13,6 +13,51 @@
 </template>
 
 <script setup lang="ts">
+import { practice } from '../data/contact'
+
+// Structured data for local search: Dr Deesha as the subject of the page,
+// with the practice she works at carrying the address, coordinates and
+// opening hours already held in app/data/contact.ts. Every value here is
+// drawn from content the page itself displays — nothing invented.
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Dr Deesha',
+  jobTitle: 'Associate Dentist',
+  // Shown in the site footer
+  identifier: {
+    '@type': 'PropertyValue',
+    propertyID: 'GDC registration number',
+    value: '309307',
+  },
+  alumniOf: 'University of Leeds Dental School',
+  worksFor: {
+    '@type': 'Dentist',
+    'name': practice.name,
+    'url': practice.bookingHref,
+    'address': {
+      '@type': 'PostalAddress',
+      streetAddress: practice.address.street,
+      addressLocality: practice.address.locality,
+      postalCode: practice.address.postcode,
+      addressCountry: practice.address.country,
+    },
+    'geo': {
+      '@type': 'GeoCoordinates',
+      latitude: practice.coordinates.lat,
+      longitude: practice.coordinates.lng,
+    },
+    'openingHoursSpecification': practice.hours
+      .filter((h) => h.open !== null && h.close !== null)
+      .map((h) => ({
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: h.day,
+        opens: h.open,
+        closes: h.close,
+      })),
+  },
+}
+
 import { site, siteUrl } from '../data/site'
 
 useSeoMeta({
@@ -31,6 +76,9 @@ useSeoMeta({
 })
 
 useHead({
+  script: [
+    { type: 'application/ld+json', innerHTML: JSON.stringify(jsonLd) },
+  ],
   link: [
     { rel: 'canonical', href: `${siteUrl}/` },
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
