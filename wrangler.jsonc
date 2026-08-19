@@ -17,18 +17,22 @@
     "binding": "ASSETS"
   },
 
-  // No *.workers.dev origin in production. It would be a second crawlable
-  // copy of the site competing with the canonical domain, and zone-level
-  // rules (WAF, caching, redirects) don't apply to workers.dev hostnames.
-  "workers_dev": false,
-  // preview_urls defaults to whatever workers_dev is, so it has to be set
-  // back on explicitly — per-version preview URLs stay available for checking
-  // a deploy without exposing a permanent second production origin.
-  "preview_urls": true,
-
-  "routes": [
-    { "pattern": "drdeeshadental.com", "custom_domain": true }
-  ],
+  // Routing is deliberately NOT declared here. drdeeshadental.com is a client
+  // domain whose zone lives outside this Cloudflare account, so wrangler
+  // cannot bind it as a custom domain — it fails with "Could not find zone
+  // for drdeeshadental.com" and the deploy aborts.
+  //
+  // workers_dev is left at its default (true) for the same reason. With the
+  // apex unbindable from here, the *.workers.dev hostname is likely how
+  // traffic actually reaches the Worker (client DNS pointing at it, or
+  // Cloudflare for SaaS), so turning it off would take production down on an
+  // otherwise green deploy. Whether it can be disabled depends on how the
+  // client's zone is wired to this Worker — worth settling separately, since
+  // an open workers.dev origin is a second crawlable copy of the site that
+  // no zone-level WAF or caching rule covers.
+  //
+  // Until then domain and route bindings stay dashboard-managed, which is how
+  // they worked before this file existed.
 
   "observability": {
     "enabled": true
