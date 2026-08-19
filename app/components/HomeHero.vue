@@ -519,23 +519,7 @@ onUnmounted(() => {
      transition on top would just lag it. Nothing recomputes while the row is
      at rest (tick returns early), so this costs nothing until a drag. */
   aspect-ratio: 1 / 1;
-}
 
-/* Mobile shows one card holding most of the frame with its neighbours
-   peeking in either side — the arch needs six cards across to read, and a
-   phone can only fit two at a legible size. Desktop keeps the dvh-capped
-   clamp so the row can't outgrow a short laptop. */
-.hero-root {
-  --card-w: min(72vw, 46dvh);
-}
-
-@media (min-width: 1024px) {
-  .hero-root {
-    --card-w: clamp(9.5rem, min(26vw, 33dvh), 40rem);
-  }
-}
-
-.hero-card {
   /* Set once here rather than per-frame in applyArc — the transform string
      it writes carries no origin. Top-anchored: the perspective projects a
      card about its origin, so with a centre origin the deep middle cards
