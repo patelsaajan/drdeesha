@@ -17,8 +17,7 @@
   <section
     id="home"
     ref="heroRoot"
-    class="hero-root sticky top-0 z-0 flex min-h-dvh flex-col items-center gap-6 overflow-hidden bg-background pb-28 lg:gap-8 lg:pb-8"
-    style="padding-top: clamp(4rem, 9dvh, 6rem)"
+    class="hero-root sticky top-0 z-0 flex min-h-dvh flex-col items-center gap-6 overflow-hidden bg-background pt-[clamp(4rem,9dvh,6rem)] pb-28 lg:gap-8 lg:pb-8"
   >
     <div class="flex w-full shrink-0 flex-col items-center gap-5 px-6 text-center">
       <!-- Accent pill. Text is primary, not white: accent sits at ~2:1 against
@@ -28,8 +27,7 @@
       </p>
 
       <h1
-        class="hero-rise m-0 max-w-3xl shrink-0 font-serif font-normal leading-heading tracking-heading text-foreground"
-        style="font-size: clamp(2rem, min(5vw, 7dvh), 4rem)"
+        class="hero-rise m-0 max-w-3xl shrink-0 font-serif text-[clamp(2rem,min(5vw,7dvh),4rem)] font-normal leading-heading tracking-heading text-foreground"
       >
         Feel confident in your smile
       </h1>
@@ -54,8 +52,7 @@
          the centring the flex-1 band is doing. -->
     <div
       ref="viewport"
-      class="hero-rise flex w-full flex-1 items-center overflow-hidden cursor-grab active:cursor-grabbing"
-      style="padding-block: calc(var(--card-w) * 0.045)"
+      class="hero-rise flex w-full flex-1 items-center overflow-hidden py-[calc(var(--card-w)*0.045)] cursor-grab active:cursor-grabbing"
     >
       <div ref="track" class="flex w-max items-start gap-[9px] will-change-transform lg:gap-3" :style="{ marginBottom: `${-deadSpace}px` }">
         <!-- One photograph per card, chosen by its slot in PATTERN — each

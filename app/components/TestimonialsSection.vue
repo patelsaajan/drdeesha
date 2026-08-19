@@ -8,7 +8,7 @@
       <p class="reveal font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
         Kind words
       </p>
-      <h2 class="reveal mt-4 font-serif font-normal leading-heading tracking-heading" style="font-size: clamp(2rem, 4vw, 3.25rem)">
+      <h2 class="reveal mt-4 font-serif text-[clamp(2rem,4vw,3.25rem)] font-normal leading-heading tracking-heading">
         What patients say about me.
       </h2>
 
@@ -59,7 +59,7 @@
           <p class="reveal font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
             Kind words
           </p>
-          <h2 class="reveal mt-4 font-serif font-normal leading-heading tracking-heading" style="font-size: clamp(2rem, 4vw, 3.25rem)">
+          <h2 class="reveal mt-4 font-serif text-[clamp(2rem,4vw,3.25rem)] font-normal leading-heading tracking-heading">
             What patients say about me.
           </h2>
         </div>

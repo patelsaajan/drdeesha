@@ -27,7 +27,7 @@
             <p class="reveal font-display text-xs font-semibold uppercase tracking-eyebrow text-white/70">
               Get in touch
             </p>
-            <p class="reveal mt-5 font-serif font-normal leading-heading tracking-heading text-white" style="font-size: clamp(2rem, 4vw, 3.25rem)">
+            <p class="reveal mt-5 font-serif text-[clamp(2rem,4vw,3.25rem)] font-normal leading-heading tracking-heading text-white">
               Let's find you a time.
             </p>
             <p class="reveal mt-5 max-w-md font-display text-base font-light leading-relaxed text-white/75">

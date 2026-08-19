@@ -22,7 +22,7 @@
             <p class="m-0 font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
               About
             </p>
-            <h2 class="m-0 mt-5 max-w-xl font-serif font-normal leading-heading tracking-heading" style="font-size: clamp(2rem, 3vw, 2.75rem)">
+            <h2 class="m-0 mt-5 max-w-xl font-serif text-[clamp(2rem,3vw,2.75rem)] font-normal leading-heading tracking-heading">
               The details, if you want them.
             </h2>
           </header>
@@ -47,9 +47,8 @@
                   0{{ i + 1 }}
                 </span>
                 <span
-                  class="font-serif font-normal leading-snug tracking-heading transition-colors duration-300"
+                  class="font-serif text-[clamp(1.15rem,1.6vw,1.45rem)] font-normal leading-snug tracking-heading transition-colors duration-300"
                   :class="i === active ? 'text-foreground' : 'text-foreground/35 group-hover:text-foreground/60'"
-                  style="font-size: clamp(1.15rem, 1.6vw, 1.45rem)"
                 >
                   {{ topic.label }}
                 </span>
@@ -72,7 +71,7 @@
               <p class="m-0 font-display text-2xs font-semibold uppercase tracking-label text-foreground/50">
                 {{ topic.hint }}
               </p>
-              <h3 class="m-0 mt-4 max-w-xl font-serif font-normal leading-snug tracking-heading" style="font-size: clamp(1.6rem, 2.4vw, 2.25rem)">
+              <h3 class="m-0 mt-4 max-w-xl font-serif text-[clamp(1.6rem,2.4vw,2.25rem)] font-normal leading-snug tracking-heading">
                 {{ topic.heading }}
               </h3>
               <p
@@ -111,7 +110,7 @@
         <p class="m-0 font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
           About
         </p>
-        <h2 class="m-0 mt-5 font-serif font-normal leading-heading tracking-heading" style="font-size: clamp(2rem, 4vw, 3rem)">
+        <h2 class="m-0 mt-5 font-serif text-[clamp(2rem,4vw,3rem)] font-normal leading-heading tracking-heading">
           The details, if you want them.
         </h2>
       </header>
@@ -127,7 +126,7 @@
               0{{ i + 1 }}
             </span>
             <h3 class="m-0 min-w-0">
-              <span class="block font-serif font-normal leading-snug tracking-heading" style="font-size: clamp(1.35rem, 2.4vw, 1.9rem)">
+              <span class="block font-serif text-[clamp(1.35rem,2.4vw,1.9rem)] font-normal leading-snug tracking-heading">
                 {{ topic.label }}
               </span>
               <span class="mt-2 block font-display text-2xs font-semibold uppercase tracking-label text-foreground/50">

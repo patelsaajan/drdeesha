@@ -5,7 +5,7 @@
       <p class="reveal font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
         Experience
       </p>
-      <h2 class="reveal mt-5 font-serif font-normal leading-heading tracking-heading" style="font-size: clamp(2rem, 4vw, 3.25rem)">
+      <h2 class="reveal mt-5 font-serif text-[clamp(2rem,4vw,3.25rem)] font-normal leading-heading tracking-heading">
         The path here.
       </h2>
       <p class="reveal mt-4 max-w-md font-display text-base font-light leading-relaxed text-foreground/65">

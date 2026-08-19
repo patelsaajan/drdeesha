@@ -121,8 +121,7 @@
 
   <nav
     aria-label="Sections"
-    class="fixed inset-x-4 z-40 lg:hidden"
-    style="bottom: calc(1rem + env(safe-area-inset-bottom, 0px))"
+    class="fixed inset-x-4 bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] z-40 lg:hidden"
   >
     <div class="menu-fold grid" :class="menuOpen && 'is-open'">
       <div class="min-h-0 overflow-hidden">
