@@ -85,6 +85,7 @@
             quality="82"
             draggable="false"
             :loading="i <= SLOTS_PER_COPY ? 'eager' : 'lazy'"
+            :fetchpriority="LCP_CARDS.has(i) ? 'high' : undefined"
             class="pointer-events-none absolute inset-0 h-full w-full object-cover"
           />
         </div>
@@ -136,6 +137,15 @@ const PATTERN = [
   { k: 1.08, src: '/images/hero/smiling-patient.webp', alt: 'Dr Deesha and a patient grinning side by side in the surgery' }, // outermost — normal
 ]
 const SLOTS_PER_COPY = PATTERN.length
+
+// First-copy cards whose photograph can be the LCP element, marked
+// fetchpriority=high so the browser fetches them ahead of the rest of the
+// eager set instead of at default image priority. Card 1 (slot 0) is what a
+// phone shows at first paint before the row is re-parked; cards 3 and 4 are
+// the tall centrals — the largest cards on desktop, and slot 3 is also the
+// card mobile anchors on once buildMarquee runs. Every later copy repeats
+// these same six URLs, so boosting the first copy covers them all.
+const LCP_CARDS = new Set([1, 3, 4])
 
 // Slot 2|3 is the seam the arch is centred on, so a slot's distance from the
 // centre line, in card widths, is its offset from 2.5.
