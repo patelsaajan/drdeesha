@@ -53,9 +53,19 @@
   }
 
   /* In-page anchors (footer section links, #contact) glide like the nav's
-     scrollIntoView jumps rather than teleporting. */
+     scrollIntoView jumps rather than teleporting.
+
+     Gated on the [data-scroll-ready] flag the scroll-restore plugin sets once
+     the page has finished measuring, because during load smooth is actively
+     harmful: the browser does its own scroll work then — restoring where you
+     were on a reload, or jumping to a #hash — and with smooth on, that becomes
+     an *animation*, which the browser abandons the instant the document's
+     height changes underneath it. ScrollTrigger's pin spacers add roughly four
+     viewports of height on mount, so every reload from below the fold had its
+     restore killed a few hundred pixels in and dumped you back on the hero.
+     An instant scroll has nothing to abandon. */
   @media (prefers-reduced-motion: no-preference) {
-    html {
+    html[data-scroll-ready] {
       scroll-behavior: smooth;
     }
   }
