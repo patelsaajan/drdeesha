@@ -135,13 +135,12 @@
           <li v-for="(section, i) in sections" :key="section.id">
             <button
               type="button"
-              class="menu-item flex min-h-11 w-full cursor-pointer items-center justify-between rounded-md px-4 font-display text-2xs font-semibold uppercase tracking-label"
+              class="menu-item flex min-h-11 w-full cursor-pointer items-center rounded-md px-4 font-display text-2xs font-semibold uppercase tracking-label"
               :class="section.id === current.id ? 'bg-primary/12 text-primary' : 'text-foreground/60'"
               :style="{ transitionDelay: menuStagger(i) }"
               @click="jumpTo(section.id)"
             >
               {{ section.label }}
-              <span v-if="section.id === current.id" aria-hidden="true" class="h-1 w-1 rounded-full bg-accent" />
             </button>
           </li>
         </ul>
