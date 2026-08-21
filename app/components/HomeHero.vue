@@ -43,9 +43,28 @@
            rather than leaving a long first line over a stub; it's inert on
            the single-line widths above. -->
       <h1
-        class="hero-rise m-0 max-w-4xl shrink-0 text-balance font-serif text-[clamp(2rem,min(5vw,7dvh),4rem)] font-normal leading-heading tracking-heading text-foreground"
+        class="hero-title hero-rise max-w-4xl shrink-0 text-balance font-serif text-[clamp(2rem,min(5vw,7dvh),4rem)] font-normal leading-heading tracking-heading text-foreground"
       >
-        Feel confident in <span class="whitespace-nowrap">your <span class="hero-smile italic">smile</span></span>
+        <!-- No whitespace between "smile" and the <svg>: an inline-block
+             absorbs a text node between its children into its own width, and
+             the h1's accessible name would gain the same stray space. The
+             markup therefore breaks between attributes, never between tags.
+
+             The stroke is the ∪ the carousel below already draws — the tall
+             centrals are top-anchored, so the row's bottom edge dips lowest
+             in the middle — bowed the same way and off-centre to the right,
+             so the two read as the same gesture at two scales. -->
+        Feel confident in <span class="whitespace-nowrap">your <span class="hero-smile italic">smile<svg
+          class="hero-swash"
+          viewBox="0 0 120 18"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+          focusable="false"
+        ><path
+          class="hero-swash-line"
+          pathLength="1"
+          d="M1.8 5.2C24 13.4 50 15.6 72 15 89.6 14.52 106 10.2 118 2.6"
+        /></svg></span></span>
       </h1>
 
       <p class="hero-rise m-0 max-w-xl shrink-0 font-serif text-base font-normal leading-relaxed text-foreground/70 lg:text-lg">
@@ -460,6 +479,22 @@ function playIntro() {
       { autoAlpha: 0, y: 26 },
       { autoAlpha: 1, y: 0, duration: 1.05, ease: 'expo.out', stagger: 0.09 },
     )
+
+    // The swash is the last beat, drawn on only once the heading it marks has
+    // arrived — emphasis has to land on something already read, or it is just
+    // one more element flying in. The h1 is the second .hero-rise element so
+    // it starts at 0.09s, and expo.out spends ~95% of its travel in the first
+    // third of the tween: the heading is visually at rest around 0.5s, well
+    // inside this delay. 0.75s still overlaps the CTA (last off the line, at
+    // 0.36s), so the entrance runs on into the stroke rather than stopping
+    // and starting again.
+    //
+    // The ease is in-out rather than out: a brush stroke loads, travels, lifts.
+    gsap.fromTo(
+      '.hero-swash-line',
+      { strokeDashoffset: 1 },
+      { strokeDashoffset: 0, duration: 0.8, ease: 'power1.inOut', delay: 0.75 },
+    )
   }, el)
 }
 
@@ -521,24 +556,77 @@ onUnmounted(() => {
   user-select: none;
 }
 
-/* The emphasised word in the h1. Set apart by an amber rule rather than
-   amber ink: as a text colour the token is unusable here — #F5A623 measures
-   2.03:1 against the white hero, well under AA's 3:1 for large text, and
-   muddying it toward the foreground until it passes costs the amber its own
-   identity. As decoration it carries no contrast obligation at all, so the
-   token stays exactly as the pill above the heading already uses it, and the
-   word keeps the h1's own 17.7:1 ink.
+/* How far the swash reaches below the h1's own box. It is the svg's height
+   and the h1's bottom margin at once, which is the whole point of naming it:
+   the swash is out of flow, so without a matching margin it would hang into
+   the column's gap-5 and close most of it — 15.7px of a 20px gap on a
+   1440x800 laptop, where the heading resolves to 56px. Reserving the drop
+   puts the flex gap back where it was designed to sit, measured from the
+   bottom of the mark rather than the bottom of the type, and because it is
+   in em it tracks the heading's clamp with no breakpoints of its own.
 
-   Both metrics are in em so the rule tracks the clamp — ~1.9px thick at the
-   2rem floor, ~3.8px at the 4rem ceiling. The offset is deliberately
-   generous: tucked closer, the rule crowds the hairline strokes Bodoni's
-   italic carries down onto the baseline, and at this size that reads as a
-   printing fault rather than as an underline. */
+   Declared here and inherited down to the svg, where the same em resolves
+   against the same inherited font-size, so the two can never drift apart. */
+.hero-title {
+  --hero-swash-drop: 0.28em;
+
+  /* Owns its margins outright rather than carrying Tailwind's m-0, which
+     would otherwise be competing with this rule for margin-bottom. */
+  margin: 0 0 var(--hero-swash-drop);
+}
+
+/* The emphasised word in the h1. Set apart by a hand-drawn amber swash
+   rather than amber ink: as a text colour the token is unusable here —
+   #F5A623 measures 2.03:1 against the white hero, well under AA's 3:1 for
+   large text, and muddying it toward the foreground until it passes costs
+   the amber its own identity. As decoration the stroke carries no contrast
+   obligation at all, so the token ships exactly as the pill above the
+   heading already uses it, and the word keeps the h1's own 17.7:1 ink.
+
+   inline-block purely to give the absolutely positioned swash a box to pin
+   to. It costs nothing typographically: an inline-block aligns on its last
+   line's baseline, so the word still sits on the heading's baseline, and the
+   whitespace-nowrap parent keeps "your smile" unbreakable either way. */
 .hero-smile {
-  text-decoration: underline;
-  text-decoration-color: var(--color-accent);
-  text-decoration-thickness: 0.06em;
-  text-underline-offset: 0.18em;
+  position: relative;
+  display: inline-block;
+}
+
+/* Sized off the word rather than given a fixed width, so it spans however
+   wide "smile" renders — at any step of the clamp, in any browser's Bodoni
+   fallback. The extra 0.18em lets it overrun the glyphs a touch at each end:
+   a stroke stopping dead on the word's edges reads as a measured rule, which
+   is the thing we just took out.
+
+   The width has to be stated. An <svg> with a viewBox is a replaced element
+   with an intrinsic aspect ratio, and for an absolutely positioned replaced
+   box `width: auto` takes the intrinsic width and drops `right` as
+   over-constrained — pinning both insets silently gave a swash sized 120:18
+   off its height instead, 104px under a 125px word at the 56px heading a
+   1440x800 laptop resolves to.
+
+   preserveAspectRatio="none" is deliberate. It decouples the two axes, so
+   the apparent thickness of a near-horizontal stroke is governed by the Y
+   scale alone, and an em height therefore thickens the stroke with the
+   heading for free: 3.4 user units of an 18-unit viewBox is 0.053em, so
+   1.7px at the clamp's 2rem floor and 3.4px at its 4rem ceiling — near
+   enough the rule it replaces. The distortion that normally rules this out
+   never bites here. "smile" measures 2.23em, so the box is 2.41em over 120
+   units against 0.28em over 18: the X scale runs 1.29x the Y scale at every
+   step of the clamp, and the path never climbs past ~32 degrees, so the ends
+   come out ~6% thicker than the belly rather than visibly swollen. */
+.hero-swash {
+  position: absolute;
+  top: 100%;
+  left: -0.09em;
+  width: calc(100% + 0.18em);
+  height: var(--hero-swash-drop);
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 3.4;
+  /* Round caps do most of the work of reading as drawn rather than plotted —
+     they land as the lift at either end of a brush stroke. */
+  stroke-linecap: round;
 }
 
 /* Mobile shows one card holding most of the frame with its neighbours
@@ -580,6 +668,18 @@ onUnmounted(() => {
 @media (prefers-reduced-motion: no-preference) {
   .hero-rise {
     opacity: 0;
+  }
+
+  /* The swash's half of the same contract. pathLength="1" renormalises the
+     path to a single unit, so one dash of length 1 covers all of it and an
+     offset of 1 pushes it entirely off the end — no getTotalLength() call,
+     and no dependence on the d attribute's real arc length. playIntro draws
+     it on by pulling the offset back to 0. Reduced-motion visitors never
+     match this block and get the finished swash at first paint, which is
+     exactly the state playIntro leaves alone when it returns early. */
+  .hero-swash-line {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
   }
 }
 </style>
