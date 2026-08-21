@@ -165,9 +165,9 @@ import { practice } from '../data/contact'
 // the eye lands on before it reads outward, so they carry the photographs
 // that do the most work — and the practice's other moments fill the arch
 // around them. Which of the two sits left and which right is not
-// interchangeable: buildMarquee's mobile anchor parks on the *right* central
-// (floor(SLOTS_PER_COPY / 2)), so that slot is the single card a phone shows
-// holding the frame, while desktop centres the seam between the two.
+// interchangeable: buildMarquee's mobile anchor parks on the *left* central
+// (MOBILE_ANCHOR_SLOT), so that slot is the single card a phone shows holding
+// the frame, while desktop centres the seam between the two.
 //
 // Fixed to the cards rather than recomputed against the screen each frame, so
 // the arch travels with the row when it's dragged instead of the cards
@@ -188,13 +188,19 @@ const PATTERN = [
 ]
 const SLOTS_PER_COPY = PATTERN.length
 
+// The slot a phone parks on — the card left holding the frame once
+// buildMarquee runs, with its neighbours peeking in either side. It's the
+// left of the two tall centrals, so the seam desktop centres on sits just to
+// its right and the pair stays the pair on both layouts.
+const MOBILE_ANCHOR_SLOT = 2
+
 // First-copy cards whose photograph can be the LCP element, marked
 // fetchpriority=high so the browser fetches them ahead of the rest of the
 // eager set instead of at default image priority. Card 1 (slot 0) is what a
 // phone shows at first paint before the row is re-parked; cards 3 and 4 are
-// the tall centrals — the largest cards on desktop, and slot 3 is also the
-// card mobile anchors on once buildMarquee runs. Every later copy repeats
-// these same six URLs, so boosting the first copy covers them all.
+// the tall centrals — the largest cards on desktop, and card 3 (slot 2) is
+// also the card mobile anchors on once buildMarquee runs. Every later copy
+// repeats these same six URLs, so boosting the first copy covers them all.
 const LCP_CARDS = new Set([1, 3, 4])
 
 // Slot 2|3 is the seam the arch is centred on, so a slot's distance from the
@@ -464,7 +470,7 @@ async function buildMarquee() {
   // the arch sits symmetrically about it. Mobile lands a card's own centre
   // there instead — with one card holding the frame, a seam would split the
   // view between two half-cards.
-  const anchor = isDesktop.value ? (SLOTS_PER_COPY - 1) / 2 : Math.floor(SLOTS_PER_COPY / 2)
+  const anchor = isDesktop.value ? (SLOTS_PER_COPY - 1) / 2 : MOBILE_ANCHOR_SLOT
   const aligned = half - cardW / 2 - anchor * step
   posMax = aligned - Math.round((aligned - base) / copyW) * copyW
   pos = posMax
