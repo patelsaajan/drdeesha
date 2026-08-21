@@ -186,7 +186,7 @@
 import gsap from 'gsap'
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin'
 import { practice } from '../data/contact'
-import { siteSections as sections } from '../data/sections'
+import { sectionAnchors, siteSections as sections } from '../data/sections'
 
 const currentId = ref(sections[0]!.id)
 const current = computed(() => sections.find(s => s.id === currentId.value) ?? sections[0]!)
@@ -287,6 +287,12 @@ function onKeydown(e: KeyboardEvent) {
 
 let observer: IntersectionObserver | undefined
 
+// Ids of the blocks currently crossing the pivot, held across callbacks: an
+// observer only reports the entries whose state *changed* on that tick, so a
+// block that entered the pivot several ticks ago is absent from later batches
+// and can't be re-derived from them.
+const crossing = new Set<string>()
+
 onMounted(() => {
   gsap.registerPlugin(ScrollToPlugin)
 
@@ -300,21 +306,36 @@ onMounted(() => {
   window.addEventListener('resize', measureTick)
   window.addEventListener('keydown', onKeydown)
 
-  const els = sections
-    .map(s => document.getElementById(s.id))
+  const els = sectionAnchors
+    .map(a => document.getElementById(a.id))
     .filter((el): el is HTMLElement => !!el)
 
-  // Whichever section crosses a thin band through the viewport's vertical
-  // centre is "current" — a standard scrollspy pivot, rather than reacting
-  // to any part of a (often very tall) section merely being on screen.
+  // Scrollspy pivot: a sliver of viewport at the vertical centre, so a block
+  // becomes current as it crosses the middle of the screen rather than merely
+  // for having some part of a (often very tall) section on screen. The sliver
+  // is 1% rather than zero-height because a zero-area intersection is not
+  // reliably reported as one.
   observer = new IntersectionObserver(
     (entries) => {
-      const visible = entries.filter(e => e.isIntersecting)
-      if (visible.length === 0) return
-      const topmost = visible.reduce((a, b) => (a.boundingClientRect.top < b.boundingClientRect.top ? a : b))
-      currentId.value = topmost.target.id
+      for (const entry of entries) {
+        if (entry.isIntersecting) crossing.add(entry.target.id)
+        else crossing.delete(entry.target.id)
+      }
+
+      // Furthest down the page wins — not whichever rect sits highest in the
+      // viewport. The hero is sticky and stays pinned at top:0 for the whole
+      // page, so it crosses the pivot the entire way down and its rect is
+      // always the topmost one; picking by position pinned the label to Home
+      // until a section had scrolled clean off the top of the screen. Page
+      // order has no such ambiguity: where two blocks meet, both cross the
+      // pivot for an instant and the one being scrolled *into* is the later.
+      const active = sectionAnchors.reduce<string | null>(
+        (found, a) => (crossing.has(a.id) ? a.navId : found),
+        null,
+      )
+      if (active) currentId.value = active
     },
-    { rootMargin: '-45% 0px -45% 0px', threshold: 0 },
+    { rootMargin: '-50% 0px -49% 0px', threshold: 0 },
   )
   els.forEach(el => observer!.observe(el))
 })

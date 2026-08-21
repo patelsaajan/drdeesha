@@ -13,7 +13,11 @@
        tint so the two run on as one surface. White body copy clears AAA on
        it; the eyebrow is white/70 rather than white/60, which lands just
        under AA for its size. -->
+  <!-- id is for the nav's scrollspy only — this panel has no nav entry of its
+       own and reports as About (see `sectionAnchors`); without the tag the
+       spy has nothing to watch while this panel fills the screen. -->
   <section
+    id="meet"
     class="relative z-10 grid min-h-dvh w-full overflow-hidden lg:grid-cols-5"
     :style="{ backgroundColor: usePrimaryTint(90) }"
   >
