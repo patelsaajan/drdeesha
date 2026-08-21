@@ -30,6 +30,13 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  // Deploy target is Cloudflare Workers. The preset fixes the .output layout
+  // that wrangler.jsonc points at (server/index.mjs + public/), so the two
+  // files have to agree.
+  nitro: {
+    preset: 'cloudflare_module',
+  },
+
   // One static page, no per-request data: bake the HTML at build time so a
   // server deploy answers from the prerender cache instead of running SSR on
   // every request (and a static host just serves the file).
