@@ -102,9 +102,10 @@
       </div>
     </div>
 
-    <!-- Below lg: the open editorial stack. A pinned scroll-jack on a phone
-         is friction, not choreography, so the same content simply reads top
-         to bottom. -->
+    <!-- Below lg: the same content as an accordion. A pinned scroll-jack on
+         a phone is friction, not choreography — but four topics stacked open
+         is also a long scroll before the page moves on, so the labels and
+         hints stand as a scannable index and each body opens on demand. -->
     <div class="mx-auto max-w-5xl px-4 py-24 sm:px-6 lg:hidden">
       <header class="reveal max-w-2xl">
         <p class="m-0 font-display text-xs font-semibold uppercase tracking-eyebrow text-primary">
@@ -119,28 +120,62 @@
         <article
           v-for="(topic, i) in aboutTopics"
           :key="topic.id"
-          class="reveal border-t border-foreground/15 py-9"
+          class="reveal border-t border-foreground/15"
         >
-          <div class="flex items-baseline gap-4">
-            <span class="font-display text-xs font-semibold tracking-label text-primary tabular-nums">
-              0{{ i + 1 }}
-            </span>
-            <h3 class="m-0 min-w-0">
-              <span class="block font-serif text-[clamp(1.35rem,2.4vw,1.9rem)] font-normal leading-snug tracking-heading">
-                {{ topic.label }}
+          <!-- The whole row is the control, heading included: h3 > button is
+               the accordion pattern screen readers navigate by, and it keeps
+               the label a real heading rather than a styled span. -->
+          <h3 class="m-0">
+            <button
+              :id="`about-trigger-${topic.id}`"
+              type="button"
+              class="flex w-full cursor-pointer items-baseline gap-4 pt-8 pb-4 text-left outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset"
+              :aria-expanded="openId === topic.id"
+              :aria-controls="`about-panel-${topic.id}`"
+              @click="toggle(topic.id)"
+            >
+              <span class="font-display text-xs font-semibold tracking-label text-primary tabular-nums">
+                0{{ i + 1 }}
               </span>
-              <span class="mt-2 block font-display text-2xs font-semibold uppercase tracking-label text-foreground/50">
-                {{ topic.hint }}
+              <span class="min-w-0 flex-1">
+                <span class="block font-serif text-[clamp(1.35rem,2.4vw,1.9rem)] font-normal leading-snug tracking-heading">
+                  {{ topic.label }}
+                </span>
+                <span class="mt-2 block font-display text-2xs font-semibold uppercase tracking-label text-foreground/50">
+                  {{ topic.hint }}
+                </span>
               </span>
-            </h3>
-          </div>
-          <p
-            v-for="(para, n) in topic.body"
-            :key="n"
-            class="m-0 mt-4 font-sans text-base font-light leading-relaxed text-foreground/80"
+              <!-- Plus folding into a minus — the same two-bar pseudo-element
+                   device the mobile nav's menu glyph uses, so the page keeps
+                   one vocabulary for "this control is open". self-center, not
+                   baseline: it has no text of its own to sit a baseline on. -->
+              <span
+                class="about-glyph relative block size-3.5 shrink-0 self-center text-primary"
+                :class="openId === topic.id && 'is-open'"
+                aria-hidden="true"
+              />
+            </button>
+          </h3>
+
+          <div
+            :id="`about-panel-${topic.id}`"
+            role="region"
+            :aria-labelledby="`about-trigger-${topic.id}`"
+            class="about-panel grid"
+            :class="openId === topic.id && 'is-open'"
           >
-            {{ para }}
-          </p>
+            <div class="min-h-0 overflow-hidden">
+              <div class="pb-8">
+                <p
+                  v-for="(para, n) in topic.body"
+                  :key="n"
+                  class="m-0 mt-4 font-sans text-base font-light leading-relaxed text-foreground/80 first:mt-0"
+                >
+                  {{ para }}
+                </p>
+              </div>
+            </div>
+          </div>
         </article>
       </div>
     </div>
@@ -159,6 +194,17 @@ const STEP_DVH = 55
 
 const root = ref<HTMLElement | null>(null)
 const active = ref(0)
+
+// Mobile accordion. One open panel at a time is structural rather than
+// enforced: a single id is the entire state, so opening one closes the last
+// by construction and there is no set to keep consistent. Re-tapping the open
+// topic collapses it. Opens on the first topic, which both teaches the
+// affordance and matches where the desktop spotlight enters.
+const openId = ref<string | null>(aboutTopics[0]?.id ?? null)
+
+function toggle(id: string) {
+  openId.value = openId.value === id ? null : id
+}
 
 useSectionReveal(root, { stagger: 0.12 })
 
@@ -230,8 +276,63 @@ onUnmounted(() => {
   transition-delay: 90ms;
 }
 
+/* Accordion panel. The row grows 0fr -> 1fr with the content clipped inside
+   it — the same height device the mobile nav's menu fold uses, and for the
+   same reason: `height: auto` isn't animatable, and a fixed max-height would
+   either clip the longest topic or spend the tail of every transition
+   coasting through empty space. Content fades a beat behind the growth so a
+   half-open panel reads as arriving rather than as text sliced by the clip
+   line. */
+.about-panel {
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.about-panel.is-open {
+  grid-template-rows: 1fr;
+}
+.about-panel > div {
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.about-panel.is-open > div {
+  opacity: 1;
+  transition-delay: 90ms;
+}
+
+/* Plus folding into a minus: the horizontal bar is permanent, the vertical
+   one collapses into it. scaleY rather than a rotate so the two never sit
+   at an angle mid-transition — this reads as a state, not a spin. */
+.about-glyph::before,
+.about-glyph::after {
+  content: "";
+  position: absolute;
+  background: currentColor;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.about-glyph::before {
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 1.5px;
+  margin-top: -0.75px;
+}
+.about-glyph::after {
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1.5px;
+  margin-left: -0.75px;
+}
+.about-glyph.is-open::after {
+  transform: scaleY(0);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .about-slide {
+  .about-slide,
+  .about-panel,
+  .about-panel > div,
+  .about-glyph::before,
+  .about-glyph::after {
     transition: none;
   }
 }
