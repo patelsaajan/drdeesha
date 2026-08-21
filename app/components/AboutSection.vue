@@ -77,7 +77,7 @@
               <p
                 v-for="(para, n) in topic.body"
                 :key="n"
-                class="m-0 mt-5 max-w-xl font-display text-base font-light leading-relaxed text-foreground/80 lg:text-lg"
+                class="m-0 mt-5 max-w-xl font-sans text-base font-light leading-relaxed text-foreground/80 lg:text-lg"
               >
                 {{ para }}
               </p>
@@ -169,7 +169,7 @@
                 <p
                   v-for="(para, n) in topic.body"
                   :key="n"
-                  class="m-0 mt-4 font-display text-base font-light leading-relaxed text-foreground/80 first:mt-0"
+                  class="m-0 mt-4 font-sans text-base font-light leading-relaxed text-foreground/80 first:mt-0"
                 >
                   {{ para }}
                 </p>

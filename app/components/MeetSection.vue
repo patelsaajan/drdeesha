@@ -65,7 +65,7 @@
         BChD<span class="mx-1.5 text-accent">·</span>MChD<span class="mx-1.5 text-accent">·</span>BSc<span class="mx-1.5 text-accent">·</span>PgDip
       </p>
 
-      <p class="m-0 max-w-2xl font-display text-base font-light leading-relaxed text-white/85 lg:text-xl">
+      <p class="m-0 max-w-2xl font-sans text-base font-light leading-relaxed text-white/85 lg:text-xl">
         I'm a general dentist at {{ practice.name }} in {{ practice.location }},
         South Wales, offering a wide range of general and cosmetic treatments
         in a calm, welcoming environment. Whether it's your first appointment

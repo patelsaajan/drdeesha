@@ -9,7 +9,7 @@
         <h2 class="reveal mt-5 font-serif text-[clamp(2rem,4vw,3.25rem)] font-normal leading-heading tracking-heading">
           Smiles, up close.
         </h2>
-        <p class="reveal mt-4 font-display text-base font-light leading-relaxed text-foreground/65">
+        <p class="reveal mt-4 font-sans text-base font-light leading-relaxed text-foreground/65">
           A few of my recent cases. Open one to see the before, the after, and how I did it.
         </p>
       </header>
@@ -71,7 +71,7 @@
 
             <div class="case-swap relative" :class="i === 0 ? 'mt-1.5' : 'mt-1'">
               <div class="case-title">
-                <p v-if="i === 0" class="max-w-md font-display text-sm font-light leading-relaxed text-white/75">
+                <p v-if="i === 0" class="max-w-md font-sans text-sm font-light leading-relaxed text-white/75">
                   {{ study.summary }}
                 </p>
                 <p v-else class="font-serif text-xl leading-snug text-white">
@@ -123,7 +123,7 @@
       <template v-if="selected" #body>
         <LazyBeforeAfterSlider :before="selected.before" :after="selected.after" :label="selected.title" />
 
-        <p class="mt-7 font-display text-base font-light leading-relaxed text-foreground/75">
+        <p class="mt-7 font-sans text-base font-light leading-relaxed text-foreground/75">
           {{ selected.description }}
         </p>
 

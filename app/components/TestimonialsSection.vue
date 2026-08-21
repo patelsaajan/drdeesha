@@ -20,7 +20,14 @@
            read at a time: unclamped, the single longest review in the set
            sizes ALL eight, and a ~660-character one runs past 640px on a
            narrow screen. Ten lines caps the tallest at ~324px and every other
-           card follows it down. -->
+           card follows it down.
+           The cap is a line count, so it survived the quote moving from the
+           serif to font-sans: ten lines is ten lines whatever the family, and
+           the height it works out to comes from text-lg + leading-snug, not
+           from the face. What did change is how often it bites — Inter sets
+           wider than the Bodoni did at the same size, so a review now reaches
+           ten lines a little sooner and slightly more of the long ones end on
+           an ellipsis. That is the clamp doing its job, not a regression. -->
       <UCarousel
         v-slot="{ item }"
         :items="mobileTestimonials"
@@ -31,7 +38,7 @@
         @select="(i: number) => (slide = i)"
       >
         <article class="flex h-full select-none flex-col justify-between gap-2 rounded-xl border border-foreground/10 bg-background p-6">
-          <blockquote class="m-0 line-clamp-10 font-serif text-lg leading-snug text-foreground">
+          <blockquote class="m-0 line-clamp-10 font-sans text-lg leading-snug text-foreground">
             &ldquo;{{ item.quote }}&rdquo;
           </blockquote>
           <p class="m-0 text-right font-display text-sm font-semibold tracking-wide text-foreground">
@@ -82,7 +89,7 @@
               :key="`${item.id}-${j}`"
               class="testimonial-card flex min-h-53 shrink-0 flex-col justify-between gap-2 overflow-hidden rounded-xl border border-foreground/10 bg-background p-6 transition-all duration-300 hover:border-primary/20 hover:bg-primary/5 hover:shadow-card"
             >
-              <blockquote class="m-0 line-clamp-5 font-serif text-lg leading-snug text-foreground">
+              <blockquote class="m-0 line-clamp-5 font-sans text-lg leading-snug text-foreground">
                 &ldquo;{{ item.quote }}&rdquo;
               </blockquote>
               <p class="m-0 text-right font-display text-sm font-semibold tracking-wide text-foreground">
