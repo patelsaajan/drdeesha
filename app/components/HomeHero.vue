@@ -17,9 +17,9 @@
   <section
     id="home"
     ref="heroRoot"
-    class="hero-root sticky top-0 z-0 flex min-h-dvh flex-col items-center gap-6 overflow-hidden bg-background pt-[clamp(4rem,9dvh,6rem)] pb-28 lg:gap-8 lg:pb-8"
+    class="hero-root sticky top-0 z-0 flex min-h-dvh flex-col items-center gap-4 overflow-hidden bg-background pt-[clamp(4rem,9dvh,6rem)] pb-28 lg:gap-5 lg:pb-8"
   >
-    <div class="flex w-full shrink-0 flex-col items-center gap-5 px-6 text-center">
+    <div class="flex w-full shrink-0 flex-col items-center gap-3 px-6 text-center">
       <!-- Accent pill. Text is primary, not white: accent sits at ~2:1 against
            white and fails AA, where primary on accent is ~7.6:1. -->
       <p class="hero-rise m-0 shrink-0 rounded-lg bg-accent/70 px-4 py-1.5 font-display text-2xs font-semibold uppercase tracking-label text-primary">
@@ -502,9 +502,14 @@ function playIntro() {
     // and starting again.
     //
     // The ease is in-out rather than out: a brush stroke loads, travels, lifts.
+    // dasharray is set here as well as in the stylesheet, not instead of it.
+    // The stylesheet's copy is what hides the stroke before this tween's
+    // first frame; this one makes the tween self-sufficient, so a scoped
+    // style that fails to reach the path can only cost the pre-roll, never
+    // the animation itself.
     gsap.fromTo(
       '.hero-swash-line',
-      { strokeDashoffset: 1 },
+      { strokeDasharray: 1, strokeDashoffset: 1 },
       { strokeDashoffset: 0, duration: 0.8, ease: 'power1.inOut', delay: 0.75 },
     )
   }, el)
@@ -571,8 +576,9 @@ onUnmounted(() => {
 /* How far the swash reaches below the h1's own box. It is the svg's height
    and the h1's bottom margin at once, which is the whole point of naming it:
    the swash is out of flow, so without a matching margin it would hang into
-   the column's gap-5 and close most of it — 15.7px of a 20px gap on a
-   1440x800 laptop, where the heading resolves to 56px. Reserving the drop
+   the column's gap-3 and swallow it whole — the drop is 15.7px on a 1440x800
+   laptop, where the heading resolves to 56px, against a 12px gap. Reserving
+   the drop
    puts the flex gap back where it was designed to sit, measured from the
    bottom of the mark rather than the bottom of the type, and because it is
    in em it tracks the heading's clamp with no breakpoints of its own.
