@@ -52,8 +52,20 @@
 
              The stroke is the ∪ the carousel below already draws — the tall
              centrals are top-anchored, so the row's bottom edge dips lowest
-             in the middle — bowed the same way and off-centre to the right,
-             so the two read as the same gesture at two scales. -->
+             in the middle — bowed the same way, so the two read as the same
+             gesture at two scales.
+
+             One cubic, not two. The earlier pair met tangent-continuous but
+             not curvature-continuous: curvature stepped 52% across the join
+             at 60% of the way along, which on a stroke this thick reads as a
+             flat spot rather than as a curve. A single segment can't have a
+             join to give itself away, and these controls hold curvature to a
+             1.02x spread end to end — near-circular, so the eye finds nothing
+             to catch on. The belly sits centred as a consequence: even
+             curvature and an off-centre belly are mutually exclusive, and
+             smoothness won. What asymmetry is left is in the ends — 4.6 on
+             the left against 2.8 on the right, and controls that aren't
+             mirrored — so it still lifts unevenly like a drawn mark. -->
         Feel confident in <span class="whitespace-nowrap">your <span class="hero-smile italic">smile<svg
           class="hero-swash"
           viewBox="0 0 120 18"
@@ -63,7 +75,7 @@
         ><path
           class="hero-swash-line"
           pathLength="1"
-          d="M1.8 5.2C24 13.4 50 15.6 72 15 89.6 14.52 106 10.2 118 2.6"
+          d="M2 4.6C38.5 19 80.5 19 118 2.8"
         /></svg></span></span>
       </h1>
 
