@@ -107,12 +107,12 @@
              than recomputed against the screen, no card ever swaps image and
              a single <img> each is enough.
 
-             `sizes` is set at 2x the card's true slot on purpose. @nuxt/image
-             v2 derives srcset candidates from the vw breakpoints alone and
-             the `densities` option produced no 2x entries, so the widest
-             candidate was 276w — which Retina then upscaled into a soft
-             image. Overstating `sizes` is what gets a big-enough candidate
-             generated and picked. -->
+             Plain <img>, not <NuxtImg>: no image provider is configured, so
+             @nuxt/image emitted every srcset candidate pointing at the same
+             original file ("...webp 399w, ...webp 798w"). The markup looked
+             responsive and the phone still downloaded a 1200px master for a
+             ~280px slot. The widths below are real pre-generated files, so
+             the candidates now differ. -->
         <div
           v-for="i in cardCount"
           :key="i"
@@ -125,16 +125,16 @@
             backgroundColor: usePrimaryTint(50),
           }"
         >
-          <NuxtImg
-            :src="PATTERN[(i - 1) % SLOTS_PER_COPY]!.src"
+          <img
+            :src="`${PATTERN[(i - 1) % SLOTS_PER_COPY]!.src}-800.webp`"
+            :srcset="srcsetFor(PATTERN[(i - 1) % SLOTS_PER_COPY]!.src)"
+            :sizes="CARD_SIZES"
             :alt="i <= SLOTS_PER_COPY ? PATTERN[(i - 1) % SLOTS_PER_COPY]!.alt : ''"
-            sizes="28rem md:52vw"
-            quality="82"
             draggable="false"
-            :loading="i <= SLOTS_PER_COPY ? 'eager' : 'lazy'"
-            :fetchpriority="LCP_CARDS.has(i) ? 'high' : undefined"
+            :loading="isEager(i) ? 'eager' : 'lazy'"
+            :fetchpriority="isPriority(i) ? 'high' : undefined"
             class="pointer-events-none absolute inset-0 h-full w-full object-cover"
-          />
+          >
         </div>
       </div>
     </div>
@@ -179,12 +179,12 @@ import { practice } from '../data/contact'
 // where the last slot sits beside the first. Alts live here too, described
 // once per photograph on the first copy; later copies repeat as decoration.
 const PATTERN = [
-  { k: 1.08, src: '/images/hero/treatment-in-progress.webp', alt: 'Dr Deesha in loupes and mask, working on a reclined patient' }, // outermost — normal
-  { k: 0.95, src: '/images/hero/deesha-with-patient.webp', alt: 'Dr Deesha with a smiling patient in the treatment chair at Smart Smiles' }, // central — tall
-  { k: 1.34, src: '/images/hero/treatment-room.webp', alt: 'The treatment room mid-appointment, Dr Deesha and a nurse at work' }, // next to centre — shortest
-  { k: 1.34, src: '/images/hero/whitening-collection.webp', alt: 'A patient at the surgery door collecting a whitening kit' }, // central — tall
-  { k: 0.95, src: '/images/hero/patient-thumbs-up.webp', alt: 'A patient giving a thumbs up from the chair, Dr Deesha beside him' }, // next to centre — shortest
-  { k: 1.08, src: '/images/hero/smiling-patient.webp', alt: 'Dr Deesha and a patient grinning side by side in the surgery' }, // outermost — normal
+  { k: 1.08, src: '/images/hero/treatment-in-progress', alt: 'Dr Deesha in loupes and mask, working on a reclined patient' }, // outermost — normal
+  { k: 0.95, src: '/images/hero/deesha-with-patient', alt: 'Dr Deesha with a smiling patient in the treatment chair at Smart Smiles' }, // next to centre — shortest
+  { k: 1.34, src: '/images/hero/treatment-room', alt: 'The treatment room mid-appointment, Dr Deesha and a nurse at work' }, // central — tall
+  { k: 1.34, src: '/images/hero/whitening-collection', alt: 'A patient at the surgery door collecting a whitening kit' }, // central — tall
+  { k: 0.95, src: '/images/hero/patient-thumbs-up', alt: 'A patient giving a thumbs up from the chair, Dr Deesha beside him' }, // next to centre — shortest
+  { k: 1.08, src: '/images/hero/smiling-patient', alt: 'Dr Deesha and a patient grinning side by side in the surgery' }, // outermost — normal
 ]
 const SLOTS_PER_COPY = PATTERN.length
 
@@ -194,6 +194,19 @@ const SLOTS_PER_COPY = PATTERN.length
 // its right and the pair stays the pair on both layouts.
 const MOBILE_ANCHOR_SLOT = 2
 
+// Real widths per photograph, pre-generated (see hero-originals/). The card
+// is ~280-300 CSS px on a phone and ~260-370 on desktop; the 600w rung is
+// what a mid-range phone at DPR 1.75 actually needs, which is the common
+// case and the one that was previously served a 1200-2400px master.
+const WIDTHS = [400, 600, 800]
+const srcsetFor = (base: string) =>
+  WIDTHS.map(w => `${base}-${w}.webp ${w}w`).join(', ')
+
+// Matches --card-w below: min(72vw, 46dvh) on mobile, and a clamp that lands
+// around 26vw on desktop. Without this the browser assumes 100vw and picks
+// the 800w candidate on every phone.
+const CARD_SIZES = '(min-width: 1024px) 26vw, 72vw'
+
 // First-copy cards whose photograph can be the LCP element, marked
 // fetchpriority=high so the browser fetches them ahead of the rest of the
 // eager set instead of at default image priority. Card 1 (slot 0) is what a
@@ -202,6 +215,18 @@ const MOBILE_ANCHOR_SLOT = 2
 // also the card mobile anchors on once buildMarquee runs. Every later copy
 // repeats these same six URLs, so boosting the first copy covers them all.
 const LCP_CARDS = new Set([1, 3, 4])
+
+// buildMarquee parks the row START_COPIES in, so on mobile the card actually
+// holding the frame at first paint is this one — not card 1. It sits outside
+// the first copy, so the old "first copy is eager, everything else is lazy"
+// rule made the mobile LCP image lazy-loaded and undiscoverable until the
+// marquee had built and the browser had run an intersection check. That is
+// what PageSpeed flagged as LCP request discovery.
+const START_COPIES = 2
+const MOBILE_ANCHOR_CARD = START_COPIES * SLOTS_PER_COPY + MOBILE_ANCHOR_SLOT + 1
+
+const isEager = (i: number) => i <= SLOTS_PER_COPY || i === MOBILE_ANCHOR_CARD
+const isPriority = (i: number) => LCP_CARDS.has(i) || i === MOBILE_ANCHOR_CARD
 
 // Slot 2|3 is the seam the arch is centred on, so a slot's distance from the
 // centre line, in card widths, is its offset from 2.5.
@@ -272,6 +297,24 @@ function ringScale(psi: number) {
 }
 const ARC_LIMIT = 1.1
 
+
+// The LCP candidate, declared in the head so it is discoverable in the initial
+// HTML rather than only after the marquee has built and positioned the row.
+// This one photograph covers both breakpoints: it is the slot mobile parks on
+// and one of the two tall centrals on desktop.
+const LCP_IMAGE = PATTERN[MOBILE_ANCHOR_SLOT]!.src
+useHead({
+  link: [
+    {
+      rel: 'preload',
+      as: 'image',
+      href: `${LCP_IMAGE}-800.webp`,
+      imagesrcset: srcsetFor(LCP_IMAGE),
+      imagesizes: CARD_SIZES,
+      fetchpriority: 'high',
+    },
+  ],
+})
 
 const heroRoot = ref<HTMLElement | null>(null)
 const viewport = ref<HTMLElement | null>(null)
@@ -424,10 +467,9 @@ async function buildMarquee() {
   // edge cards give up — a few tens of pixels a side — and the two-copy
   // lead-in is twelve cards, orders of magnitude more than that. Plain copy
   // margins cover the bleed on both sides.
-  const startCopies = 2
   const need = Math.max(
     MIN_COPIES,
-    startCopies + 1 + Math.ceil(viewW / copyW),
+    START_COPIES + 1 + Math.ceil(viewW / copyW),
   )
   if (need !== copies.value) {
     copies.value = need
@@ -435,7 +477,7 @@ async function buildMarquee() {
     if (id !== buildId || !measure()) return
   }
 
-  // Park startCopies in, and let pos roam one copy width either side of that
+  // Park START_COPIES in, and let pos roam one copy width either side of that
   // before wrapping — the content repeats every copyW, so the wrap is
   // pixel-identical and invisible in both directions.
   //
@@ -465,7 +507,7 @@ async function buildMarquee() {
   copySpan = copyW
   // Land the seam between the two centrals on the centre line, so the arch
   // sits symmetrically about it rather than one card dead centre.
-  const base = -startCopies * copyW
+  const base = -START_COPIES * copyW
   // Desktop lands the seam between the two centrals on the centre line, so
   // the arch sits symmetrically about it. Mobile lands a card's own centre
   // there instead — with one card holding the frame, a seam would split the

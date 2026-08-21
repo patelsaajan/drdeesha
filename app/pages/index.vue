@@ -81,11 +81,16 @@ useHead({
   script: [
     { type: 'application/ld+json', innerHTML: JSON.stringify(jsonLd) },
   ],
+  // No Google Fonts link here. @nuxt/fonts (bundled with @nuxt/ui) already
+  // resolves Fraunces and Bodoni Moda from the font-family declarations in
+  // main.css and self-hosts them under /_fonts, with metric-compatible
+  // fallbacks generated alongside. The <link rel=stylesheet> was fetching
+  // both families a second time from a third-party origin, and because a
+  // stylesheet blocks rendering the browser had to open a connection to
+  // fonts.googleapis.com, parse the CSS, then go to fonts.gstatic.com for
+  // the files before it could paint anything at all.
   link: [
     { rel: 'canonical', href: `${siteUrl}/` },
-    { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-    { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
-    { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,600&family=Bodoni+Moda:opsz,wght@6..96,400;6..96,700&display=swap' },
   ],
 })
 </script>

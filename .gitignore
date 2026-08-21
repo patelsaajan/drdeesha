@@ -26,3 +26,7 @@ logs
 # Full-resolution case-study photography, kept locally as the source for the
 # aligned crops in public/images/cases (see app/data/cases.ts). Not shipped.
 case-originals
+
+# Full-resolution hero photography, kept locally as the source for the
+# right-sized variants in public/images/hero. Not shipped.
+hero-originals
