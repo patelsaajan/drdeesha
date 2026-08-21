@@ -55,7 +55,7 @@
          viewport; the CTA panel above absorbs that instead. Extra bottom
          room under lg so the docked mobile nav bar doesn't sit over the
          baseline links. -->
-    <div class="shrink-0 pb-36 lg:pb-20">
+    <div class="shrink-0 pb-28 lg:pb-20">
       <div class="mx-auto w-full max-w-6xl px-4 sm:px-6">
 
         <!-- Wordmark / section links / socials. One row at every width: on a
@@ -113,7 +113,7 @@
 
         <!-- Baseline: legal on the left, place on the right — the same
              name-dot-location line About signs off with. -->
-        <div class="reveal mt-8 flex flex-col gap-2 font-display text-xs uppercase tracking-label text-white/50 sm:flex-row sm:items-center sm:justify-between">
+        <div class="reveal mt-8 flex flex-col gap-2 font-display text-xs uppercase tracking-label text-white/50 sm:flex-row items-center sm:justify-between">
           <p>© {{ year }} Dr Deesha Dental. GDC no 309307.</p>
           <p class="flex items-center gap-3">
             {{ practice.name }}
