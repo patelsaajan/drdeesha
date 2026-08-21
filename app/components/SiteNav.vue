@@ -283,8 +283,10 @@ let observer: IntersectionObserver | undefined
 onMounted(() => {
   gsap.registerPlugin(ScrollToPlugin)
 
-  // First width measurement, then re-measure once webfonts land (Fraunces
-  // arriving after mount changes the label's rendered width). Also on resize:
+  // First width measurement, then re-measure once webfonts land. The chip's
+  // label is a nav label, so it stays on font-display — Fraunces is still the
+  // face whose late arrival changes the rendered width here, not the body
+  // sans. Also on resize:
   // the desktop pill is display:none under lg, where the measurer reports 0.
   measureTick()
   document.fonts?.ready.then(measureTick)
