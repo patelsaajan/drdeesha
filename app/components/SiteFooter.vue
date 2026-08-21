@@ -55,11 +55,15 @@
          viewport; the CTA panel above absorbs that instead. Extra bottom
          room under lg so the docked mobile nav bar doesn't sit over the
          baseline links. -->
-    <div class="shrink-0 pb-36 lg:pb-20">
+    <div class="shrink-0 pb-28 lg:pb-20">
       <div class="mx-auto w-full max-w-6xl px-4 sm:px-6">
 
-        <!-- Wordmark / section links / socials -->
-        <div class="mt-8 flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+        <!-- Wordmark / section links / socials. One row at every width: on a
+             phone the section links drop out (see below), so this is just
+             wordmark-left / socials-right; from lg the links reappear as the
+             middle item and justify-between spreads all three. gap-8 is only
+             the floor between items — justify-between supplies the rest. -->
+        <div class="mt-8 flex items-center justify-between gap-8">
           <!-- Brand mark — the same lockup as the hero, so the footer's
                signature matches how the page opened. Artwork is black ink
                on transparency; brightness-0 + invert repaints it white for
@@ -76,13 +80,12 @@
           </div>
 
           <!-- Way back into the page — same section list the top nav carries,
-               so the footer isn't a dead end after the CTA. Tighter gap
-               below sm: at 24px the four labels' combined width pushes
-               "Reviews" onto an orphan line on most phones; 16px keeps all
-               four on one row from ~360px up (the narrowest handful of
-               devices, ~320px, still wrap one word — an acceptable trade
-               against cramming the gap further). -->
-          <nav aria-label="Sections" class="reveal flex flex-wrap items-center gap-x-4 gap-y-2 sm:gap-x-6">
+               so the footer isn't a dead end after the CTA. Desktop only:
+               below lg the docked mobile nav bar already carries these exact
+               section jumps a thumb's reach away, so repeating them here only
+               bought a third stacked block of clutter — hidden rather than
+               deleted because the desktop footer has no such bar to lean on. -->
+          <nav aria-label="Sections" class="reveal hidden flex-wrap items-center gap-x-6 gap-y-2 lg:flex">
             <a
               v-for="link in sectionLinks"
               :key="link.id"
@@ -110,7 +113,7 @@
 
         <!-- Baseline: legal on the left, place on the right — the same
              name-dot-location line About signs off with. -->
-        <div class="reveal mt-8 flex flex-col gap-2 font-display text-xs uppercase tracking-label text-white/50 sm:flex-row sm:items-center sm:justify-between">
+        <div class="reveal mt-8 flex flex-col gap-2 font-display text-xs uppercase tracking-label text-white/50 sm:flex-row items-center sm:justify-between">
           <p>© {{ year }} Dr Deesha Dental. GDC no 309307.</p>
           <p class="flex items-center gap-3">
             {{ practice.name }}
