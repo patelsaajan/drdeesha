@@ -26,10 +26,26 @@
         New patients welcome
       </p>
 
+      <!-- Set in Bodoni Moda at tracking-heading the whole line measures
+           12.36em, so it needs 791px at the clamp's 4rem ceiling — more than
+           max-w-3xl's 768px, which is why every desktop from 1440px up was
+           wrapping a heading that had the room to sit on one line. max-w-4xl
+           (896px) clears the widest the line can ever get, and below 640px
+           the 5vw term does the work: the line only ever asks for 0.62 x the
+           viewport, always inside it.
+
+           Under ~449px it can't fit either way — the clamp floors at 2rem, so
+           the line wants 395px and no phone offers that — so it has to wrap,
+           and the job becomes wrapping it *well*. whitespace-nowrap binds
+           "your smile" into one unbreakable token: without it the greedy
+           break at 375-390px fits "Feel confident in your" and strands
+           "smile" alone on line two. text-balance then evens the two lines
+           rather than leaving a long first line over a stub; it's inert on
+           the single-line widths above. -->
       <h1
-        class="hero-rise m-0 max-w-3xl shrink-0 font-serif text-[clamp(2rem,min(5vw,7dvh),4rem)] font-normal leading-heading tracking-heading text-foreground"
+        class="hero-rise m-0 max-w-4xl shrink-0 text-balance font-serif text-[clamp(2rem,min(5vw,7dvh),4rem)] font-normal leading-heading tracking-heading text-foreground"
       >
-        Feel confident in your smile
+        Feel confident in <span class="whitespace-nowrap">your <span class="hero-smile italic">smile</span></span>
       </h1>
 
       <p class="hero-rise m-0 max-w-xl shrink-0 font-serif text-base font-normal leading-relaxed text-foreground/70 lg:text-lg">
@@ -503,6 +519,19 @@ onUnmounted(() => {
 .hero-card img {
   -webkit-user-drag: none;
   user-select: none;
+}
+
+/* The emphasised word in the h1. Deepened amber rather than raw
+   --color-accent: #F5A623 measures 2.03:1 against the white hero and misses
+   AA's 3:1 bar for large text. Mixed 75% toward --color-foreground it lands
+   at ~#B58033 — 3.43:1, comfortably clear — while its OKLCh hue holds at 73
+   degrees, exactly the accent's, so it still reads as the brand amber and not
+   as a brown. Deepening toward --color-primary the way the shadows do isn't
+   an option here: purple is amber's near-complement, so it takes a 78% mix to
+   reach 3:1 and by then the hue has swung to 59 degrees with the chroma
+   halved — clay, not amber. */
+.hero-smile {
+  color: color-mix(in oklab, var(--color-accent) 75%, var(--color-foreground));
 }
 
 /* Mobile shows one card holding most of the frame with its neighbours
