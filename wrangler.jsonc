@@ -1,0 +1,36 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "drdeesha",
+
+  // Nitro's cloudflare_module preset emits the server entry here and the
+  // prerendered/static files into .output/public. Both paths are fixed by the
+  // preset — they only exist if nuxt.config.ts sets nitro.preset accordingly.
+  "main": ".output/server/index.mjs",
+  "compatibility_date": "2026-08-19",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // Static assets are served straight from the edge without invoking the
+  // Worker. The home page is prerendered (routeRules in nuxt.config.ts), so
+  // the common request never reaches server code at all.
+  "assets": {
+    "directory": ".output/public",
+    "binding": "ASSETS"
+  },
+
+  // No *.workers.dev origin in production. It would be a second crawlable
+  // copy of the site competing with the canonical domain, and zone-level
+  // rules (WAF, caching, redirects) don't apply to workers.dev hostnames.
+  "workers_dev": false,
+  // preview_urls defaults to whatever workers_dev is, so it has to be set
+  // back on explicitly — per-version preview URLs stay available for checking
+  // a deploy without exposing a permanent second production origin.
+  "preview_urls": true,
+
+  "routes": [
+    { "pattern": "drdeeshadental.com", "custom_domain": true }
+  ],
+
+  "observability": {
+    "enabled": true
+  }
+}
