@@ -13,7 +13,11 @@
        tint so the two run on as one surface. White body copy clears AAA on
        it; the eyebrow is white/70 rather than white/60, which lands just
        under AA for its size. -->
+  <!-- id is for the nav's scrollspy only — this panel has no nav entry of its
+       own and reports as About (see `sectionAnchors`); without the tag the
+       spy has nothing to watch while this panel fills the screen. -->
   <section
+    id="meet"
     class="relative z-10 grid min-h-dvh w-full overflow-hidden lg:grid-cols-5"
     :style="{ backgroundColor: usePrimaryTint(90) }"
   >
@@ -25,12 +29,27 @@
       class="relative m-0 h-[44dvh] lg:col-span-2 lg:h-auto lg:min-h-dvh"
       :style="{ backgroundColor: usePrimaryTint(50) }"
     >
+      <!-- object-position Y is 5%, not the more usual 20-50%: the source
+           (1366x2048) already frames her tightly, with the crown of her head
+           only ~7% down from its top edge, so under object-cover the Y value
+           has very little headroom to spend. On a phone the frame is
+           100vw x 44dvh — wide and short — which keeps only ~64% of the
+           image's height (390x844), so the 36% that gets discarded is split by
+           this value: the old 20% pushed the frame's top edge to ~7.3% of the
+           source and shaved the crown. 5% lands it at ~1.8%, leaving a clear
+           band above her hair while the bottom edge still falls mid-torso,
+           well clear of chin and shoulders. On lg+ the frame is 40vw x
+           >=100dvh, i.e. taller than the source's 2:3, so cover scales to
+           height and crops horizontally instead — at 1440x900 there is no
+           vertical overflow at all and Y is inert; only very wide ratios
+           (>=16:9, ultrawide) reintroduce a little, where the low value is
+           right for the same reason. One value therefore serves both. -->
       <NuxtImg
         src="/images/about/portrait.webp"
         alt="Dr Deesha, smiling in a black roll-neck against a dark studio backdrop"
         sizes="100vw lg:40vw"
         loading="lazy"
-        class="absolute inset-0 h-full w-full object-cover object-[50%_20%]"
+        class="absolute inset-0 h-full w-full object-cover object-[50%_5%]"
       />
     </figure>
 
@@ -50,7 +69,7 @@
         BChD<span class="mx-1.5 text-accent">·</span>MChD<span class="mx-1.5 text-accent">·</span>BSc<span class="mx-1.5 text-accent">·</span>PgDip
       </p>
 
-      <p class="m-0 max-w-2xl font-display text-base font-light leading-relaxed text-white/85 lg:text-xl">
+      <p class="m-0 max-w-2xl font-sans text-base font-light leading-relaxed text-white/85 lg:text-xl">
         I'm a general dentist at {{ practice.name }} in {{ practice.location }},
         South Wales, offering a wide range of general and cosmetic treatments
         in a calm, welcoming environment. Whether it's your first appointment

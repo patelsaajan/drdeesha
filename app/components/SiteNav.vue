@@ -115,9 +115,9 @@
 
   <!-- Mobile: the same frosted pill, docked along the bottom edge where the
        thumb actually is. Menu holds the left edge and Book Now takes the
-       width to its right; tapping Menu unfolds the section list upward out of the bar,
-       items cascading in bottom-first — the vertical cousin of the desktop
-       unfurl. -->
+       width to its right; tapping Menu slides the section list up out of the
+       bar, items then inking in bottom-first — the vertical cousin of the
+       desktop unfurl. -->
   <div
     v-if="menuOpen"
     class="fixed inset-0 z-30 lg:hidden"
@@ -129,19 +129,25 @@
     aria-label="Sections"
     class="fixed inset-x-4 bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] z-40 lg:hidden"
   >
+    <!-- The fold is only a clip window: its row collapses to a real 0fr so a
+         closed menu costs no layout and no tap target, and its bottom edge is
+         welded to the bar's top, which is the line the sheet is cut off at
+         while it's still on its way up. The sheet is pinned to the *bottom*
+         of that window (flex + justify-end) rather than flowing from its top,
+         so the growing row can't drag it along: the sheet keeps its resting
+         place and its own transform owns every pixel of the travel. -->
     <div class="menu-fold grid" :class="menuOpen && 'is-open'">
-      <div class="min-h-0 overflow-hidden">
-        <ul id="mobile-menu" class="m-0 mb-2 list-none rounded-lg border border-black/8 bg-white/85 p-1.5 shadow-lift backdrop-blur-md">
+      <div class="flex min-h-0 flex-col justify-end overflow-hidden">
+        <ul id="mobile-menu" class="menu-sheet m-0 mb-2 shrink-0 list-none rounded-lg border border-black/8 bg-white/85 p-1.5 shadow-lift backdrop-blur-md">
           <li v-for="(section, i) in sections" :key="section.id">
             <button
               type="button"
-              class="menu-item flex min-h-11 w-full cursor-pointer items-center justify-between rounded-md px-4 font-display text-2xs font-semibold uppercase tracking-label"
+              class="menu-item flex min-h-11 w-full cursor-pointer items-center rounded-md px-4 font-display text-2xs font-semibold uppercase tracking-label"
               :class="section.id === current.id ? 'bg-primary/12 text-primary' : 'text-foreground/60'"
               :style="{ transitionDelay: menuStagger(i) }"
               @click="jumpTo(section.id)"
             >
               {{ section.label }}
-              <span v-if="section.id === current.id" aria-hidden="true" class="h-1 w-1 rounded-full bg-accent" />
             </button>
           </li>
         </ul>
@@ -180,7 +186,7 @@
 import gsap from 'gsap'
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin'
 import { practice } from '../data/contact'
-import { siteSections as sections } from '../data/sections'
+import { sectionAnchors, siteSections as sections } from '../data/sections'
 
 const currentId = ref(sections[0]!.id)
 const current = computed(() => sections.find(s => s.id === currentId.value) ?? sections[0]!)
@@ -207,8 +213,9 @@ function staggerDelay(i: number) {
   return `${(sections.length - 1 - i) * STAGGER_MS}ms`
 }
 
-// The mobile list grows out of the bar beneath it, so the cascade runs
-// bottom-first — the item nearest the bar lands first.
+// The mobile sheet travels up out of the bar beneath it, so the cascade runs
+// bottom-first — the item nearest the bar, the end the motion started from,
+// inks in first and the fill chases the sheet upward.
 function menuStagger(i: number) {
   if (!menuOpen.value || reduceMotion()) return '0ms'
   return `${(sections.length - 1 - i) * MENU_STAGGER_MS}ms`
@@ -280,32 +287,55 @@ function onKeydown(e: KeyboardEvent) {
 
 let observer: IntersectionObserver | undefined
 
+// Ids of the blocks currently crossing the pivot, held across callbacks: an
+// observer only reports the entries whose state *changed* on that tick, so a
+// block that entered the pivot several ticks ago is absent from later batches
+// and can't be re-derived from them.
+const crossing = new Set<string>()
+
 onMounted(() => {
   gsap.registerPlugin(ScrollToPlugin)
 
-  // First width measurement, then re-measure once webfonts land (Fraunces
-  // arriving after mount changes the label's rendered width). Also on resize:
+  // First width measurement, then re-measure once webfonts land. The chip's
+  // label is a nav label, so it stays on font-display — Fraunces is still the
+  // face whose late arrival changes the rendered width here, not the body
+  // sans. Also on resize:
   // the desktop pill is display:none under lg, where the measurer reports 0.
   measureTick()
   document.fonts?.ready.then(measureTick)
   window.addEventListener('resize', measureTick)
   window.addEventListener('keydown', onKeydown)
 
-  const els = sections
-    .map(s => document.getElementById(s.id))
+  const els = sectionAnchors
+    .map(a => document.getElementById(a.id))
     .filter((el): el is HTMLElement => !!el)
 
-  // Whichever section crosses a thin band through the viewport's vertical
-  // centre is "current" — a standard scrollspy pivot, rather than reacting
-  // to any part of a (often very tall) section merely being on screen.
+  // Scrollspy pivot: a sliver of viewport at the vertical centre, so a block
+  // becomes current as it crosses the middle of the screen rather than merely
+  // for having some part of a (often very tall) section on screen. The sliver
+  // is 1% rather than zero-height because a zero-area intersection is not
+  // reliably reported as one.
   observer = new IntersectionObserver(
     (entries) => {
-      const visible = entries.filter(e => e.isIntersecting)
-      if (visible.length === 0) return
-      const topmost = visible.reduce((a, b) => (a.boundingClientRect.top < b.boundingClientRect.top ? a : b))
-      currentId.value = topmost.target.id
+      for (const entry of entries) {
+        if (entry.isIntersecting) crossing.add(entry.target.id)
+        else crossing.delete(entry.target.id)
+      }
+
+      // Furthest down the page wins — not whichever rect sits highest in the
+      // viewport. The hero is sticky and stays pinned at top:0 for the whole
+      // page, so it crosses the pivot the entire way down and its rect is
+      // always the topmost one; picking by position pinned the label to Home
+      // until a section had scrolled clean off the top of the screen. Page
+      // order has no such ambiguity: where two blocks meet, both cross the
+      // pivot for an instant and the one being scrolled *into* is the later.
+      const active = sectionAnchors.reduce<string | null>(
+        (found, a) => (crossing.has(a.id) ? a.navId : found),
+        null,
+      )
+      if (active) currentId.value = active
     },
-    { rootMargin: '-45% 0px -45% 0px', threshold: 0 },
+    { rootMargin: '-50% 0px -49% 0px', threshold: 0 },
   )
   els.forEach(el => observer!.observe(el))
 })
@@ -368,15 +398,43 @@ onUnmounted(() => {
   opacity: 0;
 }
 
-/* Mobile menu: the sheet's row folds open (0fr -> 1fr) while the bar stays
-   bottom-anchored, so growth reads as unfolding upward. Items ride a small
-   fade/lift on a per-item delay for the cascade. */
+/* Mobile menu: the sheet slides up out of the bar instead of unfolding in
+   place. The two halves run on deliberately different clocks, and that gap is
+   the whole effect — a window and a sheet moving in lockstep would just be
+   the same animation drawn twice, which is exactly what a bare 0fr -> 1fr
+   fold looks like.
+   - `.menu-fold`'s row is the window. Opening, it runs shorter than the
+     sheet's climb, so its top edge is always ahead of the sheet's: the sheet
+     reads as a whole card with real rounded corners rising through open air,
+     never as a shape being unmasked. Closing, that lead reverses into a lag —
+     the row holds its size for a beat so it can't guillotine the sheet
+     halfway down, and collapses only once the sheet is back behind the bar.
+   - `.menu-sheet` starts one full height below its resting place, parked
+     behind the bar and cut off by the window's bottom edge, then rides up and
+     fades in. The tail of the ease is spent clearing the last few pixels off
+     the bar into the resting gap, so the sheet lands rather than just
+     stopping. */
 .menu-fold {
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: grid-template-rows 0.28s cubic-bezier(0.16, 1, 0.3, 1) 0.12s;
 }
 .menu-fold.is-open {
   grid-template-rows: 1fr;
+  transition: grid-template-rows 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.menu-sheet {
+  transform: translateY(100%);
+  opacity: 0;
+  transition:
+    transform 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.18s ease;
+}
+.menu-fold.is-open .menu-sheet {
+  transform: translateY(0);
+  opacity: 1;
+  transition:
+    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.22s ease;
 }
 .menu-item {
   opacity: 0;
@@ -428,7 +486,10 @@ onUnmounted(() => {
   .tick-up-leave-active,
   .tick-down-enter-active,
   .tick-down-leave-active,
+  /* !important outranks the open-state rules too, so the sheet and the fold
+     both snap between their two states with no travel. */
   .menu-fold,
+  .menu-sheet,
   .menu-item,
   .menu-glyph::before,
   .menu-glyph::after {
