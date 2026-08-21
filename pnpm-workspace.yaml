@@ -1,3 +1,17 @@
+# Single-package repo, but the file must declare `packages` — pnpm 10 (used by
+# the CI build image) errors with "packages field missing or empty" without it.
+packages:
+  - .
+
+# Build-script approvals. pnpm 10 reads `onlyBuiltDependencies`, pnpm 11 reads
+# `allowBuilds`; both are listed so CI and local installs behave identically.
+onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - esbuild
+  - sharp
+  - unrs-resolver
+  - vue-demi
+
 allowBuilds:
   '@parcel/watcher': true
   esbuild: true
