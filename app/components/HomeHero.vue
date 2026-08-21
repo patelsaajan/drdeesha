@@ -521,17 +521,24 @@ onUnmounted(() => {
   user-select: none;
 }
 
-/* The emphasised word in the h1. Deepened amber rather than raw
-   --color-accent: #F5A623 measures 2.03:1 against the white hero and misses
-   AA's 3:1 bar for large text. Mixed 75% toward --color-foreground it lands
-   at ~#B58033 — 3.43:1, comfortably clear — while its OKLCh hue holds at 73
-   degrees, exactly the accent's, so it still reads as the brand amber and not
-   as a brown. Deepening toward --color-primary the way the shadows do isn't
-   an option here: purple is amber's near-complement, so it takes a 78% mix to
-   reach 3:1 and by then the hue has swung to 59 degrees with the chroma
-   halved — clay, not amber. */
+/* The emphasised word in the h1. Set apart by an amber rule rather than
+   amber ink: as a text colour the token is unusable here — #F5A623 measures
+   2.03:1 against the white hero, well under AA's 3:1 for large text, and
+   muddying it toward the foreground until it passes costs the amber its own
+   identity. As decoration it carries no contrast obligation at all, so the
+   token stays exactly as the pill above the heading already uses it, and the
+   word keeps the h1's own 17.7:1 ink.
+
+   Both metrics are in em so the rule tracks the clamp — ~1.9px thick at the
+   2rem floor, ~3.8px at the 4rem ceiling. The offset is deliberately
+   generous: tucked closer, the rule crowds the hairline strokes Bodoni's
+   italic carries down onto the baseline, and at this size that reads as a
+   printing fault rather than as an underline. */
 .hero-smile {
-  color: color-mix(in oklab, var(--color-accent) 75%, var(--color-foreground));
+  text-decoration: underline;
+  text-decoration-color: var(--color-accent);
+  text-decoration-thickness: 0.06em;
+  text-underline-offset: 0.18em;
 }
 
 /* Mobile shows one card holding most of the frame with its neighbours
