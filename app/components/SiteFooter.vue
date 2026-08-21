@@ -134,10 +134,12 @@ import { siteSections } from '../data/sections'
 // footer links (you're already at contact; home is the wordmark's job).
 const sectionLinks = siteSections.filter(s => !['home', 'contact'].includes(s.id))
 
-// Placeholder hrefs — swap in the real handles when ready.
+// LinkedIn is the one live handle; Instagram and TikTok are still
+// placeholders — swap in the real hrefs when ready.
 const socials = [
   { label: 'Instagram', href: '#', icon: 'simple-icons:instagram' },
   { label: 'TikTok', href: '#', icon: 'simple-icons:tiktok' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/deesha-chudasama-b7544428b/', icon: 'simple-icons:linkedin' },
 ]
 
 const year = new Date().getFullYear()
