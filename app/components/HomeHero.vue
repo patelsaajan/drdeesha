@@ -133,9 +133,9 @@ import { practice } from '../data/contact'
 // once per photograph on the first copy; later copies repeat as decoration.
 const PATTERN = [
   { k: 1.08, src: '/images/hero/treatment-in-progress.webp', alt: 'Dr Deesha in loupes and mask, working on a reclined patient' }, // outermost — normal
-  { k: 0.95, src: '/images/hero/treatment-room.webp', alt: 'The treatment room mid-appointment, Dr Deesha and a nurse at work' }, // next to centre — shortest
+  { k: 0.95, src: '/images/hero/deesha-with-patient.webp', alt: 'Dr Deesha with a smiling patient in the treatment chair at Smart Smiles' }, // central — tall
+  { k: 1.34, src: '/images/hero/treatment-room.webp', alt: 'The treatment room mid-appointment, Dr Deesha and a nurse at work' }, // next to centre — shortest
   { k: 1.34, src: '/images/hero/whitening-collection.webp', alt: 'A patient at the surgery door collecting a whitening kit' }, // central — tall
-  { k: 1.34, src: '/images/hero/deesha-with-patient.webp', alt: 'Dr Deesha with a smiling patient in the treatment chair at Smart Smiles' }, // central — tall
   { k: 0.95, src: '/images/hero/patient-thumbs-up.webp', alt: 'A patient giving a thumbs up from the chair, Dr Deesha beside him' }, // next to centre — shortest
   { k: 1.08, src: '/images/hero/smiling-patient.webp', alt: 'Dr Deesha and a patient grinning side by side in the surgery' }, // outermost — normal
 ]
