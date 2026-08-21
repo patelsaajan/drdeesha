@@ -114,10 +114,13 @@ import { practice } from '../data/contact'
 // its own photograph. From the centre outward the heights run tall, short,
 // normal — the tall centrals flanked by a dipped pair, with the outermost
 // pair back at an in-between height. `k` is the card's
-// rendered height as a multiple of its width. The consultation portrait
-// holds both centrals — the photograph that carries the proposition sits
-// where the eye already is — and the practice's other moments fill the arch
-// around it.
+// rendered height as a multiple of its width. The two centrals are the pair
+// the eye lands on before it reads outward, so they carry the photographs
+// that do the most work — and the practice's other moments fill the arch
+// around them. Which of the two sits left and which right is not
+// interchangeable: buildMarquee's mobile anchor parks on the *right* central
+// (floor(SLOTS_PER_COPY / 2)), so that slot is the single card a phone shows
+// holding the frame, while desktop centres the seam between the two.
 //
 // Fixed to the cards rather than recomputed against the screen each frame, so
 // the arch travels with the row when it's dragged instead of the cards
@@ -131,8 +134,8 @@ import { practice } from '../data/contact'
 const PATTERN = [
   { k: 1.08, src: '/images/hero/treatment-in-progress.webp', alt: 'Dr Deesha in loupes and mask, working on a reclined patient' }, // outermost — normal
   { k: 0.95, src: '/images/hero/treatment-room.webp', alt: 'The treatment room mid-appointment, Dr Deesha and a nurse at work' }, // next to centre — shortest
-  { k: 1.34, src: '/images/hero/deesha-with-patient.webp', alt: 'Dr Deesha with a smiling patient in the treatment chair at Smart Smiles' }, // central — tall
   { k: 1.34, src: '/images/hero/whitening-collection.webp', alt: 'A patient at the surgery door collecting a whitening kit' }, // central — tall
+  { k: 1.34, src: '/images/hero/deesha-with-patient.webp', alt: 'Dr Deesha with a smiling patient in the treatment chair at Smart Smiles' }, // central — tall
   { k: 0.95, src: '/images/hero/patient-thumbs-up.webp', alt: 'A patient giving a thumbs up from the chair, Dr Deesha beside him' }, // next to centre — shortest
   { k: 1.08, src: '/images/hero/smiling-patient.webp', alt: 'Dr Deesha and a patient grinning side by side in the surgery' }, // outermost — normal
 ]
