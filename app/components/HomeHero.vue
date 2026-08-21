@@ -507,10 +507,28 @@ function playIntro() {
     // first frame; this one makes the tween self-sufficient, so a scoped
     // style that fails to reach the path can only cost the pre-roll, never
     // the animation itself.
+    //
+    // autoRound: false is what makes this a draw rather than a switch, and it
+    // is not optional here. GSAP takes a tween's unit from the start value,
+    // and getComputedStyle reports stroke-dashoffset in px; for any
+    // non-transform property that lands in px, CSSPlugin rounds every frame
+    // to a whole number unless told otherwise. pathLength="1" puts the whole
+    // animation between 1 and 0, so rounding left exactly two reachable
+    // values: the swash sat hidden for 1.15s — the 0.75s delay plus half of a
+    // symmetric ease — and then arrived whole in one frame. That is why this
+    // read as "the swash doesn't animate" while the .hero-rise tween beside
+    // it was fine: y is transform-related and opacity carries no px unit, so
+    // neither of them is ever rounded.
     gsap.fromTo(
       '.hero-swash-line',
       { strokeDasharray: 1, strokeDashoffset: 1 },
-      { strokeDashoffset: 0, duration: 0.8, ease: 'power1.inOut', delay: 0.75 },
+      {
+        strokeDashoffset: 0,
+        duration: 0.8,
+        ease: 'power1.inOut',
+        delay: 0.75,
+        autoRound: false,
+      },
     )
   }, el)
 }
