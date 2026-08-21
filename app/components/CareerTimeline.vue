@@ -8,7 +8,7 @@
       <h2 class="reveal mt-5 font-serif text-[clamp(2rem,4vw,3.25rem)] font-normal leading-heading tracking-heading">
         The path here.
       </h2>
-      <p class="reveal mt-4 max-w-md font-display text-base font-light leading-relaxed text-foreground/65">
+      <p class="reveal mt-4 max-w-md font-sans text-base font-light leading-relaxed text-foreground/65">
         The short version of my apprenticeship, from the first lecture to the chair you'll sit in.
       </p>
     </div>
@@ -108,7 +108,7 @@
                   :class="step.focalPoint"
                 />
 
-                <p class="font-display text-sm font-light leading-relaxed text-foreground/75 lg:text-base">
+                <p class="font-sans text-sm font-light leading-relaxed text-foreground/75 lg:text-base">
                   {{ step.description }}
                 </p>
 

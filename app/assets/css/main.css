@@ -14,6 +14,29 @@
      that land on this background use text-primary instead (~7.6:1, AAA). */
   --color-accent: #F5A623;
 
+  /* Three type roles, one family each. The split is by job, not by mood:
+     - --font-sans (Inter) — running prose. Bios, case descriptions, review
+       bodies, the footer's closing pitch. A neutral grotesque holds a
+       paragraph at body sizes far better than either serif below, both of
+       which were drawn for display and thin out in a block of text.
+     - --font-serif (Bodoni Moda) — headings and display beats. The
+       high-contrast didone is the page's voice, used where the type is meant
+       to be looked at rather than read through.
+     - --font-display (Fraunces) — uppercase labels. Eyebrows, chips, button
+       text, the qualification lockup: anything set in caps on
+       tracking-label/tracking-eyebrow. Its low-contrast, sturdy caps take
+       wide letter-spacing without falling apart, which the Bodoni's hairlines
+       do not — which is why the label role stays on a serif rather than
+       folding into the sans.
+     Tailwind v4 maps each --font-* token to the matching font-* utility, so
+     components only ever name the role (font-sans / font-serif /
+     font-display) and never a family.
+     Naming a family here is all that is needed to ship it: @nuxt/fonts (which
+     @nuxt/ui pulls in) reads these tokens, downloads the faces at build time
+     and self-hosts them under /_fonts, generating a metric-adjusted local
+     fallback for each so the swap doesn't shift layout. No <link> and no
+     module wiring — a new role is a new token here and nothing else. */
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-display: "Fraunces", Georgia, serif;
   --font-serif: "Bodoni Moda", Georgia, serif;
 
@@ -50,6 +73,13 @@
   body {
     margin: 0;
     background-color: var(--color-background);
+    /* Prose is the document default, so anything unclassed inherits Inter
+       rather than a browser serif or a bare system stack. Stated outright
+       instead of leaning on Tailwind's preflight chain (--default-font-family
+       -> --font-sans), so the baseline family survives whatever @nuxt/ui's own
+       base layer sets on top. Headings and labels opt back out at their own
+       elements with font-serif / font-display. */
+    font-family: var(--font-sans);
   }
 
   /* In-page anchors (footer section links, #contact) glide like the nav's
