@@ -127,4 +127,60 @@ export const caseStudies: CaseStudy[] = [
     before: shot(6, 'before'),
     after: shot(6, 'after'),
   },
+  // The three entries below are new photography waiting on its case notes.
+  // Every line describes only what the two photographs actually show, and
+  // nothing that would have to come from the record: no visit counts, no chair
+  // times, no timelines, no shade numbers. That restraint is deliberate rather
+  // than lazy: the placeholder copy above shows how easily an invented fact
+  // ends up describing an outcome its photographs do not actually show.
+  // Treatment names below are read off the images too, so they are the first
+  // thing to confirm.
+  {
+    id: 'hygiene-lower',
+    treatment: 'Hygiene',
+    title: 'Taking the build-up back off',
+    summary: 'Staining and hard deposits lifted from the lower front teeth.',
+    description:
+      'Years of staining and hardened deposit had collected around the lower front teeth and along the gumline. Cleaned back to the natural tooth, the shape of each one returns and the gum edge sits calm against it again.',
+    meta: [
+      { label: 'Area', value: 'Lower front' },
+      { label: 'Concern', value: 'Staining, deposit' },
+      { label: 'Enamel', value: 'Untouched' },
+    ],
+    image: shot(7, 'after'),
+    before: shot(7, 'before'),
+    after: shot(7, 'after'),
+  },
+  {
+    id: 'upper-rehabilitation',
+    treatment: 'Full upper restoration',
+    title: 'Rebuilding the whole upper smile',
+    summary: 'Worn, uneven upper teeth restored as one set.',
+    description:
+      'The upper teeth had worn short and uneven, each a slightly different shade to the next. Rebuilding them together rather than one at a time is what lets the edges run as a single line and the shade settle into one smile.',
+    meta: [
+      { label: 'Arch', value: 'Upper' },
+      { label: 'Approach', value: 'Restored as a set' },
+      { label: 'Focus', value: 'Shape and shade' },
+    ],
+    image: shot(8, 'after'),
+    before: shot(8, 'before'),
+    after: shot(8, 'after'),
+  },
+  {
+    id: 'closing-spacing',
+    treatment: 'Composite bonding',
+    title: 'Closing the spaces across the front',
+    summary: 'Gaps between the upper front teeth bonded closed.',
+    description:
+      'Spaces sat between each of the upper front teeth, with the smaller teeth either side of the middle leaving the widest of them. Adding composite to the sides of each tooth closes the gaps by building width, so the teeth end up in proportion to one another rather than simply pushed together.',
+    meta: [
+      { label: 'Area', value: 'Upper front' },
+      { label: 'Concern', value: 'Spacing' },
+      { label: 'Material', value: 'Composite' },
+    ],
+    image: shot(9, 'after'),
+    before: shot(9, 'before'),
+    after: shot(9, 'after'),
+  },
 ]
