@@ -24,9 +24,17 @@ logs
 !.env.example
 
 # Full-resolution case-study photography, kept locally as the source for the
-# aligned crops in public/images/cases (see app/data/cases.ts). Not shipped.
+# aligned crops in public/images/cases (see tools/align-cases.py). Not shipped.
 case-originals
+
+# Alignment strips written by `tools/align-cases.py --check`. Look at them,
+# don't commit them.
+tools/.check
 
 # Full-resolution hero photography, kept locally as the source for the
 # right-sized variants in public/images/hero. Not shipped.
 hero-originals
+
+# Full-resolution portrait photography, kept locally as the source for the
+# webp in public/images/about. Not shipped.
+about-originals

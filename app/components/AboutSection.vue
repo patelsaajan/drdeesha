@@ -79,7 +79,10 @@
                 :key="n"
                 class="m-0 mt-5 max-w-xl font-sans text-base font-light leading-relaxed text-foreground/80 lg:text-lg"
               >
-                {{ para }}
+                <template v-for="(run, r) in runsOf(para)" :key="r">
+                  <em v-if="run.emphasis" :class="EMPHASIS">{{ run.text }}</em>
+                  <template v-else>{{ run.text }}</template>
+                </template>
               </p>
             </div>
           </div>
@@ -171,7 +174,10 @@
                   :key="n"
                   class="m-0 mt-4 font-sans text-base font-light leading-relaxed text-foreground/80 first:mt-0"
                 >
-                  {{ para }}
+                  <template v-for="(run, r) in runsOf(para)" :key="r">
+                    <em v-if="run.emphasis" :class="EMPHASIS">{{ run.text }}</em>
+                    <template v-else>{{ run.text }}</template>
+                  </template>
                 </p>
               </div>
             </div>
@@ -185,8 +191,28 @@
 </template>
 
 <script setup lang="ts">
+import type { AboutParagraph } from '../data/about'
 import { aboutTopics } from '../data/about'
 import { practice } from '../data/contact'
+
+// The one emphasis device this section uses: a hairline amber rule under the
+// marked phrase, offset clear of the descenders. It borrows the hero's stroke
+// beneath "smile" rather than inventing a second accent, and stays off weight
+// and colour so a marked phrase reads as a glance-catcher in the paragraph
+// instead of a link or a call to action. Held in a constant because the body
+// copy renders twice, in the pinned desktop panel and again in the mobile
+// accordion, and the two must not be able to drift apart. The element itself
+// is <em>, since this is stress emphasis in running prose; not-italic drops
+// the browser default, because a slanted face is the Meet pull-quote's voice
+// and would read as a second, competing device here.
+const EMPHASIS = 'not-italic underline decoration-accent decoration-1 underline-offset-4'
+
+// Flattens a paragraph to a single shape the template can walk, so plain
+// string copy (every topic but "approach") needs no wrapper in the data.
+function runsOf(para: AboutParagraph) {
+  const runs = typeof para === 'string' ? [para] : para
+  return runs.map(run => (typeof run === 'string' ? { text: run, emphasis: false } : run))
+}
 
 // Extra scroll height per topic, in dvh. The pacing knob: each topic owns
 // this much of the ride before the spotlight moves on.

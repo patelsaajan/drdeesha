@@ -14,11 +14,13 @@
         </p>
       </header>
 
-      <!-- Editorial mosaic, not a uniform card grid: the first case runs as a
-           2x2 feature, the rest fill around it. Each card is full-bleed
-           photography with the caption sat over a warm scrim — the same
-           image-forward treatment as the process film and location cards,
-           rather than a clinical white label strip under a thumbnail. -->
+      <!-- Editorial mosaic, not a uniform card grid: a 2x2 feature opens it,
+           a 2x2 feature closes it, and normal cards fill around both, three
+           of them running as a full row through the middle. Each card is
+           full-bleed photography with the caption sat over a warm scrim, the
+           same image-forward treatment as the process film and location
+           cards, rather than a clinical white label strip under a thumbnail.
+           See cardClass() for how the composition is pinned. -->
       <div class="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:auto-rows-62">
         <button
           v-for="(study, i) in caseStudies"
@@ -26,15 +28,13 @@
           type="button"
           :aria-label="`${study.title} — ${study.treatment}`"
           class="reveal case-card group relative overflow-hidden rounded-xl bg-foreground text-left outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2"
-          :class="i === 0
-            ? 'aspect-4/3 sm:col-span-2 sm:aspect-video lg:col-span-2 lg:row-span-2 lg:aspect-auto'
-            : 'aspect-4/3 lg:aspect-auto lg:h-full'"
+          :class="cardClass(i)"
           @click="openCase(study)"
         >
           <NuxtImg
             :src="study.image"
             :alt="`${study.title} — ${study.treatment}`"
-            :sizes="i === 0 ? '100vw lg:66vw' : '100vw sm:50vw lg:33vw'"
+            :sizes="cardSizes(i)"
             loading="lazy"
             class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
           />
@@ -65,13 +65,13 @@
               {{ study.treatment }}
             </p>
 
-            <p v-if="i === 0" class="mt-1 font-serif text-2xl leading-snug text-white lg:text-3xl">
+            <p v-if="isFeature(i)" class="mt-1 font-serif text-2xl leading-snug text-white lg:text-3xl">
               {{ study.title }}
             </p>
 
-            <div class="case-swap relative" :class="i === 0 ? 'mt-1.5' : 'mt-1'">
+            <div class="case-swap relative" :class="isFeature(i) ? 'mt-1.5' : 'mt-1'">
               <div class="case-title">
-                <p v-if="i === 0" class="max-w-md font-sans text-sm font-light leading-relaxed text-white/75">
+                <p v-if="isFeature(i)" class="max-w-md font-sans text-sm font-light leading-relaxed text-white/75">
                   {{ study.summary }}
                 </p>
                 <p v-else class="font-serif text-xl leading-snug text-white">
@@ -161,6 +161,45 @@
 <script setup lang="ts">
 import { type CaseStudy, caseStudies } from '../data/cases'
 import { practice } from '../data/contact'
+
+// The lg mosaic is a hand-set composition of nine rather than a uniform grid:
+//
+//   [ 0 0 1 ]   a 2x2 feature opening in columns 1-2
+//   [ 0 0 2 ]
+//   [ 3 4 5 ]   a full row of normal cards through the middle
+//   [ 6 8 8 ]   a 2x2 feature closing in columns 2-3
+//   [ 7 8 8 ]
+//
+// The closer is pinned to its cell instead of being left to auto-flow: it
+// starts in column 2, so sparse placement would push it below every card
+// before it and leave column 1 empty beside it. Pinning is also why its row
+// is a literal class rather than something derived from the array length:
+// Tailwind only emits the classes it can actually see in the source. So the
+// composition is specific to nine cases: add a tenth and this has to be
+// re-cut, or the grid grows a hole.
+//
+// Below lg the closer stays a normal card. At sm the grid is two columns, and
+// widening it there would strand a single half-row above it; the opening
+// feature can go full-bleed at sm precisely because it is first and has
+// nothing above it to strand.
+const closingIndex = caseStudies.length - 1
+const isFeature = (i: number) => i === 0 || i === closingIndex
+
+function cardClass(i: number) {
+  if (i === 0)
+    return 'aspect-4/3 sm:col-span-2 sm:aspect-video lg:col-span-2 lg:row-span-2 lg:aspect-auto'
+  if (i === closingIndex)
+    return 'aspect-4/3 lg:col-span-2 lg:col-start-2 lg:row-span-2 lg:row-start-4 lg:aspect-auto'
+  return 'aspect-4/3 lg:aspect-auto lg:h-full'
+}
+
+function cardSizes(i: number) {
+  if (i === 0)
+    return '100vw lg:66vw'
+  if (i === closingIndex)
+    return '100vw sm:50vw lg:66vw'
+  return '100vw sm:50vw lg:33vw'
+}
 
 const open = ref(false)
 const selected = ref<CaseStudy | null>(null)
