@@ -60,12 +60,12 @@ export const caseStudies: CaseStudy[] = [
   // PLACEHOLDER COPY from here down to the facial-composites entry: the six
   // below are real photographs with invented words under them.
   {
-    id: 'bonding-gap',
+    id: 'composite-bonding',
     treatment: 'Composite bonding',
-    title: 'Closing a midline gap',
+    title: 'Replacing old composites',
     summary: 'I softened a front-tooth gap in a single afternoon.',
     description:
-      'I built up freehand composite, layered and polished, to close a central gap and even the edges. No drilling, no anaesthetic, finished in one visit.',
+      'I built up free hand composites on this wonderful young ladies front teeth and well as closing her central gap. She’d sustained fractures from falling and we managed to restore her beautiful smile!',
     meta: [
       { label: 'Visits', value: 'One' },
       { label: 'Chair time', value: '90 min' },
@@ -92,12 +92,12 @@ export const caseStudies: CaseStudy[] = [
     after: shot(2, 'after'),
   },
   {
-    id: 'veneers-upper',
-    treatment: 'Porcelain veneers',
-    title: 'A full upper makeover',
-    summary: 'Ten veneers, rebuilt in proportion and shade.',
+    id: 'resin-bridge',
+    treatment: 'Resin retained bridge',
+    title: 'Bridging the gap, restoring the smile',
+    summary: 'Bridging the gap, restoring the smile',
     description:
-      'I staged this upper smile makeover with hand-layered porcelain veneers, designing around my patient’s face before I prepared a single tooth.',
+      'A conservative solution with a breautiful result. A resin retained bridge is a minimally invasive way to replace a missing tooth whilst preserving as much natural tooth structure as possible. Functional, aesthetic and designed to blend seamlessly into your smile.',
     meta: [
       { label: 'Visits', value: 'Three' },
       { label: 'Veneers', value: 'Ten' },
@@ -108,28 +108,12 @@ export const caseStudies: CaseStudy[] = [
     after: shot(3, 'after'),
   },
   {
-    id: 'enlighten-whitening',
-    treatment: 'Enlighten whitening',
-    title: 'Whitening without the ache',
-    summary: 'A brighter shade, kept comfortable.',
-    description:
-      'I built this whitening course to reduce sensitivity, easing the shade up gradually rather than forcing it, and finished by evening a couple of edges.',
-    meta: [
-      { label: 'Timeline', value: '2 weeks' },
-      { label: 'Sensitivity', value: 'Managed' },
-      { label: 'Result', value: 'Natural' },
-    ],
-    image: shot(4, 'after'),
-    before: shot(4, 'before'),
-    after: shot(4, 'after'),
-  },
-  {
     id: 'chip-repair',
     treatment: 'Chip repair',
     title: 'Rebuilding a broken corner',
     summary: 'One chipped corner, put back the same day.',
     description:
-      'A chipped corner on a front tooth, rebuilt in composite and shaped to match its neighbour. Shade-matched wet, polished dry, done in a single sitting.',
+      'A chipped corner on a front tooth, rebuilt in composite and shaped to match its neighbour. Shade-matched wet, polished dry, and finished in one sitting so the repair reads as part of the tooth rather than a patch on it.',
     meta: [
       { label: 'Visits', value: 'One' },
       { label: 'Chair time', value: '45 min' },

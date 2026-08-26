@@ -34,3 +34,7 @@ tools/.check
 # Full-resolution hero photography, kept locally as the source for the
 # right-sized variants in public/images/hero. Not shipped.
 hero-originals
+
+# Full-resolution portrait photography, kept locally as the source for the
+# webp in public/images/about. Not shipped.
+about-originals
