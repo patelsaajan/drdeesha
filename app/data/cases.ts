@@ -38,6 +38,11 @@ const shot = (n: number, phase: 'before' | 'after') => `/images/cases/case-${n}-
 // the block marked PLACEHOLDER below still carries invented treatment names,
 // timelines and outcome claims, and has to be replaced with the real case
 // notes before this goes anywhere public.
+//
+// Nine entries, and the mosaic wants exactly nine: cardClass() in
+// CaseStudies.vue is a hand-set composition that fills 3 columns by 5 rows
+// only when a 2x2 opener and a 2x2 closer sit either side of seven normal
+// cards. Drop one and the grid grows a hole; add one and it grows two.
 export const caseStudies: CaseStudy[] = [
   // Feature card: first in the array is the 2x2 that opens the mosaic (see
   // cardClass() in CaseStudies.vue). Real case notes.
@@ -57,8 +62,10 @@ export const caseStudies: CaseStudy[] = [
     before: shot(8, 'before'),
     after: shot(8, 'after'),
   },
-  // PLACEHOLDER COPY from here down to the facial-composites entry: the six
-  // below are real photographs with invented words under them.
+  // PLACEHOLDER COPY from here down to the facial-composites entry, with two
+  // exceptions: composite-bonding and resin-bridge carry real case notes, and
+  // composite-edges is written from its photographs alone. The rest are real
+  // photographs with invented words under them.
   {
     id: 'composite-bonding',
     treatment: 'Composite bonding',
@@ -106,6 +113,26 @@ export const caseStudies: CaseStudy[] = [
     image: shot(3, 'after'),
     before: shot(3, 'before'),
     after: shot(3, 'after'),
+  },
+  // Written from the photographs and nothing else. The pair shows worn upper
+  // centrals rebuilt and levelled, so that is all this says: no visit count,
+  // no chair time, no timeline, because none of that is visible and none of it
+  // survived the entry this case had before. Those want the real notes.
+  {
+    id: 'composite-edges',
+    treatment: 'Composite edges',
+    title: 'Levelling two worn centrals',
+    summary: 'Chipped central edges rebuilt to match.',
+    description:
+      'The two upper central incisors had worn unevenly, one carrying a notch out of its biting edge. I rebuilt both in composite and levelled them against each other so the edge reads as one line again.',
+    meta: [
+      { label: 'Area', value: 'Upper centrals' },
+      { label: 'Material', value: 'Composite' },
+      { label: 'Edges', value: 'Levelled' },
+    ],
+    image: shot(4, 'after'),
+    before: shot(4, 'before'),
+    after: shot(4, 'after'),
   },
   {
     id: 'chip-repair',
