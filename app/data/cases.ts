@@ -20,19 +20,45 @@ export interface CaseStudy {
 
 // Every case owns a numbered before/after pair under the same convention:
 //   /images/cases/case-<n>-before.webp   /images/cases/case-<n>-after.webp
-// Both halves of a pair are pre-cropped to the same 3:2 window on the same
-// anatomy — registered against each other rather than centred independently —
-// so dragging the slider moves the split line without the face jumping. Swap
-// a photo and the crop has to be redone as a pair, not per file; the
-// full-resolution sources live in /case-originals (gitignored).
+// Both halves of a pair are cut to the same 3:2 window on the same anatomy,
+// registered against each other rather than centred independently, so dragging
+// the slider moves the split line without the face jumping under it. That
+// registration is what makes the reveal read as one mouth changing instead of
+// two photographs swapping.
+//
+// So a swapped photo means re-cutting the pair, never one file: run
+// `python3 tools/align-cases.py <n>`, which re-derives both halves from the
+// full-resolution sources in /case-originals (gitignored). The two halves are
+// deliberately not the same pixel size — each is cut at whatever its own
+// source actually holds — because the slider paints both object-cover into one
+// 3:2 box and only the ratio has to match.
 const shot = (n: number, phase: 'before' | 'after') => `/images/cases/case-${n}-${phase}.webp`
 
-// PARTLY PLACEHOLDER COPY. The photography is real throughout, and the
-// composite-bonding and resin-bridge notes are now written from the real cases.
-// The rest (edge-bonding, chip-repair, invisalign-whitening) is still invented to
-// dress the layout: those treatment names, timelines and outcome claims must be
-// replaced with the real case notes before this goes anywhere public.
+// The photography is real throughout. The copy is only real where it says so:
+// the block marked PLACEHOLDER below still carries invented treatment names,
+// timelines and outcome claims, and has to be replaced with the real case
+// notes before this goes anywhere public.
 export const caseStudies: CaseStudy[] = [
+  // Feature card: first in the array is the 2x2 that opens the mosaic (see
+  // cardClass() in CaseStudies.vue). Real case notes.
+  {
+    id: 'veneers-crown-replacement',
+    treatment: 'Veneers and crown replacements',
+    title: 'A full smile makeover',
+    summary: 'Worn, uneven upper teeth restored as one set.',
+    description:
+      'I staged this smile makeover with whitening, followed by free hand composites and crown replacements, designed around the patient’s face and proportions to achieve a fantastic bright smile.',
+    meta: [
+      { label: 'Visits', value: '5' },
+      { label: 'Composite Veneers', value: '4' },
+      { label: 'Timeline', value: '8 Weeks' },
+    ],
+    image: shot(8, 'after'),
+    before: shot(8, 'before'),
+    after: shot(8, 'after'),
+  },
+  // PLACEHOLDER COPY from here down to the facial-composites entry: the six
+  // below are real photographs with invented words under them.
   {
     id: 'composite-bonding',
     treatment: 'Composite bonding',
@@ -112,5 +138,40 @@ export const caseStudies: CaseStudy[] = [
     image: shot(6, 'after'),
     before: shot(6, 'before'),
     after: shot(6, 'after'),
+  },
+  // Real case notes resume here. One gap left: the pola-whitening meta row
+  // below is still the invented Area/Concern/Material trio its neighbours have
+  // outgrown, so it wants the real visit count and timeline.
+  {
+    id: 'facial-composites',
+    treatment: 'Facial composites',
+    title: 'See the details',
+    summary: 'A little change, a lasting difference.',
+    description:
+      'A little change, a lasting difference. I replaced and restored the facial composites on the lower teeth to reduce sensitivity and brighten the smile.',
+    meta: [
+      { label: 'Visits', value: '1' },
+      { label: 'Sensitivity', value: 'Managed' },
+      { label: 'Aesthetics', value: 'Seamless' },
+    ],
+    image: shot(7, 'after'),
+    before: shot(7, 'before'),
+    after: shot(7, 'after'),
+  },
+  {
+    id: 'pola-whitening',
+    treatment: 'Pola whitening',
+    title: '6 composite veneers',
+    summary: 'Gaps between the upper front teeth bonded closed.',
+    description:
+      'Whitening followed by sculpting 6 freehand composite veneers to achieve a natural, bright smile by evening the edges and closing the gaps.',
+    meta: [
+      { label: 'Area', value: 'Upper front' },
+      { label: 'Concern', value: 'Spacing' },
+      { label: 'Material', value: 'Composite' },
+    ],
+    image: shot(9, 'after'),
+    before: shot(9, 'before'),
+    after: shot(9, 'after'),
   },
 ]
