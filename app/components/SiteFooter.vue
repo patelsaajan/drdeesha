@@ -111,15 +111,42 @@
           </nav>
         </div>
 
-        <!-- Baseline: legal on the left, place on the right — the same
-             name-dot-location line About signs off with. -->
-        <div class="reveal mt-8 flex flex-col gap-2 font-display text-xs uppercase tracking-label text-white/50 sm:flex-row items-center sm:justify-between">
-          <p>© {{ year }} Dr Deesha Dental. GDC no 309307.</p>
-          <p class="flex items-center gap-3">
-            {{ practice.name }}
-            <span aria-hidden="true" class="h-1 w-1 rounded-full bg-accent" />
-            {{ practice.location }}
-          </p>
+        <!-- Baseline: the practice's own sign-off on the left, studio
+             credit on the right. Legal and place stack rather than sitting at
+             opposite ends, so the two lines that are both about Dr Deesha
+             read as one block instead of bookending an unrelated credit.
+             alt="" on the studio mark because the adjacent text already
+             names it; a filled alt would have a screen reader say it twice. -->
+        <div class="reveal mt-8 flex flex-col items-center gap-6 sm:flex-row sm:justify-between sm:gap-8">
+          <div class="flex flex-col items-center gap-2 font-display text-xs uppercase tracking-label text-white/50 sm:items-start">
+            <p>© {{ year }} Dr Deesha Dental. GDC no 309307.</p>
+            <p class="flex items-center gap-3">
+              {{ practice.name }}
+              <span aria-hidden="true" class="h-1 w-1 rounded-full bg-accent" />
+              {{ practice.location }}
+            </p>
+          </div>
+
+          <a
+            href="https://smfstudio.io"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group flex items-center gap-2 font-display text-2xs uppercase tracking-label text-white/40 transition-colors hover:text-white/75"
+          >
+            <NuxtImg
+              src="/images/brand/smf-studio.webp"
+              alt=""
+              width="32"
+              height="32"
+              sizes="32px"
+              class="size-8 shrink-0 rounded-sm"
+              loading="lazy"
+            />
+            <span>
+              Made by <span class="font-medium underline-offset-4 group-hover:underline">SMF Studio</span>
+              <span class="sr-only"> (opens in a new tab)</span>
+            </span>
+          </a>
         </div>
       </div>
     </div>
