@@ -27,23 +27,47 @@
       </p>
 
       <!-- Set in Bodoni Moda at tracking-heading the whole line measures
-           12.36em, so it needs 791px at the clamp's 4rem ceiling — more than
-           max-w-3xl's 768px, which is why every desktop from 1440px up was
-           wrapping a heading that had the room to sit on one line. max-w-4xl
-           (896px) clears the widest the line can ever get, and below 640px
-           the 5vw term does the work: the line only ever asks for 0.62 x the
-           viewport, always inside it.
+           17.78em, so one line would need 1138px at the clamp's 4rem ceiling.
+           No sane measure is that wide (the previous, shorter heading asked
+           791px, which max-w-4xl's 896px covered), so this is a two-line
+           heading by design and the width is derived from the bottom rather
+           than the top: it has to hold the wider of the two lines, not the
+           whole string.
 
-           Under ~449px it can't fit either way — the clamp floors at 2rem, so
-           the line wants 395px and no phone offers that — so it has to wrap,
-           and the job becomes wrapping it *well*. whitespace-nowrap binds
-           "your smile" into one unbreakable token: without it the greedy
-           break at 375-390px fits "Feel confident in your" and strands
-           "smile" alone on line two. text-balance then evens the two lines
-           rather than leaving a long first line over a stub; it's inert on
-           the single-line widths above. -->
+           text-balance splits where the widest line is narrowest, which here
+           is "Helping you feel" over "great about your smile": 7.54em and
+           9.99em, so 640px at the ceiling. max-w-2xl (672px) is the first
+           step clear of that, leaving 10.5em of measure at 4rem. A greedy
+           break, which is what a browser without text-balance does, lands one
+           word later on "Helping you feel great" over "about your smile",
+           10.15em and 7.38em, and 672px holds that too with 22px spare.
+
+           Width is what breaks it, not the font size. Past 12.97em (830px at
+           the ceiling) the greedy break pulls "about" up and leaves "your
+           smile" alone as a stub, which is exactly what the old max-w-4xl now
+           does: 14em of measure at 4rem, and 16em at the 56px a 1440x800
+           laptop resolves to, both well past that bound.
+
+           whitespace-nowrap binds "your smile" and nothing wider. A binding
+           is a hard constraint that text-balance cannot undo, so it wants to
+           be the smallest one that does the job, and this is the shortest
+           token that stops a break stranding "smile" and its swash on a line
+           of their own. Binding "about your smile" instead reads better on a
+           tablet but costs a one-word "great" line at 360px, in the balanced
+           layout as well as the greedy one.
+
+           Below 368px neither pair fits: the clamp floors at 2rem, where the
+           9.99em line wants 320px against a 360px phone's 312px of column, so
+           it takes a third line ("Helping you" over "feel great" over "about
+           your smile"). It degrades in the right direction, the bound token
+           riding the last line with its swash under it. The one place the
+           heading does sit whole is a 617-755px viewport (and a window
+           shorter than ~540px, where the 7dvh term holds the type down),
+           because the 5vw term leaves the widest measure the clamp ever
+           offers, ~18.7em. Nothing narrow enough to wrap it there could still
+           hold 9.99em at the 4rem ceiling, so that band is left alone. -->
       <h1
-        class="hero-title hero-rise max-w-4xl shrink-0 text-balance font-serif text-[clamp(2rem,min(5vw,7dvh),4rem)] font-normal leading-heading tracking-heading text-foreground"
+        class="hero-title hero-rise max-w-2xl shrink-0 text-balance font-serif text-[clamp(2rem,min(5vw,7dvh),4rem)] font-normal leading-heading tracking-heading text-foreground"
       >
         <!-- No whitespace between "smile" and the <svg>: an inline-block
              absorbs a text node between its children into its own width, and
@@ -66,7 +90,7 @@
              smoothness won. What asymmetry is left is in the ends — 4.6 on
              the left against 2.8 on the right, and controls that aren't
              mirrored — so it still lifts unevenly like a drawn mark. -->
-        Feel confident in <span class="whitespace-nowrap">your <span class="hero-smile italic">smile<svg
+        Helping you feel great about <span class="whitespace-nowrap">your <span class="hero-smile italic">smile<svg
           class="hero-swash"
           viewBox="0 0 120 18"
           preserveAspectRatio="none"
