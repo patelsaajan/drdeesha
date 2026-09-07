@@ -56,25 +56,19 @@
           <!-- Caption stays put; only the swap zone trades places with the
                CTA on hover. Both occupy the same footprint (the CTA overlays
                the swap zone on pointer devices), so nothing climbs up over
-               the photo. On the feature card the serif title sits above the
-               swap and never moves — only its summary line steps aside for
-               the CTA; the smaller cards swap their title, the only text
-               they have. -->
+               the photo. Every card swaps its title, the only text it has;
+               the feature cards just set theirs larger. -->
           <div class="case-caption absolute inset-x-0 bottom-0 z-10 px-5 pb-5 lg:px-6 lg:pb-6">
             <p class="font-display text-3xs font-semibold uppercase tracking-label text-accent">
               {{ study.treatment }}
             </p>
 
-            <p v-if="isFeature(i)" class="mt-1 font-serif text-2xl leading-snug text-white lg:text-3xl">
-              {{ study.title }}
-            </p>
-
-            <div class="case-swap relative" :class="isFeature(i) ? 'mt-1.5' : 'mt-1'">
+            <div class="case-swap relative mt-1">
               <div class="case-title">
-                <p v-if="isFeature(i)" class="max-w-md font-sans text-sm font-light leading-relaxed text-white/75">
-                  {{ study.summary }}
-                </p>
-                <p v-else class="font-serif text-xl leading-snug text-white">
+                <p
+                  class="font-serif leading-snug text-white"
+                  :class="isFeature(i) ? 'text-2xl lg:text-3xl' : 'text-xl'"
+                >
                   {{ study.title }}
                 </p>
               </div>
@@ -97,7 +91,7 @@
       :direction="isDesktop ? 'right' : 'bottom'"
       :handle="!isDesktop"
       :title="selected?.title"
-      :description="selected?.summary"
+      :description="selected?.description"
     >
       <template v-if="selected" #header>
         <div class="flex flex-1 items-start justify-between gap-4">
@@ -243,12 +237,11 @@ useSectionReveal(root)
   transform: translateX(0.15rem);
 }
 
-/* In-place swap. The swap zone keeps the caption's footprint (its sizer is
-   the summary on the feature card, the title on the rest); the CTA overlays
-   its bottom line, hidden at rest, and on hover/focus the two trade places
-   — the sizer drifts up and out as the CTA rises in. The caption block
-   itself never moves, so the eyebrow (and the feature card's title, which
-   lives above the swap) stays put. */
+/* In-place swap. The swap zone keeps the caption's footprint (the title is
+   its sizer); the CTA overlays its bottom line, hidden at rest, and on
+   hover/focus the two trade places: the title drifts up and out as the CTA
+   rises in. The caption block itself never moves, so the eyebrow above the
+   swap stays put. */
 .case-title {
   transition:
     opacity 0.3s ease,

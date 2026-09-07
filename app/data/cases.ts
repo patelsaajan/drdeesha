@@ -5,8 +5,6 @@ export interface CaseStudy {
   treatment: string
   /** Card + drawer heading */
   title: string
-  /** One-line summary for the card */
-  summary: string
   /** Longer note shown in the drawer */
   description: string
   /** Small facts, rendered as a definition list */
@@ -50,7 +48,6 @@ export const caseStudies: CaseStudy[] = [
     id: 'veneers-crown-replacement',
     treatment: 'Veneers and crown replacements',
     title: 'A full smile makeover',
-    summary: 'Worn, uneven upper teeth restored as one set.',
     description:
       'I staged this smile makeover with whitening, followed by free hand composites and crown replacements, designed around the patient’s face and proportions to achieve a fantastic bright smile.',
     meta: [
@@ -62,15 +59,10 @@ export const caseStudies: CaseStudy[] = [
     before: shot(8, 'before'),
     after: shot(8, 'after'),
   },
-  // PLACEHOLDER COPY from here down to the facial-composites entry, with two
-  // exceptions: composite-bonding and resin-bridge carry real case notes, and
-  // composite-edges is written from its photographs alone. The rest are real
-  // photographs with invented words under them.
   {
     id: 'composite-bonding',
     treatment: 'Composite bonding',
     title: 'Replacing old composites',
-    summary: 'I softened a front-tooth gap in a single afternoon.',
     description:
       'I built up free hand composites on this wonderful young ladies front teeth and well as closing her central gap. She’d sustained fractures from falling and we managed to restore her beautiful smile!',
     meta: [
@@ -82,63 +74,10 @@ export const caseStudies: CaseStudy[] = [
     before: shot(1, 'before'),
     after: shot(1, 'after'),
   },
-  {
-    id: 'edge-bonding',
-    treatment: 'Edge bonding',
-    title: 'Refining worn edges',
-    summary: 'Worn front teeth, quietly rebuilt.',
-    description:
-      'I rebuilt worn incisal edges with composite, returning a little length and a soft, natural finish without touching healthy enamel.',
-    meta: [
-      { label: 'Visits', value: 'One' },
-      { label: 'Chair time', value: '60 min' },
-      { label: 'Enamel', value: 'Preserved' },
-    ],
-    image: shot(2, 'after'),
-    before: shot(2, 'before'),
-    after: shot(2, 'after'),
-  },
-  {
-    id: 'resin-bridge',
-    treatment: 'Resin retained bridge',
-    title: 'Bridging the gap, restoring the smile',
-    summary: 'Bridging the gap, restoring the smile',
-    description:
-      'A conservative solution with a breautiful result. A resin retained bridge is a minimally invasive way to replace a missing tooth whilst preserving as much natural tooth structure as possible. Functional, aesthetic and designed to blend seamlessly into your smile.',
-    meta: [
-      { label: 'Visits', value: 'Three' },
-      { label: 'Veneers', value: 'Ten' },
-      { label: 'Timeline', value: '6 weeks' },
-    ],
-    image: shot(3, 'after'),
-    before: shot(3, 'before'),
-    after: shot(3, 'after'),
-  },
-  // Written from the photographs and nothing else. The pair shows worn upper
-  // centrals rebuilt and levelled, so that is all this says: no visit count,
-  // no chair time, no timeline, because none of that is visible and none of it
-  // survived the entry this case had before. Those want the real notes.
-  {
-    id: 'composite-edges',
-    treatment: 'Composite edges',
-    title: 'Levelling two worn centrals',
-    summary: 'Chipped central edges rebuilt to match.',
-    description:
-      'The two upper central incisors had worn unevenly, one carrying a notch out of its biting edge. I rebuilt both in composite and levelled them against each other so the edge reads as one line again.',
-    meta: [
-      { label: 'Area', value: 'Upper centrals' },
-      { label: 'Material', value: 'Composite' },
-      { label: 'Edges', value: 'Levelled' },
-    ],
-    image: shot(4, 'after'),
-    before: shot(4, 'before'),
-    after: shot(4, 'after'),
-  },
-  {
+    {
     id: 'chip-repair',
     treatment: 'Chip repair',
     title: 'Rebuilding a broken corner',
-    summary: 'One chipped corner, put back the same day.',
     description:
       'A chipped corner on a front tooth, rebuilt in composite and shaped to match its neighbour. Shade-matched wet, polished dry, and finished in one sitting so the repair reads as part of the tooth rather than a patch on it.',
     meta: [
@@ -151,29 +90,54 @@ export const caseStudies: CaseStudy[] = [
     after: shot(5, 'after'),
   },
   {
-    id: 'invisalign-whitening',
-    treatment: 'Invisalign & whitening',
-    title: 'Straighten, then brighten',
-    summary: 'Aligners first, a gentle whiten to finish.',
+    id: 'resin-bridge',
+    treatment: 'Resin retained bridge',
+    title: 'Bridging the gap, restoring the smile',
     description:
-      'I corrected the crowding with clear aligners over several months, then finished with take-home whitening once everything sat right.',
+      'A conservative solution with a beautiful result. A resin retained bridge is a minimally invasive way to replace a missing tooth whilst preserving as much natural tooth structure as possible. Functional, aesthetic and designed to blend seamlessly into your smile.',
     meta: [
-      { label: 'Timeline', value: '7 months' },
-      { label: 'Aligners', value: 'Clear' },
-      { label: 'Whitening', value: 'Take-home' },
+      { label: 'Visits', value: '2' },
+      { label: 'Material', value: 'Zirconia' },
+      { label: 'Timeline', value: '2 weeks' },
+    ],
+    image: shot(3, 'after'),
+    before: shot(3, 'before'),
+    after: shot(3, 'after'),
+  },
+    {
+    id: 'edge-bonding',
+    treatment: 'Edge bonding',
+    title: 'Refining worn edges',
+    description:
+      'I rebuilt worn incisal edges with composite, returning a little length and a soft, natural finish without touching healthy enamel.',
+    meta: [
+      { label: 'Visits', value: 'One' },
+      { label: 'Chair time', value: '60 minutes' },
+      { label: 'Enamel', value: 'Preserved' },
+    ],
+    image: shot(2, 'after'),
+    before: shot(2, 'before'),
+    after: shot(2, 'after'),
+  },
+  {
+    id: 'resin-bridge',
+    treatment: 'Resin retained bridge',
+    title: 'Simple yet effective bridge',
+    description:
+      'Another example of a resin retained bridge to fill the space and restore the smile with no drilling or anaesthetic. ',
+    meta: [
+      { label: 'Visits', value: '2' },
+      { label: 'Material', value: 'Zirconia' },
+      { label: 'Chair Time', value: '40 minutes' },
     ],
     image: shot(6, 'after'),
     before: shot(6, 'before'),
     after: shot(6, 'after'),
   },
-  // Real case notes resume here. One gap left: the pola-whitening meta row
-  // below is still the invented Area/Concern/Material trio its neighbours have
-  // outgrown, so it wants the real visit count and timeline.
   {
     id: 'facial-composites',
-    treatment: 'Facial composites',
-    title: 'See the details',
-    summary: 'A little change, a lasting difference.',
+    treatment: 'Worn surfaces restored',
+    title: 'Facial composites',
     description:
       'A little change, a lasting difference. I replaced and restored the facial composites on the lower teeth to reduce sensitivity and brighten the smile.',
     meta: [
@@ -185,11 +149,25 @@ export const caseStudies: CaseStudy[] = [
     before: shot(7, 'before'),
     after: shot(7, 'after'),
   },
+   {
+    id: 'composite-edges',
+    treatment: 'Chip Repair',
+    title: 'Rebuilding a broken corner',
+    description:
+      'A chipped corner on a front tooth, rebuilt in composite and shaped to match its neighbour. Shade-matched wet, polished dry, and finished in one sitting so the repair reads as part of the tooth rather than a patch on it.',
+    meta: [
+      { label: 'Visits', value: 'One' },
+      { label: 'Area', value: 'Upper centrals' },
+      { label: 'Chair Time', value: '60 minutes' },
+    ],
+    image: shot(4, 'after'),
+    before: shot(4, 'before'),
+    after: shot(4, 'after'),
+  },
   {
     id: 'pola-whitening',
     treatment: 'Pola whitening',
     title: '6 composite veneers',
-    summary: 'Gaps between the upper front teeth bonded closed.',
     description:
       'Whitening followed by sculpting 6 freehand composite veneers to achieve a natural, bright smile by evening the edges and closing the gaps.',
     meta: [

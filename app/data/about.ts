@@ -40,7 +40,6 @@ export const aboutTopics: AboutTopic[] = [
     // entry exists to land: the approach itself, then what a treatment
     // involves and why it is being done at all.
     body: [
-      'I believe dentistry is about much more than teeth. Visiting the dentist can feel daunting, so I aim to create a calm, supportive experience from the moment you sit down.',
       [
         'Whether it\'s a gentle aesthetic enhancement or getting you out of pain, ',
         { text: 'your comfort always comes first', emphasis: true },
