@@ -44,7 +44,7 @@ export const aboutTopics: AboutTopic[] = [
         'Whether it\'s a gentle aesthetic enhancement or getting you out of pain, ',
         { text: 'your comfort always comes first', emphasis: true },
         ', and nothing happens until you understand ',
-        { text: 'what it involves and why', emphasis: true },
+        { text: 'what\'s involved and why', emphasis: true },
         '.',
       ],
     ],

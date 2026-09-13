@@ -87,7 +87,7 @@
            separate beat rather than another paragraph. -->
       <blockquote class="m-0 mt-6 border-l-2 border-accent pl-6 lg:mt-10 lg:pl-8">
         <p class="m-0 max-w-2xl font-serif text-[clamp(1.75rem,3.2vw,2.75rem)] font-normal italic leading-quote tracking-heading text-white">
-          Good dentistry is quiet work. Gentle, plain, lasting.
+          Helping you feel great about your smile
         </p>
       </blockquote>
     </div>
