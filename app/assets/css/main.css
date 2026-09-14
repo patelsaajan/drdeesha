@@ -82,6 +82,14 @@
     font-family: var(--font-sans);
   }
 
+  /* Text selection in brand colours instead of the browser default blue.
+     A pale tint of the accent rather than the full amber: light enough that
+     dark text (foreground, primary headings) stays readable without forcing
+     a colour swap on the selected text itself. */
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-accent) 30%, white);
+  }
+
   /* In-page anchors (footer section links, #contact) glide like the nav's
      scrollIntoView jumps rather than teleporting. */
   @media (prefers-reduced-motion: no-preference) {
