@@ -27,19 +27,19 @@ export interface CareerStep {
 export const careerSteps: CareerStep[] = [
   {
     id: 'leeds',
-    year: '2013 – 2018',
+    year: '2018 – 2023',
     institution: 'University of Leeds Dental School',
-    qualification: 'Bachelor of Dental Surgery',
+    qualification: 'MChD/BChD, BSc Dental Surgery',
     location: 'Leeds',
     description:
       'Five years of foundations: anatomy, materials, and my first real patients. Leeds taught me that good dentistry is equal parts science and steadiness.',
     image: '/images/career/graduation.webp',
     focalPoint: 'object-[50%_40%]',
-    mark: 'BDS',
+    mark: 'ULDS',
   },
   {
     id: 'newark',
-    year: '2018 – 2019',
+    year: '2023 – 2024',
     institution: 'London Road Dental Practice',
     qualification: 'Foundation Dentist',
     location: 'Newark',
@@ -47,11 +47,11 @@ export const careerSteps: CareerStep[] = [
       'My first year in practice, treating a whole community from anxious first-timers to lifelong regulars. I learned to slow down and listen before I ever picked up a handpiece.',
     image: '/images/career/newark.webp',
     focalPoint: 'object-[72%_24%]',
-    mark: 'DF1',
+    mark: 'DFT',
   },
   {
     id: 'birmingham',
-    year: '2019 – 2020',
+    year: '2024 – 2025',
     institution: 'Birmingham Dental Hospital',
     qualification: 'Dental Core Training · Paediatrics & Oral Surgery',
     location: 'Birmingham',
@@ -63,7 +63,7 @@ export const careerSteps: CareerStep[] = [
   },
   {
     id: 'totally-aesthetic',
-    year: '2021 – 2023',
+    year: '2025 – 2026',
     institution: 'Totally Aesthetic',
     qualification: 'Restorative & Aesthetic Dentistry',
     location: 'Postgraduate',
@@ -75,7 +75,7 @@ export const careerSteps: CareerStep[] = [
   },
   {
     id: 'smart-smiles',
-    year: '2023 – now',
+    year: '2025 – now',
     institution: 'Smart Smiles',
     qualification: 'Associate Dentist',
     location: 'Ystrad Mynach',
