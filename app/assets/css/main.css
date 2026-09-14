@@ -83,11 +83,11 @@
   }
 
   /* Text selection in brand colours instead of the browser default blue.
-     A pale tint of the accent rather than the full amber: light enough that
-     dark text (foreground, primary headings) stays readable without forcing
-     a colour swap on the selected text itself. */
+     Accent is too light for white text (fails AA), so selected text goes
+     primary, the same pairing the accent token already documents. */
   ::selection {
-    background-color: color-mix(in srgb, var(--color-accent) 30%, white);
+    background-color: var(--color-accent);
+    color: var(--color-primary);
   }
 
   /* In-page anchors (footer section links, #contact) glide like the nav's
