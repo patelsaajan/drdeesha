@@ -53,7 +53,7 @@ export const careerSteps: CareerStep[] = [
     id: 'birmingham',
     year: '2019 – 2020',
     institution: 'Birmingham Dental Hospital',
-    qualification: 'Dental Core Training · Paediatrics & Restorative',
+    qualification: 'Dental Core Training · Paediatrics & Oral Surgery',
     location: 'Birmingham',
     description:
       'A hospital year split between children and oral surgey. Treating nervous young patients made gentleness a habit, not an afterthought.',
