@@ -13,5 +13,5 @@ export const site = {
   description:
     'General and cosmetic dentistry by Dr Deesha at Smart Smiles in Ystrad Mynach, South Wales. Calm, unhurried care, from check-ups, hygiene and fillings to whitening, bonding and alignment.',
   /** Social-card image: the portrait from the Meet section */
-  ogImage: `${siteUrl}/images/about/portrait.webp`,
+  ogImage: `${siteUrl}/images/career/smart-smiles.webp`,
 }
