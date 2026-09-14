@@ -104,7 +104,7 @@
       </h1>
 
       <p class="hero-rise m-0 max-w-xl shrink-0 font-sans text-base font-normal leading-relaxed text-foreground/70 lg:text-lg">
-        General and cosmetic dentistry from Dr Deesha at {{ practice.name }} in
+        General and cosmetic dentistry by Dr Deesha at {{ practice.name }} in
         {{ practice.location }}, delivered calmly, carefully, and at your pace.
       </p>
     </div>
